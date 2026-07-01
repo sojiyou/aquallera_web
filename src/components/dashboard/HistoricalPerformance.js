@@ -1,7 +1,6 @@
 // src/components/dashboard/HistoricalPerformance.jsx
 // UPDATED: Auto-calculates from orders when archives don't exist
 import React, { useState, useEffect } from 'react';
-import './HistoricalPerformance.css';
 import { getArchivedYear } from '../../utils/monthlyArchiver';
 import { calculateMonthlyRevenue, getDailyRevenueForArchive } from '../../utils/revenueCalculator';
 import {
@@ -250,12 +249,12 @@ const HistoricalPerformance = ({ stationId }) => {
 
   if (loading) {
     return (
-      <section className="historical-performance-section">
-        <div className="section-header">
-          <h2>📚 Monthly Reports</h2>
+      <section className="bg-white rounded-xl p-8 mb-8 shadow-sm">
+        <div className="mb-6 pb-4 border-b-2 border-slate-200">
+          <h2 className="text-slate-800 text-2xl m-0 mb-2">📚 Monthly Reports</h2>
         </div>
-        <div className="loading-historical">
-          <div className="spinner-small"></div>
+        <div className="flex flex-col items-center justify-center py-12 text-slate-500">
+          <div className="border-[3px] border-slate-200 border-t-blue-600 rounded-full w-10 h-10 animate-spin mb-4"></div>
           <p>Loading historical data...</p>
         </div>
       </section>
@@ -263,31 +262,31 @@ const HistoricalPerformance = ({ stationId }) => {
   }
 
   return (
-    <section className={`historical-performance-section ${showSkeleton ? 'skeleton-mode' : ''}`}>
-      <div className="section-header">
-        <h2>📚Monthly Reports</h2>
-        <p className="section-subtitle">
+    <section className={`bg-white rounded-xl p-8 mb-8 shadow-sm ${showSkeleton ? 'skeleton-mode' : ''}`}>
+      <div className="mb-6 pb-4 border-b-2 border-slate-200">
+        <h2 className="text-slate-800 text-2xl m-0 mb-2">📚Monthly Reports</h2>
+        <p className="text-slate-500 text-sm m-0">
           View past months' revenue and prediction accuracy
         </p>
       </div>
 
       {/* Demo Mode Banner - Only shows when using sample data */}
       {showSkeleton && (
-        <div className="demo-data-banner">
-          <span className="demo-icon">📊</span>
+        <div className="bg-amber-50 border-l-4 border-l-amber-500 p-3 mb-6 rounded-lg text-sm text-amber-800 flex items-center gap-2">
+          <span className="text-lg">📊</span>
           <span>Demo Mode: Showing sample data. Real data will appear once you have completed orders.</span>
         </div>
       )}
 
       {/* Live Data Indicator - Shows when using real orders */}
       {!showSkeleton && historicalData.some(m => m.fromOrders) && (
-        <div className="live-data-banner">
-          <span className="live-icon">✅</span>
+        <div className="bg-emerald-100 border-l-4 border-l-emerald-500 p-3 mb-6 rounded-lg text-sm text-emerald-800 flex items-center gap-2">
+          <span className="text-lg">✅</span>
           <span>Showing real data from your orders. {historicalData.some(m => m.fromOrders) && '(Some months calculated directly from orders)'}</span>
         </div>
       )}
 
-      <div className="historical-months-grid">
+      <div className="grid grid-cols-1 gap-4">
         {historicalData.map((month) => {
           const accuracyInfo = getAccuracyColor(month.accuracy);
           const isExpanded = expandedMonth === month.monthKey;
@@ -295,20 +294,20 @@ const HistoricalPerformance = ({ stationId }) => {
           return (
             <div
               key={`${month.monthKey}-${month.year}`}
-              className={`historical-month-card ${isExpanded ? 'expanded' : ''} ${month.isSkeleton ? 'skeleton-card' : ''}`}
+              className={`bg-slate-50 border border-slate-200 rounded-xl overflow-hidden transition-all hover:shadow-lg hover:-translate-y-0.5 ${isExpanded ? 'bg-white border-blue-500 shadow-[0_4px_16px_rgba(59,130,246,0.1)]' : ''} ${month.isSkeleton ? 'skeleton-card' : ''}`}
             >
               <div
-                className="month-card-header"
+                className="flex justify-between items-center p-5 cursor-pointer select-none"
                 onClick={() => toggleMonth(month.monthKey)}
               >
-                <div className="month-header-left">
-                  <div className="month-icon">📅</div>
-                  <div className="month-info">
-                    <h3>
+                <div className="flex items-center gap-4 flex-1">
+                  <div className="text-3xl">📅</div>
+                  <div>
+                    <h3 className="text-slate-800 text-lg m-0 mb-1">
                       {formatMonthName(month.monthKey)} {month.year}
-                      {month.fromOrders && <span className="live-badge"> Live</span>}
+                      {month.fromOrders && <span className="bg-emerald-500 text-white text-[0.7rem] px-2 py-1 rounded-full ml-2 font-medium align-middle"> Live</span>}
                     </h3>
-                    <p className="month-stats">
+                    <p className="text-slate-500 text-sm m-0">
                       {month.orders} orders • ₱{month.actual?.toLocaleString(undefined, {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2
@@ -317,50 +316,50 @@ const HistoricalPerformance = ({ stationId }) => {
                   </div>
                 </div>
 
-                <div className="month-header-right">
+                <div className="flex items-center gap-4">
                   <div
-                    className="accuracy-badge"
+                    className="flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm"
                     style={{
                       backgroundColor: `${accuracyInfo.color}20`,
                       color: accuracyInfo.color,
                       border: `1px solid ${accuracyInfo.color}40`
                     }}
                   >
-                    <span className="accuracy-icon">{accuracyInfo.icon}</span>
-                    <span className="accuracy-value">{month.accuracy.toFixed(1)}%</span>
+                    <span className="text-base">{accuracyInfo.icon}</span>
+                    <span className="font-bold">{month.accuracy.toFixed(1)}%</span>
                   </div>
-                  <button className="expand-button">
+                  <button className="bg-blue-500/10 border border-blue-500/30 text-blue-500 px-3 py-2 rounded-lg cursor-pointer text-sm font-semibold transition-all hover:bg-blue-500/20 hover:border-blue-500">
                     {isExpanded ? '▲' : '▼'}
                   </button>
                 </div>
               </div>
 
               {isExpanded && (
-                <div className="month-card-expanded">
-                  <div className="revenue-comparison">
-                    <div className="comparison-item">
-                      <span className="comparison-label">Projected</span>
-                      <span className="comparison-value projected">
+                <div className="px-5 pb-5 border-t border-slate-200 animate-[slideDown_0.3s_ease]">
+                  <div className="flex items-center justify-around bg-gradient-to-br from-sky-50 to-sky-100 rounded-xl p-6 mb-6 gap-4">
+                    <div className="flex flex-col items-center gap-2">
+                      <span className="text-slate-500 text-xs uppercase tracking-wider font-semibold">Projected</span>
+                      <span className="text-xl font-bold text-slate-400">
                         ₱{month.projected?.toLocaleString(undefined, {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2
                         })}
                       </span>
                     </div>
-                    <div className="comparison-arrow">→</div>
-                    <div className="comparison-item">
-                      <span className="comparison-label">Actual</span>
-                      <span className="comparison-value actual">
+                    <div className="text-2xl text-slate-400">→</div>
+                    <div className="flex flex-col items-center gap-2">
+                      <span className="text-slate-500 text-xs uppercase tracking-wider font-semibold">Actual</span>
+                      <span className="text-xl font-bold text-blue-600">
                         ₱{month.actual?.toLocaleString(undefined, {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2
                         })}
                       </span>
                     </div>
-                    <div className="comparison-item">
-                      <span className="comparison-label">Accuracy</span>
+                    <div className="flex flex-col items-center gap-2">
+                      <span className="text-slate-500 text-xs uppercase tracking-wider font-semibold">Accuracy</span>
                       <span
-                        className="comparison-value accuracy"
+                        className="text-xl font-bold"
                         style={{ color: accuracyInfo.color }}
                       >
                         {month.accuracy.toFixed(1)}% {accuracyInfo.icon}
@@ -369,8 +368,8 @@ const HistoricalPerformance = ({ stationId }) => {
                   </div>
 
                   {month.dailyData && month.dailyData.length > 0 && (
-                    <div className="mini-chart-container">
-                      <h4>Daily Revenue Breakdown</h4>
+                    <div className="mb-6">
+                      <h4 className="text-slate-800 text-sm m-0 mb-4 font-semibold">Daily Revenue Breakdown</h4>
                       <ResponsiveContainer width="100%" height={200}>
                         <BarChart
                           data={month.dailyData}
@@ -400,19 +399,19 @@ const HistoricalPerformance = ({ stationId }) => {
                     </div>
                   )}
 
-                  <div className="additional-stats">
-                    <div className="stat-box">
-                      <span className="stat-icon">📦</span>
-                      <div>
-                        <span className="stat-label">Total Orders</span>
-                        <span className="stat-value">{month.orders}</span>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-lg p-4">
+                      <span className="text-2xl">📦</span>
+                      <div className="flex flex-col gap-1">
+                        <span className="text-slate-500 text-xs font-medium">Total Orders</span>
+                        <span className="text-slate-800 text-base font-bold">{month.orders}</span>
                       </div>
                     </div>
-                    <div className="stat-box">
-                      <span className="stat-icon">💰</span>
-                      <div>
-                        <span className="stat-label">Avg Order Value</span>
-                        <span className="stat-value">
+                    <div className="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-lg p-4">
+                      <span className="text-2xl">💰</span>
+                      <div className="flex flex-col gap-1">
+                        <span className="text-slate-500 text-xs font-medium">Avg Order Value</span>
+                        <span className="text-slate-800 text-base font-bold">
                           ₱{month.orders > 0
                             ? (month.actual / month.orders).toLocaleString(undefined, {
                                 minimumFractionDigits: 2,
@@ -422,11 +421,11 @@ const HistoricalPerformance = ({ stationId }) => {
                         </span>
                       </div>
                     </div>
-                    <div className="stat-box">
-                      <span className="stat-icon">📈</span>
-                      <div>
-                        <span className="stat-label">Prediction Quality</span>
-                        <span className="stat-value" style={{ color: accuracyInfo.color }}>
+                    <div className="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-lg p-4">
+                      <span className="text-2xl">📈</span>
+                      <div className="flex flex-col gap-1">
+                        <span className="text-slate-500 text-xs font-medium">Prediction Quality</span>
+                        <span className="text-slate-800 text-base font-bold" style={{ color: accuracyInfo.color }}>
                           {accuracyInfo.label}
                         </span>
                       </div>

@@ -5,12 +5,10 @@ import Signup from './components/Auth/Signup';
 import Login from './components/Auth/Login';
 import Dashboard from './components/dashboard/Dashboard';
 import AdminPage from './components/admin/AdminPage';
-import './App.css';
-
 function App() {
   return (
     <Router>
-      <div className="App">
+      <div className="min-h-screen">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<Signup />} />

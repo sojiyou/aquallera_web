@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import './Settings.css';
 import { ref, update, onValue } from 'firebase/database';
 import { database, auth } from '../config/Firebase';
 
@@ -309,31 +308,31 @@ const Settings = ({ stationData, setStationData }) => {
 
   if (!formData) {
     return (
-      <section className="settings-section">
-        <div className="loading-state">
-          <div className="spinner"></div>
-          <p>Loading station data...</p>
+      <section className="p-8 max-w-[1200px] mx-auto">
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="w-10 h-10 border-4 border-slate-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
+          <p className="text-slate-500 text-lg">Loading station data...</p>
         </div>
       </section>
     );
   }
 
   return (
-    <section className="settings-section">
-      <div className="settings-header">
-        <h2>Station Settings</h2>
+    <section className="p-8 max-w-[1200px] mx-auto">
+      <div className="flex justify-between items-center mb-8 pb-4 border-b-2 border-slate-200">
+        <h2 className="text-slate-800 text-3xl font-bold m-0">Station Settings</h2>
         <div className="settings-actions">
           {!isEditing ? (
             <button 
-              className="btn-primary"
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all flex items-center gap-2 hover:bg-blue-700 hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed"
               onClick={() => setIsEditing(true)}
             >
               ✏️ Edit Settings
             </button>
           ) : (
-            <div className="edit-actions">
+            <div className="flex gap-4 items-center">
               <button 
-                className="btn-secondary"
+                className="bg-slate-500 text-white px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all hover:bg-slate-600 disabled:opacity-70 disabled:cursor-not-allowed"
                 onClick={() => {
                   setIsEditing(false);
                   setFormData(originalData || stationData || formData);
@@ -346,13 +345,13 @@ const Settings = ({ stationData, setStationData }) => {
                 Cancel
               </button>
               <button 
-                className="btn-primary"
+                className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all flex items-center gap-2 hover:bg-blue-700 hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed"
                 onClick={handleSave}
                 disabled={loading}
               >
                 {loading ? (
                   <>
-                    <div className="spinner-small"></div>
+                    <div className="w-4 h-4 border-2 border-transparent border-t-current rounded-full animate-spin"></div>
                     Saving...
                   </>
                 ) : (
@@ -365,17 +364,17 @@ const Settings = ({ stationData, setStationData }) => {
       </div>
 
       {message && (
-        <div className={`message ${message.includes('Error') ? 'error' : 'success'}`}>
+        <div className={`p-4 rounded-lg mb-6 font-medium text-center ${message.includes('Error') ? 'bg-red-50 text-red-600 border border-red-200' : 'bg-emerald-100 text-emerald-800 border border-emerald-200'}`}>
           {message}
         </div>
       )}
 
-      <div className="settings-grid">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(400px,1fr))] gap-6">
         {/* Basic Information */}
-        <div className="settings-card">
-          <h3>📋 Basic Information</h3>
-          <div className="form-group">
-            <label>Station Name</label>
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
+          <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">📋 Basic Information</h3>
+          <div className="mb-5">
+            <label className="block mb-2 text-gray-700 font-medium text-sm">Station Name</label>
             <input
               type="text"
               name="stationName"
@@ -383,10 +382,11 @@ const Settings = ({ stationData, setStationData }) => {
               onChange={handleInputChange}
               disabled={!isEditing}
               placeholder="Enter station name"
+              className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
             />
           </div>
-          <div className="form-group">
-            <label>Owner Name</label>
+          <div className="mb-5">
+            <label className="block mb-2 text-gray-700 font-medium text-sm">Owner Name</label>
             <input
               type="text"
               name="ownerName"
@@ -394,10 +394,11 @@ const Settings = ({ stationData, setStationData }) => {
               onChange={handleInputChange}
               disabled={!isEditing}
               placeholder="Enter owner name"
+              className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
             />
           </div>
-          <div className="form-group">
-            <label>Contact Phone</label>
+          <div className="mb-5">
+            <label className="block mb-2 text-gray-700 font-medium text-sm">Contact Phone</label>
             <input
               type="tel"
               name="phone"
@@ -405,10 +406,11 @@ const Settings = ({ stationData, setStationData }) => {
               onChange={handleInputChange}
               disabled={!isEditing}
               placeholder="Enter phone number"
+              className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
             />
           </div>
-          <div className="form-group">
-            <label>Email</label>
+          <div className="mb-5">
+            <label className="block mb-2 text-gray-700 font-medium text-sm">Email</label>
             <input
               type="email"
               name="email"
@@ -416,15 +418,16 @@ const Settings = ({ stationData, setStationData }) => {
               onChange={handleInputChange}
               disabled={!isEditing}
               placeholder="Enter email address"
+              className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
             />
           </div>
         </div>
 
         {/* Location Information */}
-        <div className="settings-card">
-          <h3>📍 Location</h3>
-          <div className="form-group">
-            <label>Address</label>
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
+          <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">📍 Location</h3>
+          <div className="mb-5">
+            <label className="block mb-2 text-gray-700 font-medium text-sm">Address</label>
             <input
               type="text"
               name="address"
@@ -432,11 +435,12 @@ const Settings = ({ stationData, setStationData }) => {
               onChange={handleInputChange}
               disabled={!isEditing}
               placeholder="Enter street address"
+              className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
             />
           </div>
-          <div className="form-row">
-            <div className="form-group">
-              <label>City</label>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="mb-5">
+              <label className="block mb-2 text-gray-700 font-medium text-sm">City</label>
               <input
                 type="text"
                 name="city"
@@ -444,10 +448,11 @@ const Settings = ({ stationData, setStationData }) => {
                 onChange={handleInputChange}
                 disabled={!isEditing}
                 placeholder="City"
+                className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
               />
             </div>
-            <div className="form-group">
-              <label>State</label>
+            <div className="mb-5">
+              <label className="block mb-2 text-gray-700 font-medium text-sm">State</label>
               <input
                 type="text"
                 name="state"
@@ -455,11 +460,12 @@ const Settings = ({ stationData, setStationData }) => {
                 onChange={handleInputChange}
                 disabled={!isEditing}
                 placeholder="State"
+                className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
               />
             </div>
           </div>
-          <div className="form-group">
-            <label>ZIP Code</label>
+          <div className="mb-5">
+            <label className="block mb-2 text-gray-700 font-medium text-sm">ZIP Code</label>
             <input
               type="text"
               name="zipCode"
@@ -467,16 +473,17 @@ const Settings = ({ stationData, setStationData }) => {
               onChange={handleInputChange}
               disabled={!isEditing}
               placeholder="ZIP code"
+              className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
             />
           </div>
           
           {/* Coordinates Display */}
-          <div className="coordinates-section">
-            <label>Station Coordinates</label>
-            <div className="coordinates-display">
-              <div className="coordinate-item">
-                <span className="coordinate-label">📍 Latitude</span>
-                <span className="coordinate-value">
+          <div className="mt-6 pt-6 border-t border-slate-200">
+            <label className="block mb-4 text-gray-700 font-medium text-sm">Station Coordinates</label>
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <div className="flex justify-between items-center py-2 border-b border-slate-200 last:border-b-0">
+                <span className="text-slate-500 text-xs font-medium">📍 Latitude</span>
+                <span className="text-slate-800 text-xs font-semibold font-mono">
                   {formData.latitude ? 
                     typeof formData.latitude === 'number' ? 
                       formData.latitude.toFixed(6) : 
@@ -484,9 +491,9 @@ const Settings = ({ stationData, setStationData }) => {
                     : 'Not set'}
                 </span>
               </div>
-              <div className="coordinate-item">
-                <span className="coordinate-label">📍 Longitude</span>
-                <span className="coordinate-value">
+              <div className="flex justify-between items-center py-2 border-b border-slate-200 last:border-b-0">
+                <span className="text-slate-500 text-xs font-medium">📍 Longitude</span>
+                <span className="text-slate-800 text-xs font-semibold font-mono">
                   {formData.longitude ? 
                     typeof formData.longitude === 'number' ? 
                       formData.longitude.toFixed(6) : 
@@ -496,22 +503,22 @@ const Settings = ({ stationData, setStationData }) => {
               </div>
               
               {(formData.latitude && formData.longitude) && (
-                <div className="actual-location">
-                  <span className="location-label">🏠 Actual Location:</span>
-                  <span className="location-value">{actualLocation || 'Loading location details...'}</span>
+                <div className="flex flex-col gap-2 p-4 bg-sky-50 rounded-md border border-sky-200 mt-3">
+                  <span className="text-sky-700 text-sm font-semibold flex items-center gap-2">🏠 Actual Location:</span>
+                  <span className="text-slate-800 text-xs leading-relaxed italic">{actualLocation || 'Loading location details...'}</span>
                 </div>
               )}
 
-              <div className="location-actions">
+              <div className="mt-4 pt-4 border-t border-slate-200">
                 <button 
                   type="button"
                   onClick={getCurrentLocation}
                   disabled={isGettingLocation || !isEditing}
-                  className={`location-btn ${isGettingLocation ? 'loading' : ''}`}
+                  className={`w-full py-3 px-4 bg-blue-600 text-white border-none rounded-lg font-semibold cursor-pointer transition-all flex items-center justify-center gap-2 text-base hover:bg-blue-700 hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed ${isGettingLocation ? 'loading' : ''}`}
                 >
                   {isGettingLocation ? (
                     <>
-                      <div className="spinner-small"></div>
+                      <div className="w-4 h-4 border-2 border-transparent border-t-current rounded-full animate-spin"></div>
                       Getting Location...
                     </>
                   ) : (
@@ -520,7 +527,7 @@ const Settings = ({ stationData, setStationData }) => {
                 </button>
                 
                 {locationStatus && (
-                  <div className={`location-status ${locationStatus.includes('successfully') ? 'success' : 'error'}`}>
+                  <div className={`mt-2 p-3 rounded-md text-sm text-center font-medium ${locationStatus.includes('successfully') ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-red-50 text-red-600 border border-red-200'}`}>
                     {locationStatus}
                   </div>
                 )}
@@ -530,32 +537,34 @@ const Settings = ({ stationData, setStationData }) => {
         </div>
 
         {/* Business Hours */}
-        <div className="settings-card">
-          <h3>🕒 Business Hours</h3>
-          <div className="business-hours-settings">
-            <div className="form-row">
-              <div className="form-group">
-                <label>Opening Time</label>
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
+          <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">🕒 Business Hours</h3>
+          <div className="mt-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="mb-5">
+                <label className="block mb-2 text-gray-700 font-medium text-sm">Opening Time</label>
                 <input
                   type="time"
                   name="businessHours.open"
                   value={formData.businessHours?.open || '08:00'}
                   onChange={handleInputChange}
                   disabled={!isEditing}
+                  className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
                 />
               </div>
-              <div className="form-group">
-                <label>Closing Time</label>
+              <div className="mb-5">
+                <label className="block mb-2 text-gray-700 font-medium text-sm">Closing Time</label>
                 <input
                   type="time"
                   name="businessHours.close"
                   value={formData.businessHours?.close || '18:00'}
                   onChange={handleInputChange}
                   disabled={!isEditing}
+                  className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
-            <div className="business-hours-preview">
+            <div className="mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-center text-emerald-700 font-medium">
               <span>Current Hours: </span>
               <strong>{formData.businessHours?.open || '08:00'} - {formData.businessHours?.close || '18:00'}</strong>
             </div>
@@ -563,12 +572,12 @@ const Settings = ({ stationData, setStationData }) => {
         </div>
 
         {/* Services */}
-        <div className="settings-card">
-          <h3>🚚 Services</h3>
-          <div className="service-types-settings">
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
+          <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">🚚 Services</h3>
+          <div className="mb-6">
             <label>Available Services</label>
-            <div className="service-checkboxes">
-              <label className="checkbox-label">
+            <div className="flex flex-col gap-4 mt-3">
+              <label className="flex items-center gap-3 cursor-pointer p-3 border-2 border-slate-200 rounded-lg transition-all hover:border-blue-600 hover:bg-slate-50">
                 <input
                   type="checkbox"
                   name="serviceTypes"
@@ -576,10 +585,11 @@ const Settings = ({ stationData, setStationData }) => {
                   checked={(formData.serviceTypes || []).includes('delivery')}
                   onChange={handleInputChange}
                   disabled={!isEditing}
+                  className="w-[18px] h-[18px] cursor-pointer disabled:cursor-not-allowed"
                 />
-                <span>🚚 Delivery Service</span>
+                <span className="font-medium text-gray-700">🚚 Delivery Service</span>
               </label>
-              <label className="checkbox-label">
+              <label className="flex items-center gap-3 cursor-pointer p-3 border-2 border-slate-200 rounded-lg transition-all hover:border-blue-600 hover:bg-slate-50">
                 <input
                   type="checkbox"
                   name="serviceTypes"
@@ -587,21 +597,23 @@ const Settings = ({ stationData, setStationData }) => {
                   checked={(formData.serviceTypes || []).includes('pickup')}
                   onChange={handleInputChange}
                   disabled={!isEditing}
+                  className="w-[18px] h-[18px] cursor-pointer disabled:cursor-not-allowed"
                 />
-                <span>🏪 Pickup Service</span>
+                <span className="font-medium text-gray-700">🏪 Pickup Service</span>
               </label>
             </div>
           </div>
 
           {(formData.serviceTypes || []).includes('delivery') && (
             <>
-              <div className="form-group">
-                <label>Delivery Radius (km)</label>
+              <div className="mb-5">
+                <label className="block mb-2 text-gray-700 font-medium text-sm">Delivery Radius (km)</label>
                 <select 
                   name="deliveryRadius" 
                   value={formData.deliveryRadius || 5}
                   onChange={handleInputChange}
                   disabled={!isEditing}
+                  className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
                 >
                   <option value="5">5 km</option>
                   <option value="10">10 km</option>
@@ -611,8 +623,8 @@ const Settings = ({ stationData, setStationData }) => {
               </div>
 
               {/* NEW: Delivery Hours Section */}
-              <div className="form-group">
-                <label>Delivery Hours</label>
+              <div className="mb-5">
+                <label className="block mb-2 text-gray-700 font-medium text-sm">Delivery Hours</label>
                 <p className="field-hint" style={{ marginBottom: '0.75rem', fontSize: '0.85rem', color: '#64748b' }}>
                   Times when you deliver water to customers
                 </p>
@@ -665,11 +677,11 @@ const Settings = ({ stationData, setStationData }) => {
         </div>
 
         {/* Pricing */}
-        <div className="settings-card">
-          <h3>💰 Pricing</h3>
-          <div className="pricing-settings">
-            <div className="form-group">
-              <label>Gallon Pure Water (₱)</label>
+        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
+          <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">💰 Pricing</h3>
+          <div className="mt-4">
+            <div className="mb-5">
+              <label className="block mb-2 text-gray-700 font-medium text-sm">Gallon Pure Water (₱)</label>
               <input
                 type="number"
                 name="pricing_gallon_pure"
@@ -679,14 +691,15 @@ const Settings = ({ stationData, setStationData }) => {
                 min="0"
                 step="0.01"
                 placeholder="Enter price per gallon"
+                className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
               />
               {formData.pricing_gallon_pure === null && (
-                <div className="price-note">Not yet set</div>
+                <div className="text-xs text-slate-500 italic mt-1">Not yet set</div>
               )}
             </div>
 
-            <div className="form-group">
-              <label>Liter Spring Water (₱)</label>
+            <div className="mb-5">
+              <label className="block mb-2 text-gray-700 font-medium text-sm">Liter Spring Water (₱)</label>
               <input
                 type="number"
                 name="pricing_liter_spring"
@@ -696,14 +709,15 @@ const Settings = ({ stationData, setStationData }) => {
                 min="0"
                 step="0.01"
                 placeholder="Enter price per liter"
+                className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
               />
               {formData.pricing_liter_spring === null && (
-                <div className="price-note">Not yet set</div>
+                <div className="text-xs text-slate-500 italic mt-1">Not yet set</div>
               )}
             </div>
 
-            <div className="form-group">
-              <label>Gallon Mineral Water (₱)</label>
+            <div className="mb-5">
+              <label className="block mb-2 text-gray-700 font-medium text-sm">Gallon Mineral Water (₱)</label>
               <input
                 type="number"
                 name="pricing_gallon_mineral"
@@ -713,14 +727,15 @@ const Settings = ({ stationData, setStationData }) => {
                 min="0"
                 step="0.01"
                 placeholder="Enter price per gallon"
+                className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
               />
               {formData.pricing_gallon_mineral === null && (
-                <div className="price-note">Not yet set</div>
+                <div className="text-xs text-slate-500 italic mt-1">Not yet set</div>
               )}
             </div>
 
-            <div className="form-group">
-              <label>Delivery Fee (₱)</label>
+            <div className="mb-5">
+              <label className="block mb-2 text-gray-700 font-medium text-sm">Delivery Fee (₱)</label>
               <input
                 type="number"
                 name="pricing_delivery_fee"
@@ -730,9 +745,10 @@ const Settings = ({ stationData, setStationData }) => {
                 min="0"
                 step="0.01"
                 placeholder="Enter delivery fee"
+                className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
               />
               {formData.pricing_delivery_fee === null && (
-                <div className="price-note">Not yet set</div>
+                <div className="text-xs text-slate-500 italic mt-1">Not yet set</div>
               )}
             </div>
           </div>

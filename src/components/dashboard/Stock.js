@@ -1,6 +1,5 @@
 // src/components/dashboard/Stock.js
 import React, { useState, useEffect, useRef } from 'react';
-import './Stock.css';
 import { ref, onValue, update } from 'firebase/database';
 import { database, auth } from '../config/Firebase';
 import { useNavigate } from 'react-router-dom';
@@ -193,7 +192,7 @@ const Stock = () => {
       if (pureCount >= springCount && pureCount >= mineralCount) {
         mostBought = `Pure Water (${pureCount} gallons)`;
       } else if (springCount >= pureCount && springCount >= mineralCount) {
-        mostBought = `Spring Water (${springCount} liters)`;
+        mostBought = `Spring Water (${springCount} gallons)`;
       } else {
         mostBought = `Mineral Water (${mineralCount} gallons)`;
       }
@@ -272,7 +271,7 @@ const Stock = () => {
           type: 'warning',
           icon: '🌊',
           title: 'Increase Spring Water Stock',
-          message: `Spring Water is your top seller (${springCount} liters sold) but stock is low (${stockData.springWater} left). Consider ordering more to meet demand.`,
+          message: `Spring Water is your top seller (${springCount} gallons sold) but stock is low (${stockData.springWater} left). Consider ordering more to meet demand.`,
           action: 'Restock Spring Water',
         });
       } else {
@@ -280,7 +279,7 @@ const Stock = () => {
           type: 'success',
           icon: '🌊',
           title: 'Spring Water Performing Well',
-          message: `Spring Water is your best seller with ${springCount} liters sold. Current stock (${stockData.springWater}) looks good!`,
+          message: `Spring Water is your best seller with ${springCount} gallons sold. Current stock (${stockData.springWater}) looks good!`,
           action: 'Maintain Stock Level',
         });
       }
@@ -574,9 +573,9 @@ const Stock = () => {
 
   if (loading) {
     return (
-      <div className="stock-container">
-        <div className="loading-screen">
-          <div className="spinner"></div>
+      <div className="p-8 bg-[#fafafa] min-h-screen">
+        <div className="flex flex-col items-center justify-center min-h-[50vh]">
+          <div className="border-4 border-slate-200 border-t-blue-600 rounded-full w-[50px] h-[50px] animate-spin mb-4"></div>
           <p>Loading stock data...</p>
         </div>
       </div>
@@ -584,158 +583,136 @@ const Stock = () => {
   }
 
   return (
-    <div className="stock-container">
-      <div className="stock-header">
-        <div className="header-info">
-          <h1>📦 Stock & Analytics</h1>
-          <p>Manage your inventory and view business insights</p>
-        </div>
-      </div>
+    <div className="p-8 bg-[#fafafa] min-h-screen">
 
       {/* Analytics Section */}
-      <section className="analytics-section">
-        <div className="section-header">
-          <h2>📊 Business Analytics</h2>
+      <section className="bg-white rounded-xl p-8 mb-8 shadow-sm">
+        <div className="flex justify-between items-center mb-8 pb-4 border-b-2 border-slate-200">
+          <h2 className="text-slate-800 text-2xl m-0">📊 Business Analytics</h2>
         </div>
 
-        <div className="stats-overview">
-          <div className="stat-card total">
-            <div className="stat-icon">📦</div>
-            <div className="stat-info">
-              <h3>{stats.totalOrders}</h3>
-              <p>Total Orders</p>
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(400px,1fr))] gap-6">
+          <div className="bg-white rounded-xl p-6 shadow-md transition-transform flex items-center gap-4 hover:-translate-y-1">
+            <div className="text-4xl">📦</div>
+            <div className="flex-1">
+              <h3 className="text-3xl font-bold m-0 mb-1">{stats.totalOrders}</h3>
+              <p className="text-sm m-0 opacity-90">Total Orders</p>
             </div>
           </div>
 
-          <div className="stat-card pending">
-            <div className="stat-icon">⏳</div>
-            <div className="stat-info">
-              <h3>{stats.pendingOrders}</h3>
-              <p>Pending Orders</p>
+          <div className="bg-white rounded-xl p-6 shadow-md transition-transform flex items-center gap-4 hover:-translate-y-1">
+            <div className="text-4xl">⏳</div>
+            <div className="flex-1">
+              <h3 className="text-3xl font-bold m-0 mb-1">{stats.pendingOrders}</h3>
+              <p className="text-sm m-0 opacity-90">Pending Orders</p>
             </div>
           </div>
 
-          <div className="stat-card completed">
-            <div className="stat-icon">✅</div>
-            <div className="stat-info">
-              <h3>{stats.completedOrders}</h3>
-              <p>Completed Orders</p>
+          <div className="bg-white rounded-xl p-6 shadow-md transition-transform flex items-center gap-4 hover:-translate-y-1">
+            <div className="text-4xl">✅</div>
+            <div className="flex-1">
+              <h3 className="text-3xl font-bold m-0 mb-1">{stats.completedOrders}</h3>
+              <p className="text-sm m-0 opacity-90">Completed Orders</p>
             </div>
           </div>
 
-          <div className="stat-card revenue">
-            <div className="stat-icon">💰</div>
-            <div className="stat-info">
-              <h3>{formatCurrency(stats.todaysRevenue)}</h3>
-              <p>Total Revenue</p>
+          <div className="bg-white rounded-xl p-6 shadow-md transition-transform flex items-center gap-4 hover:-translate-y-1">
+            <div className="text-4xl">💰</div>
+            <div className="flex-1">
+              <h3 className="text-3xl font-bold m-0 mb-1">{formatCurrency(stats.todaysRevenue)}</h3>
+              <p className="text-sm m-0 opacity-90">Total Revenue</p>
             </div>
           </div>
 
-          <div className="stat-card popular">
-            <div className="stat-icon">💧</div>
-            <div className="stat-info">
-              <h3>{stats.mostBoughtWater}</h3>
-              <p>Most Popular Water</p>
+          <div className="bg-white rounded-xl p-6 shadow-md transition-transform flex items-center gap-4 hover:-translate-y-1">
+            <div className="text-4xl">💧</div>
+            <div className="flex-1">
+              <h3 className="text-3xl font-bold m-0 mb-1">{stats.mostBoughtWater}</h3>
+              <p className="text-sm m-0 opacity-90">Most Popular Water</p>
             </div>
           </div>
 
-          <div className="stat-card location">
-            <div className="stat-icon">📍</div>
-            <div className="stat-info">
-              <h3>{stats.topLocation}</h3>
-              <p>Top Customer Location</p>
+          <div className="bg-white rounded-xl p-6 shadow-md transition-transform flex items-center gap-4 hover:-translate-y-1">
+            <div className="text-4xl">📍</div>
+            <div className="flex-1">
+              <h3 className="text-3xl font-bold m-0 mb-1">{stats.topLocation}</h3>
+              <p className="text-sm m-0 opacity-90">Top Customer Location</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Stock Inventory Section */}
-      <section className="stock-inventory-section">
-        <div className="section-header">
-          <h2>💧 Water Stock Inventory</h2>
+      <section className="bg-white rounded-xl p-8 mb-8 shadow-sm">
+        <div className="flex justify-between items-center mb-8 pb-4 border-b-2 border-slate-200">
+          <h2 className="text-slate-800 text-2xl m-0">💧 Water Stock Inventory</h2>
           {!editingStock ? (
-            <button className="btn-edit-stock" onClick={() => setEditingStock(true)}>
+            <button className="bg-blue-600 text-white border-none px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all hover:bg-blue-700 hover:-translate-y-0.5" onClick={() => setEditingStock(true)}>
               ✏️ Edit Stock
             </button>
           ) : (
-            <div className="edit-actions">
-              <button className="btn-save" onClick={handleSaveStock}>✓ Save</button>
-              <button className="btn-cancel" onClick={handleCancelEdit}>✕ Cancel</button>
+            <div className="flex gap-3">
+              <button className="bg-emerald-500 text-white border-none px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all hover:bg-emerald-600 hover:-translate-y-0.5" onClick={handleSaveStock}>✓ Save</button>
+              <button className="bg-red-500 text-white border-none px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all hover:bg-red-600 hover:-translate-y-0.5" onClick={handleCancelEdit}>✕ Cancel</button>
             </div>
           )}
         </div>
 
-        <div className="stock-grid">
-          <div className="stock-card pure">
-            <div className="stock-icon">💧</div>
-            <h3>Pure Water (Gallons)</h3>
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-6">
+          <div className="rounded-xl p-8 text-center text-white shadow-md transition-transform hover:-translate-y-1.5 bg-gradient-to-br from-[#667eea] to-[#764ba2]">
+            <div className="text-5xl mb-4">💧</div>
+            <h3 className="text-lg mb-4 font-semibold">Pure Water (Gallons)</h3>
             {editingStock ? (
-              <input type="number" name="pureWater" value={tempStock.pureWater} onChange={handleStockChange} className="stock-input" min="0" />
+              <input type="number" name="pureWater" value={tempStock.pureWater} onChange={handleStockChange} className="w-full p-3 text-3xl text-center border-2 border-white/30 rounded-lg bg-white/10 text-white font-bold mb-2 focus:outline-none focus:border-white/60 focus:bg-white/20" min="0" />
             ) : (
-              <div className="stock-quantity">{stock.pureWater}</div>
+              <div className="text-5xl font-bold mb-2">{stock.pureWater}</div>
             )}
-            <div className="stock-status" style={{ color: getStockStatus(stock.pureWater).color }}>
+            <div className="text-sm font-semibold px-4 py-2 bg-white/20 rounded-full inline-block" style={{ color: getStockStatus(stock.pureWater).color }}>
               {getStockStatus(stock.pureWater).label}
             </div>
           </div>
 
-          <div className="stock-card spring">
-            <div className="stock-icon">🌊</div>
-            <h3>Spring Water (Liters)</h3>
+          <div className="rounded-xl p-8 text-center text-white shadow-md transition-transform hover:-translate-y-1.5 bg-gradient-to-br from-cyan-500 to-blue-500">
+            <div className="text-5xl mb-4">🌊</div>
+            <h3 className="text-lg mb-4 font-semibold">Spring Water (gallons)</h3>
             {editingStock ? (
-              <input type="number" name="springWater" value={tempStock.springWater} onChange={handleStockChange} className="stock-input" min="0" />
+              <input type="number" name="springWater" value={tempStock.springWater} onChange={handleStockChange} className="w-full p-3 text-3xl text-center border-2 border-white/30 rounded-lg bg-white/10 text-white font-bold mb-2 focus:outline-none focus:border-white/60 focus:bg-white/20" min="0" />
             ) : (
-              <div className="stock-quantity">{stock.springWater}</div>
+              <div className="text-5xl font-bold mb-2">{stock.springWater}</div>
             )}
-            <div className="stock-status" style={{ color: getStockStatus(stock.springWater).color }}>
+            <div className="text-sm font-semibold px-4 py-2 bg-white/20 rounded-full inline-block" style={{ color: getStockStatus(stock.springWater).color }}>
               {getStockStatus(stock.springWater).label}
             </div>
           </div>
 
-          <div className="stock-card mineral">
-            <div className="stock-icon">⛰️</div>
-            <h3>Mineral Water (Gallons)</h3>
+          <div className="rounded-xl p-8 text-center text-white shadow-md transition-transform hover:-translate-y-1.5 bg-gradient-to-br from-amber-500 to-red-500">
+            <div className="text-5xl mb-4">⛰️</div>
+            <h3 className="text-lg mb-4 font-semibold">Mineral Water (Gallons)</h3>
             {editingStock ? (
-              <input type="number" name="mineralWater" value={tempStock.mineralWater} onChange={handleStockChange} className="stock-input" min="0" />
+              <input type="number" name="mineralWater" value={tempStock.mineralWater} onChange={handleStockChange} className="w-full p-3 text-3xl text-center border-2 border-white/30 rounded-lg bg-white/10 text-white font-bold mb-2 focus:outline-none focus:border-white/60 focus:bg-white/20" min="0" />
             ) : (
-              <div className="stock-quantity">{stock.mineralWater}</div>
+              <div className="text-5xl font-bold mb-2">{stock.mineralWater}</div>
             )}
-            <div className="stock-status" style={{ color: getStockStatus(stock.mineralWater).color }}>
+            <div className="text-sm font-semibold px-4 py-2 bg-white/20 rounded-full inline-block" style={{ color: getStockStatus(stock.mineralWater).color }}>
               {getStockStatus(stock.mineralWater).label}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Stock Alerts */}
-      <section className="stock-alerts-section">
-        <h3>⚠️ Stock Alerts</h3>
-        <div className="alerts-list">
-          {stock.pureWater === 0 && <div className="alert alert-danger"><span className="alert-icon">🚨</span><span>Pure Water is out of stock!</span></div>}
-          {stock.pureWater > 0 && stock.pureWater < 10 && <div className="alert alert-warning"><span className="alert-icon">⚠️</span><span>Pure Water is running low ({stock.pureWater} gallons left)</span></div>}
-          {stock.springWater === 0 && <div className="alert alert-danger"><span className="alert-icon">🚨</span><span>Spring Water is out of stock!</span></div>}
-          {stock.springWater > 0 && stock.springWater < 10 && <div className="alert alert-warning"><span className="alert-icon">⚠️</span><span>Spring Water is running low ({stock.springWater} liters left)</span></div>}
-          {stock.mineralWater === 0 && <div className="alert alert-danger"><span className="alert-icon">🚨</span><span>Mineral Water is out of stock!</span></div>}
-          {stock.mineralWater > 0 && stock.mineralWater < 10 && <div className="alert alert-warning"><span className="alert-icon">⚠️</span><span>Mineral Water is running low ({stock.mineralWater} liters left)</span></div>}
-          {stock.pureWater >= 10 && stock.springWater >= 10 && stock.mineralWater >= 10 && (
-            <div className="alert alert-success"><span className="alert-icon">✅</span><span>All water types are well stocked!</span></div>
-          )}
-        </div>
-      </section>
-
       {/* Annual Performance Reports Section with Toggle */}
-      <section className="predictive-insights-section">
-        <div className="section-header">
-          <h2>📊 Performance Reports</h2>
-          <div className="view-toggle">
+      <section className="bg-white rounded-xl p-8 mb-8 shadow-sm">
+        <div className="flex justify-between items-center mb-8 pb-4 border-b-2 border-slate-200">
+          <h2 className="text-slate-800 text-2xl m-0">📊 Performance Reports</h2>
+          <div className="flex gap-2 bg-slate-100 p-1 rounded-full">
             <button 
-              className={`toggle-btn ${dataViewMode === 'monthly' ? 'active' : ''}`}
+              className={`px-5 py-2 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${dataViewMode === 'monthly' ? 'bg-white text-blue-500 shadow-sm' : ''}`}
               onClick={() => setDataViewMode('monthly')}
             >
               📅 Monthly View
             </button>
             <button 
-              className={`toggle-btn ${dataViewMode === 'annual' ? 'active' : ''}`}
+              className={`px-5 py-2 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${dataViewMode === 'annual' ? 'bg-white text-blue-500 shadow-sm' : ''}`}
               onClick={() => setDataViewMode('annual')}
             >
               📈 Annual View
@@ -745,57 +722,57 @@ const Stock = () => {
 
         {/* Revenue Projection Card - ALWAYS VISIBLE */}
         {!projectionLoading && revenueProjection && yearForecast?.hasMinimumData ? (
-          <div className="revenue-projection-big-card">
-            <div className="revenue-projection-header">
-              <div className="revenue-title-section">
-                <span className="revenue-icon">📈</span>
+          <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-8 mb-8 text-white shadow-lg border border-white/10">
+            <div className="flex justify-between items-start mb-8">
+              <div className="flex items-center gap-4">
+                <span className="text-4xl">📈</span>
                 <div>
-                  <h3>{revenueProjection.monthName} {revenueProjection.year} Revenue Projection</h3>
-                  <p className="revenue-subtitle">Based on {revenueProjection.daysPassed} days of actual data • {revenueProjection.daysRemaining} days remaining</p>
+                  <h3 className="text-2xl m-0 mb-1 text-white">{revenueProjection.monthName} {revenueProjection.year} Revenue Projection</h3>
+                  <p className="text-white m-0 text-sm">Based on {revenueProjection.daysPassed} days of actual data • {revenueProjection.daysRemaining} days remaining</p>
                 </div>
               </div>
-              <div className="revenue-header-right">
+              <div className="flex flex-col items-end gap-3">
                 {projectionConfidence && (
-                  <div className="confidence-badge" style={{ backgroundColor: `${projectionConfidence.color}20`, color: projectionConfidence.color }}>
-                    <span className="confidence-dot" style={{ backgroundColor: projectionConfidence.color }}></span>
+                  <div className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold" style={{ backgroundColor: `${projectionConfidence.color}20`, color: projectionConfidence.color }}>
+                    <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: projectionConfidence.color }}></span>
                     {projectionConfidence.level} Confidence
                   </div>
                 )}
-                <div className="refresh-controls">
-                  <button className={`btn-refresh-projection ${isRefreshing ? 'refreshing' : ''}`} onClick={handleRefreshProjections} disabled={isRefreshing}>
-                    <span className={`refresh-icon ${isRefreshing ? 'spin' : ''}`}>↻</span>
+                <div className="flex flex-col items-end gap-1">
+                  <button className={`flex items-center gap-2 bg-white/10 text-white border border-white/20 px-4 py-2 rounded-full text-sm font-semibold cursor-pointer transition-all backdrop-blur hover:bg-blue-500/30 hover:border-blue-500 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed ${isRefreshing ? 'refreshing' : ''}`} onClick={handleRefreshProjections} disabled={isRefreshing}>
+                    <span className={`text-lg inline-block leading-none ${isRefreshing ? 'spin' : ''}`}>↻</span>
                     {isRefreshing ? 'Refreshing...' : 'Refresh'}
                   </button>
-                  {lastRefreshed && !isRefreshing && <span className="last-refreshed">Updated {formatLastRefreshed(lastRefreshed)}</span>}
+                  {lastRefreshed && !isRefreshing && <span className="text-slate-500 text-[0.75rem] text-right">Updated {formatLastRefreshed(lastRefreshed)}</span>}
                 </div>
               </div>
             </div>
 
-            <div className="revenue-stats-grid">
-              <div className="revenue-stat-item">
-                <span className="stat-label">Revenue to Date</span>
-                <span className="stat-value actual">₱{revenueProjection.currentRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
-                <span className="stat-period">{revenueProjection.daysPassed} days</span>
+            <div className="grid grid-cols-4 gap-6 mb-8">
+              <div className="bg-white/10 rounded-xl p-5 backdrop-blur border border-white/10">
+                <span className="block text-base uppercase tracking-wider mb-2">Revenue to Date</span>
+                <span className="block text-3xl font-bold mb-1 text-blue-400">₱{revenueProjection.currentRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                <span className="block text-slate-400 text-xs">{revenueProjection.daysPassed} days</span>
               </div>
-              <div className="revenue-stat-item">
-                <span className="stat-label">Projected End of Month</span>
-                <span className="stat-value projected">₱{revenueProjection.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
-                <span className="stat-period">Target</span>
+              <div className="bg-white/10 rounded-xl p-5 backdrop-blur border border-white/10">
+                <span className="block text-base uppercase tracking-wider mb-2">Projected End of Month</span>
+                <span className="block text-3xl font-bold mb-1 text-purple-400">₱{revenueProjection.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                <span className="block text-slate-400 text-xs">Target</span>
               </div>
-              <div className="revenue-stat-item">
-                <span className="stat-label">Daily Average</span>
-                <span className="stat-value daily-average">₱{revenueProjection.dailyAverage?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
-                <span className="stat-period">per day</span>
+              <div className="bg-white/10 rounded-xl p-5 backdrop-blur border border-white/10">
+                <span className="block text-base uppercase tracking-wider mb-2">Daily Average</span>
+                <span className="block text-3xl font-bold mb-1 text-amber-400">₱{revenueProjection.dailyAverage?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                <span className="block text-slate-400 text-xs">per day</span>
               </div>
-              <div className="revenue-stat-item">
-                <span className="stat-label">Remaining Potential</span>
-                <span className="stat-value potential">₱{(revenueProjection.projectedRevenue - revenueProjection.currentRevenue)?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
-                <span className="stat-period">{revenueProjection.daysRemaining} days left</span>
+              <div className="bg-white/10 rounded-xl p-5 backdrop-blur border border-white/10">
+                <span className="block text-base uppercase tracking-wider mb-2">Remaining Potential</span>
+                <span className="block text-3xl font-bold mb-1 text-emerald-400">₱{(revenueProjection.projectedRevenue - revenueProjection.currentRevenue)?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                <span className="block text-slate-400 text-xs">{revenueProjection.daysRemaining} days left</span>
               </div>
             </div>
 
             {chartData.length > 0 && (
-              <div className="revenue-chart-container">
+              <div className="bg-white rounded-xl p-6 mb-8">
                 <ResponsiveContainer width="100%" height={300}>
                   <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
@@ -811,21 +788,21 @@ const Stock = () => {
             )}
 
             {yearForecast?.futureMonths?.length > 0 && (
-              <div className="year-forecast-section">
-                <div className="forecast-header">
-                  <h4>📅 {yearForecast.year} Year Forecast</h4>
-                  <span className="total-projection">Total Projected: ₱{yearForecast.totalYearProjection?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+              <div className="bg-white/5 rounded-xl p-6 mb-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h4 className="text-white m-0 text-lg">📅 {yearForecast.year} Year Forecast</h4>
+                  <span className="text-purple-400 font-bold text-2xl">Total Projected: ₱{yearForecast.totalYearProjection?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                 </div>
-                <div className="forecast-grid">
-                  <div className="forecast-month current-month">
-                    <span className="month-name">{revenueProjection.monthName}</span>
-  <span className="month-value">₱{revenueProjection.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
-                    <span className="month-badge">Current</span>
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-4">
+                  <div className="bg-blue-600/20 border border-blue-500 rounded-lg p-4 text-center relative">
+                    <span className="block text-white text-base font-semibold mb-2">{revenueProjection.monthName}</span>
+  <span className="block text-white font-bold text-2xl">₱{revenueProjection.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                    <span className="absolute -top-2 right-2 bg-blue-500 text-white text-[0.7rem] px-2 py-1 rounded-full">Current</span>
                   </div>
                   {yearForecast.futureMonths.map((month, index) => (
-                    <div key={index} className="forecast-month">
-                      <span className="month-name">{month.monthName}</span>
-                      <span className="month-value">₱{month.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                    <div key={index} className="bg-white/3 rounded-lg p-4 text-center relative">
+                      <span className="block text-white text-base font-semibold mb-2">{month.monthName}</span>
+                      <span className="block text-white font-bold text-2xl">₱{month.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                     </div>
                   ))}
                 </div>
@@ -833,27 +810,27 @@ const Stock = () => {
             )}
 
             {yearComparison && yearComparison.hasPreviousYearData && (
-              <div className="year-comparison-section">
-                <div className="comparison-header">
-                  <h4>📊 {yearComparison.previousYear} vs {yearComparison.currentYear}</h4>
+              <div className="bg-white/5 rounded-xl p-6">
+                <div>
+                  <h4 className="text-white m-0 mb-6 text-lg">📊 {yearComparison.previousYear} vs {yearComparison.currentYear}</h4>
                 </div>
-                <div className="comparison-bars">
-                  <div className="comparison-item">
-                    <span className="comparison-year">{yearComparison.previousYear}</span>
-                    <div className="bar-container">
-                      <div className="bar previous" style={{ width: `${Math.min((yearComparison.previousYearTotal / (yearComparison.currentYearTotal || 1)) * 100, 100)}%` }}>
+                <div>
+                  <div className="flex items-center gap-4 mb-4">
+                    <span className="min-w-[60px] text-slate-400 font-semibold">{yearComparison.previousYear}</span>
+                    <div className="flex-1 h-10 bg-white/10 rounded-full overflow-hidden">
+                      <div className="h-full flex items-center px-4 text-white font-semibold text-sm transition-all bg-gradient-to-r from-slate-500 to-slate-600" style={{ width: `${Math.min((yearComparison.previousYearTotal / (yearComparison.currentYearTotal || 1)) * 100, 100)}%` }}>
                         ₱{yearComparison.previousYearTotal?.toLocaleString()}
                       </div>
                     </div>
                   </div>
-                  <div className="comparison-item">
-                    <span className="comparison-year">{yearComparison.currentYear}</span>
-                    <div className="bar-container">
-                      <div className="bar current" style={{ width: '100%' }}>₱{yearComparison.currentYearTotal?.toLocaleString()}</div>
+                  <div className="flex items-center gap-4 mb-4">
+                    <span className="min-w-[60px] text-slate-400 font-semibold">{yearComparison.currentYear}</span>
+                    <div className="flex-1 h-10 bg-white/10 rounded-full overflow-hidden">
+                      <div className="h-full flex items-center px-4 text-white font-semibold text-sm transition-all bg-gradient-to-r from-blue-500 to-blue-600" style={{ width: '100%' }}>₱{yearComparison.currentYearTotal?.toLocaleString()}</div>
                     </div>
                   </div>
                   {yearComparison.growthPercentage !== null && (
-                    <div className="growth-indicator">
+                    <div className="mt-4 pt-4 border-t border-white/10 text-slate-400 flex items-center gap-2">
                       {yearComparison.growthPercentage > 0 ? '📈' : '📉'} {Math.abs(yearComparison.growthPercentage).toFixed(1)}% {yearComparison.growthPercentage > 0 ? 'growth' : 'decline'} from last year
                     </div>
                   )}
@@ -862,13 +839,17 @@ const Stock = () => {
             )}
           </div>
         ) : (
-          <div className="revenue-projection-placeholder">
-            <div className="placeholder-icon">📊</div>
-            <h3>Monthly Revenue Prediction</h3>
-            <p>{projectionLoading ? 'Loading revenue projections...' : `Predictions will be available on ${new Date(new Date().getFullYear(), new Date().getMonth(), 4).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}.`}</p>
+          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-12 text-center text-white mb-8">
+            <div className="text-6xl mb-4 opacity-50">📊</div>
+            <h3 className="text-white mb-2">Monthly Revenue Prediction</h3>
+            <p className="text-slate-400 mb-6">{projectionLoading ? 'Loading revenue projections...' : `Predictions will be available on ${new Date(new Date().getFullYear(), new Date().getMonth(), 4).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}.`}</p>
             {!projectionLoading && (
-              <div className="placeholder-progress">
-                <div className="progress-dots"><span className="dot"></span><span className="dot"></span><span className="dot"></span></div>
+              <div className="flex flex-col items-center gap-4">
+                <div className="flex gap-2">
+                  <span className="w-2 h-2 bg-blue-500 rounded-full animate-[pulse_1.5s_infinite]"></span>
+                  <span className="w-2 h-2 bg-blue-500 rounded-full animate-[pulse_1.5s_infinite]"></span>
+                  <span className="w-2 h-2 bg-blue-500 rounded-full animate-[pulse_1.5s_infinite]"></span>
+                </div>
                 <span>We're calibrating the prediction system. Check back in {4 - new Date().getDate()} day{4 - new Date().getDate() !== 1 ? 's' : ''}!</span>
               </div>
             )}
@@ -884,17 +865,17 @@ const Stock = () => {
       </section>
 
       {/* Water Consumption Analytics Section */}
-      <div className="toggle-section-wrapper">
-        <div className="toggle-section-header" onClick={toggleConsumptionAnalytics}>
-          <div className="toggle-section-title">
-            <span className="toggle-section-icon">💧</span>
-            <h3>Water Consumption</h3>
-            <span className="toggle-section-badge">Volume tracking</span>
+      <div className="bg-white rounded-xl mb-6 shadow-sm overflow-hidden transition-all">
+        <div className={`flex justify-between items-center px-6 py-5 cursor-pointer transition-all bg-gradient-to-r from-slate-50 to-slate-100 border-l-4 border-l-blue-500 hover:bg-gradient-to-r hover:from-slate-100 hover:to-slate-200 hover:translate-x-1`} onClick={toggleConsumptionAnalytics}>
+          <div className="flex items-center gap-4 flex-wrap">
+            <span className="text-2xl">💧</span>
+            <h3 className="text-slate-800 text-xl m-0 font-semibold">Water Consumption</h3>
+            <span className="bg-slate-200 text-slate-600 px-3 py-1 rounded-full text-[0.7rem] font-semibold tracking-wider">Volume tracking</span>
           </div>
-          <div className={`toggle-section-arrow ${showConsumptionAnalytics ? 'rotated' : ''}`}>▶</div>
+          <div className={`text-sm text-slate-500 transition-transform bg-white w-7 h-7 flex items-center justify-center rounded-full shadow-sm ${showConsumptionAnalytics ? 'rotate-90 text-blue-500 bg-blue-500/10' : ''}`}>▶</div>
         </div>
         {showConsumptionAnalytics && (
-          <div className="toggle-section-content">
+          <div className="p-6 border-t border-slate-200 animate-[toggleSlideDown_0.3s_ease-out]">
             <WaterConsumptionAnalytics stationId={auth.currentUser?.uid} currentStock={stock} />
           </div>
         )}

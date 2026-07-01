@@ -1,7 +1,6 @@
 // src/components/dashboard/AnnualReports.jsx
 // UPDATED: Auto-calculates from orders when archives don't exist
 import React, { useState, useEffect } from 'react';
-import './AnnualReports.css';
 import { getAllAnnualReports, getAnnualReport } from '../../utils/yearlyReportGenerator';
 import { calculateMonthlyRevenue } from '../../utils/revenueCalculator';
 import {
@@ -271,12 +270,12 @@ const AnnualReports = ({ stationId }) => {
 
   if (loading) {
     return (
-      <section className="annual-reports-section">
-        <div className="section-header">
-          <h2>📊 Annual Performance Reports</h2>
+      <section className="bg-white rounded-xl p-8 mb-8 shadow-sm">
+        <div className="mb-6 pb-4 border-b-2 border-slate-200">
+          <h2 className="text-slate-800 text-2xl m-0 mb-2">📊 Annual Performance Reports</h2>
         </div>
-        <div className="loading-reports">
-          <div className="spinner-small"></div>
+        <div className="flex flex-col items-center justify-center py-12 text-slate-500">
+          <div className="border-[3px] border-slate-200 border-t-blue-600 rounded-full w-10 h-10 animate-spin mb-4"></div>
           <p>Loading annual reports...</p>
         </div>
       </section>
@@ -287,31 +286,31 @@ const AnnualReports = ({ stationId }) => {
   const hasMoreReports = reports.length > visibleYears;
 
   return (
-    <section className={`annual-reports-section ${showSkeleton ? 'skeleton-mode' : ''}`}>
-      <div className="section-header">
-        <h2>📊 Annual Reports</h2>
-        <p className="section-subtitle">
+    <section className={`bg-white rounded-xl p-8 mb-8 shadow-sm ${showSkeleton ? 'skeleton-mode' : ''}`}>
+      <div className="mb-6 pb-4 border-b-2 border-slate-200">
+        <h2 className="text-slate-800 text-2xl m-0 mb-2">📊 Annual Reports</h2>
+        <p className="text-slate-500 text-sm m-0">
           Yearly summaries and 12-month revenue breakdowns
         </p>
       </div>
 
       {/* Demo Mode Banner - Only shows when using sample data */}
       {showSkeleton && (
-        <div className="demo-data-banner">
-          <span className="demo-icon">📊</span>
+        <div className="bg-amber-50 border-l-4 border-l-amber-500 p-3 mb-6 rounded-lg text-sm text-amber-800 flex items-center gap-2">
+          <span className="text-lg">📊</span>
           <span>Demo Mode: Showing sample data. Real annual reports will appear once you have completed orders.</span>
         </div>
       )}
 
       {/* Live Data Indicator - Shows when using real orders */}
       {!showSkeleton && reports.some(r => r.fromOrders) && (
-        <div className="live-data-banner">
-          <span className="live-icon">✅</span>
+        <div className="bg-emerald-100 border-l-4 border-l-emerald-500 p-3 mb-6 rounded-lg text-sm text-emerald-800 flex items-center gap-2">
+          <span className="text-lg">✅</span>
           <span>Showing real data from your orders. {reports.some(r => r.fromOrders) && '(Some years calculated directly from orders)'}</span>
         </div>
       )}
 
-      <div className="annual-reports-grid">
+      <div className="grid grid-cols-1 gap-8">
         {visibleReports.map((report) => {
           const isExpanded = expandedYear === report.year;
           const chartData = report.monthlyBreakdown.map(month => ({
@@ -323,28 +322,28 @@ const AnnualReports = ({ stationId }) => {
           return (
             <div
               key={report.year}
-              className={`annual-report-card ${isExpanded ? 'expanded' : ''} ${report.isSkeleton ? 'skeleton-card' : ''}`}
+              className={`bg-gradient-to-br from-slate-50 to-slate-100 border-2 border-slate-200 rounded-2xl overflow-hidden transition-all hover:shadow-lg hover:-translate-y-0.5 ${isExpanded ? 'bg-white border-blue-500 shadow-[0_8px_24px_rgba(59,130,246,0.15)]' : ''} ${report.isSkeleton ? 'skeleton-card' : ''}`}
             >
-              <div className="report-card-header">
-                <div className="report-header-left">
-                  <div className="year-badge">{report.year}</div>
-                  <div className="year-summary">
-                    <h3>
+              <div className="flex justify-between items-center p-6 bg-white border-b border-slate-200">
+                <div className="flex items-center gap-6">
+                  <div className="bg-gradient-to-br from-blue-500 to-blue-600 text-white text-2xl font-bold px-6 py-4 rounded-xl shadow-lg">{report.year}</div>
+                  <div>
+                    <h3 className="text-slate-800 text-3xl m-0 mb-1 font-bold">
                       {formatCurrency(report.total)}
-                      {report.fromOrders && <span className="live-badge"> Live</span>}
+                      {report.fromOrders && <span className="bg-emerald-500 text-white text-[0.7rem] px-2 py-1 rounded-full ml-3 font-medium align-middle"> Live</span>}
                     </h3>
-                    <p>{report.totalOrders} orders • {formatCurrency(report.avgMonthly)}/month avg</p>
+                    <p className="text-slate-500 text-sm m-0">{report.totalOrders} orders • {formatCurrency(report.avgMonthly)}/month avg</p>
                   </div>
                 </div>
                 <button
-                  className="expand-report-button"
+                  className="bg-blue-500/10 border border-blue-500/30 text-blue-500 px-6 py-3 rounded-lg cursor-pointer font-semibold text-sm transition-all hover:bg-blue-500/20 hover:border-blue-500 hover:-translate-y-0.5"
                   onClick={() => toggleYear(report.year)}
                 >
                   {isExpanded ? '▲ Hide Details' : '▼ View Details'}
                 </button>
               </div>
 
-              <div className="annual-chart-container">
+              <div className="p-6 bg-white">
                 <ResponsiveContainer width="100%" height={200}>
                   <BarChart
                     data={chartData}
@@ -385,39 +384,39 @@ const AnnualReports = ({ stationId }) => {
                 </ResponsiveContainer>
               </div>
 
-              <div className="annual-metrics">
-                <div className="metric-box best">
-                  <span className="metric-icon">🏆</span>
-                  <div>
-                    <span className="metric-label">Best Month</span>
-                    <span className="metric-value">
+              <div className="grid grid-cols-3 gap-4 p-6 bg-white border-t border-slate-200">
+                <div className="flex items-center gap-4 bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-300 rounded-xl p-5 transition-all hover:border-blue-500 hover:shadow-[0_4px_12px_rgba(59,130,246,0.1)]">
+                  <span className="text-3xl">🏆</span>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Best Month</span>
+                    <span className="text-slate-800 text-lg font-bold">
                       {report.bestMonth.name}
                     </span>
-                    <span className="metric-detail">
+                    <span className="text-slate-500 text-xs">
                       {formatCurrency(report.bestMonth.revenue)}
                     </span>
                   </div>
                 </div>
-                <div className="metric-box worst">
-                  <span className="metric-icon">📉</span>
-                  <div>
-                    <span className="metric-label">Lowest Month</span>
-                    <span className="metric-value">
+                <div className="flex items-center gap-4 bg-gradient-to-br from-red-50 to-red-100 border border-red-300 rounded-xl p-5 transition-all hover:border-blue-500 hover:shadow-[0_4px_12px_rgba(59,130,246,0.1)]">
+                  <span className="text-3xl">📉</span>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Lowest Month</span>
+                    <span className="text-slate-800 text-lg font-bold">
                       {report.worstMonth.name}
                     </span>
-                    <span className="metric-detail">
+                    <span className="text-slate-500 text-xs">
                       {formatCurrency(report.worstMonth.revenue)}
                     </span>
                   </div>
                 </div>
-                <div className="metric-box average">
-                  <span className="metric-icon">📊</span>
-                  <div>
-                    <span className="metric-label">Monthly Average</span>
-                    <span className="metric-value">
+                <div className="flex items-center gap-4 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-300 rounded-xl p-5 transition-all hover:border-blue-500 hover:shadow-[0_4px_12px_rgba(59,130,246,0.1)]">
+                  <span className="text-3xl">📊</span>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Monthly Average</span>
+                    <span className="text-slate-800 text-lg font-bold">
                       {formatCurrency(report.avgMonthly)}
                     </span>
-                    <span className="metric-detail">
+                    <span className="text-slate-500 text-xs">
                       Across 12 months
                     </span>
                   </div>
@@ -425,9 +424,9 @@ const AnnualReports = ({ stationId }) => {
               </div>
 
               {isExpanded && (
-                <div className="monthly-breakdown-expanded">
-                  <h4>📅 Monthly Breakdown</h4>
-                  <div className="breakdown-table">
+                <div className="p-6 bg-white border-t border-slate-200 animate-[slideDown_0.3s_ease]">
+                  <h4 className="text-slate-800 text-lg m-0 mb-4 font-semibold">📅 Monthly Breakdown</h4>
+                  <div className="bg-slate-50 rounded-xl p-2 mb-6">
                     {report.monthlyBreakdown.map((month, index) => {
                       const isBest = month.month === report.bestMonth.name;
                       const isWorst = month.month === report.worstMonth.name;
@@ -435,21 +434,21 @@ const AnnualReports = ({ stationId }) => {
                       return (
                         <div
                           key={index}
-                          className={`breakdown-row ${isBest ? 'best-row' : ''} ${isWorst ? 'worst-row' : ''}`}
+                          className={`flex justify-between items-center p-4 bg-white rounded-lg mb-2 transition-all hover:bg-sky-50 hover:translate-x-1 ${isBest ? 'bg-gradient-to-r from-emerald-50 to-white border-l-3 border-l-emerald-500' : ''} ${isWorst ? 'bg-gradient-to-r from-red-50 to-white border-l-3 border-l-red-500' : ''}`}
                         >
-                          <div className="breakdown-month">
-                            <span className="month-name">{month.month}</span>
-                            {isBest && <span className="badge best-badge">🏆 Best</span>}
-                            {isWorst && <span className="badge worst-badge">📉 Lowest</span>}
+                          <div className="flex items-center gap-3">
+                            <span className="text-slate-800 font-semibold text-sm min-w-[100px]">{month.month}</span>
+                            {isBest && <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">🏆 Best</span>}
+                            {isWorst && <span className="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">📉 Lowest</span>}
                           </div>
-                          <div className="breakdown-stats">
-                            <span className="breakdown-revenue">
+                          <div className="flex gap-8 items-center">
+                            <span className="text-slate-800 font-bold text-base min-w-[120px] text-right">
                               {formatCurrency(month.revenue)}
                             </span>
-                            <span className="breakdown-orders">
+                            <span className="text-slate-500 text-xs min-w-[80px] text-right">
                               {month.orders} orders
                             </span>
-                            <span className="breakdown-avg">
+                            <span className="text-slate-500 text-xs min-w-[80px] text-right">
                               {month.orders > 0
                                 ? formatCurrency(month.revenue / month.orders)
                                 : '₱0.00'} avg
@@ -460,26 +459,26 @@ const AnnualReports = ({ stationId }) => {
                     })}
                   </div>
 
-                  <div className="year-summary-box">
-                    <h4>📈 Year Summary</h4>
-                    <div className="summary-stats">
-                      <div className="summary-stat">
-                        <span className="summary-label">Total Revenue</span>
-                        <span className="summary-value">{formatCurrency(report.total)}</span>
+                  <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl p-6 text-white">
+                    <h4 className="text-white m-0 mb-4 text-lg">📈 Year Summary</h4>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="flex flex-col gap-2 bg-white/10 p-4 rounded-lg backdrop-blur">
+                        <span className="text-slate-400 text-xs uppercase tracking-wider">Total Revenue</span>
+                        <span className="text-white text-xl font-bold">{formatCurrency(report.total)}</span>
                       </div>
-                      <div className="summary-stat">
-                        <span className="summary-label">Total Orders</span>
-                        <span className="summary-value">{report.totalOrders}</span>
+                      <div className="flex flex-col gap-2 bg-white/10 p-4 rounded-lg backdrop-blur">
+                        <span className="text-slate-400 text-xs uppercase tracking-wider">Total Orders</span>
+                        <span className="text-white text-xl font-bold">{report.totalOrders}</span>
                       </div>
-                      <div className="summary-stat">
-                        <span className="summary-label">Average Order Value</span>
-                        <span className="summary-value">
+                      <div className="flex flex-col gap-2 bg-white/10 p-4 rounded-lg backdrop-blur">
+                        <span className="text-slate-400 text-xs uppercase tracking-wider">Average Order Value</span>
+                        <span className="text-white text-xl font-bold">
                           {formatCurrency(report.total / report.totalOrders)}
                         </span>
                       </div>
-                      <div className="summary-stat">
-                        <span className="summary-label">Revenue Range</span>
-                        <span className="summary-value">
+                      <div className="flex flex-col gap-2 bg-white/10 p-4 rounded-lg backdrop-blur">
+                        <span className="text-slate-400 text-xs uppercase tracking-wider">Revenue Range</span>
+                        <span className="text-white text-xl font-bold">
                           {formatCurrency(report.worstMonth.revenue)} - {formatCurrency(report.bestMonth.revenue)}
                         </span>
                       </div>
@@ -493,8 +492,8 @@ const AnnualReports = ({ stationId }) => {
       </div>
 
       {hasMoreReports && (
-        <div className="load-more-container">
-          <button className="btn-load-more" onClick={loadMoreYears}>
+        <div className="flex justify-center mt-8">
+          <button className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-none px-8 py-4 rounded-xl font-semibold text-base cursor-pointer transition-all shadow-lg hover:-translate-y-0.5 hover:shadow-xl" onClick={loadMoreYears}>
             ⬇️ Load More Years ({reports.length - visibleYears} older)
           </button>
         </div>

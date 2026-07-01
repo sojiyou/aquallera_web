@@ -1,6 +1,5 @@
 // src/components/Dashboard/Dashboard.js
 import React, { useState, useEffect } from 'react';
-import './Dashboard.css';
 import { ref, onValue, update, set, onDisconnect } from 'firebase/database';
 import { database, auth } from '../config/Firebase';
 import Settings from './Settings';
@@ -105,25 +104,25 @@ const OrdersTable = ({ orders, onOrderClick }) => {
 
   if (orders.length === 0) {
     return (
-      <div className="no-orders-table">
-        <div className="no-orders-icon">📭</div>
-        <h3>No orders found</h3>
-        <p>There are no orders matching your current filter.</p>
+      <div className="text-center py-16 bg-white rounded-xl shadow-sm">
+        <div className="text-5xl mb-4">📭</div>
+        <h3 className="text-slate-800 m-0 mb-2">No orders found</h3>
+        <p className="text-slate-500 m-0">There are no orders matching your current filter.</p>
       </div>
     );
   }
 
   return (
-    <div className="orders-table-container">
-      <table className="orders-table">
+    <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+      <table className="w-full border-collapse text-sm">
         <thead>
           <tr>
-            <th className="col-order">Order #</th>
-            <th className="col-customer">Customer</th>
-            <th className="col-type">Type</th>
-            <th className="col-amount">Amount</th>
-            <th className="col-status">Status</th>
-            <th className="col-action">Action</th>
+            <th className="w-[120px]">Order #</th>
+            <th className="min-w-[180px]">Customer</th>
+            <th className="w-[110px]">Type</th>
+            <th className="w-[120px]">Amount</th>
+            <th className="w-[140px]">Status</th>
+            <th className="w-[80px] text-center">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -137,36 +136,36 @@ const OrdersTable = ({ orders, onOrderClick }) => {
             return (
               <tr 
                 key={orderId} 
-                className="order-table-row"
+                className="border-b border-slate-100 cursor-pointer transition-colors hover:bg-slate-50 last:border-b-0"
                 onClick={() => onOrderClick(order)}
               >
-                <td className="col-order" data-label="Order #">
-                  <span className="order-id-cell">#{orderId}</span>
+                <td className="w-[120px]" data-label="Order #">
+                  <span className="font-semibold text-blue-600 font-mono text-xs">#{orderId}</span>
                 </td>
-                <td className="col-customer" data-label="Customer">
-                  <div className="customer-cell">
-                    <span className="customer-name">{customerName}</span>
-                    <span className="customer-phone">{order.customerPhone || ''}</span>
+                <td className="min-w-[180px]" data-label="Customer">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-semibold text-slate-800 text-base">{customerName}</span>
+                    <span className="text-slate-500 text-base">{order.customerPhone || ''}</span>
                   </div>
                 </td>
-                <td className="col-type" data-label="Type">
-                  <span className={`type-badge ${orderType === 'Delivery' ? 'delivery' : 'pickup'}`}>
+                <td className="w-[110px]" data-label="Type">
+                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${orderType === 'Delivery' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-800'}`}>
                     {orderType === 'Delivery' ? '🚚' : '🏪'} {orderType}
                   </span>
                 </td>
-                <td className="col-amount" data-label="Amount">
-                  <span className="amount-value">{formatCurrency(grandTotal)}</span>
+                <td className="w-[120px]" data-label="Amount">
+                  <span className="font-bold text-slate-800 text-sm">{formatCurrency(grandTotal)}</span>
                 </td>
-                <td className="col-status" data-label="Status">
+                <td className="w-[140px]" data-label="Status">
                   <span 
-                    className="status-badge-table"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap"
                     style={{ backgroundColor: statusInfo.bg, color: statusInfo.color }}
                   >
                     {statusInfo.icon} {statusInfo.label}
                   </span>
                 </td>
-                <td className="col-action" data-label="Action">
-                  <button className="view-order-btn" onClick={(e) => { e.stopPropagation(); onOrderClick(order); }}>
+                <td className="w-[80px] text-center" data-label="Action">
+                  <button className="bg-blue-600 text-white border-none px-3 py-1.5 rounded-md cursor-pointer text-xs font-medium transition-all hover:bg-blue-700 hover:-translate-y-0.5" onClick={(e) => { e.stopPropagation(); onOrderClick(order); }}>
                     👁️ View
                   </button>
                 </td>
@@ -176,18 +175,18 @@ const OrdersTable = ({ orders, onOrderClick }) => {
         </tbody>
       </table>
 
-      <div className="table-pagination">
-        <div className="pagination-info">
+      <div className="flex justify-between items-center px-5 py-4 bg-slate-50 border-t border-slate-200 flex-wrap gap-4">
+        <div className="text-slate-500 text-xs">
           Showing {startIndex + 1}-{Math.min(endIndex, orders.length)} of {orders.length} orders
         </div>
         
-        <div className="pagination-controls">
-          <div className="rows-per-page">
+        <div className="flex items-center gap-6 flex-wrap">
+          <div className="flex items-center gap-2 text-xs text-slate-500">
             <span>Rows per page:</span>
             <select 
               value={rowsPerPage} 
               onChange={(e) => setRowsPerPage(Number(e.target.value))}
-              className="rows-select"
+              className="px-2 py-1.5 border border-slate-300 rounded-md text-xs bg-white cursor-pointer"
             >
               <option value={5}>5</option>
               <option value={10}>10</option>
@@ -196,9 +195,9 @@ const OrdersTable = ({ orders, onOrderClick }) => {
             </select>
           </div>
           
-          <div className="page-navigation">
+          <div className="flex items-center gap-2">
             <button 
-              className="page-btn"
+              className="w-8 h-8 border border-slate-200 bg-white rounded-md cursor-pointer flex items-center justify-center text-xs transition-all hover:bg-blue-600 hover:text-white hover:border-blue-600 disabled:opacity-40 disabled:cursor-not-allowed"
               onClick={() => handlePageChange(1)}
               disabled={currentPage === 1}
               title="First page"
@@ -206,7 +205,7 @@ const OrdersTable = ({ orders, onOrderClick }) => {
               ⏮
             </button>
             <button 
-              className="page-btn"
+              className="w-8 h-8 border border-slate-200 bg-white rounded-md cursor-pointer flex items-center justify-center text-xs transition-all hover:bg-blue-600 hover:text-white hover:border-blue-600 disabled:opacity-40 disabled:cursor-not-allowed"
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
               title="Previous page"
@@ -214,12 +213,12 @@ const OrdersTable = ({ orders, onOrderClick }) => {
               ◀
             </button>
             
-            <span className="page-indicator">
+            <span className="text-xs text-slate-600 font-medium px-2 whitespace-nowrap">
               Page {currentPage} of {totalPages}
             </span>
             
             <button 
-              className="page-btn"
+              className="w-8 h-8 border border-slate-200 bg-white rounded-md cursor-pointer flex items-center justify-center text-xs transition-all hover:bg-blue-600 hover:text-white hover:border-blue-600 disabled:opacity-40 disabled:cursor-not-allowed"
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
               title="Next page"
@@ -227,7 +226,7 @@ const OrdersTable = ({ orders, onOrderClick }) => {
               ▶
             </button>
             <button 
-              className="page-btn"
+              className="w-8 h-8 border border-slate-200 bg-white rounded-md cursor-pointer flex items-center justify-center text-xs transition-all hover:bg-blue-600 hover:text-white hover:border-blue-600 disabled:opacity-40 disabled:cursor-not-allowed"
               onClick={() => handlePageChange(totalPages)}
               disabled={currentPage === totalPages}
               title="Last page"
@@ -357,42 +356,42 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate }) => {
   const grandTotal = order.grandTotal || (order.waterSubtotal || 0) + (order.transactionFee || 0);
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content order-detail-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <div className="modal-title-section">
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[1000] p-4 animate-[fadeIn_0.2s_ease]" onClick={onClose}>
+      <div className="bg-white rounded-2xl w-full max-w-[650px] max-h-[90vh] overflow-y-auto shadow-2xl animate-[slideUp_0.3s_ease]" onClick={(e) => e.stopPropagation()}>
+        <div className="flex justify-between items-center px-6 py-5 border-b border-slate-200 sticky top-0 bg-white z-10 rounded-t-2xl">
+          <div className="flex items-center gap-3">
             <h2>📋 Order Details</h2>
-            <span className="modal-order-id">#{order.orderId || order.id || 'N/A'}</span>
+            <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-semibold text-xs font-mono">#{order.orderId || order.id || 'N/A'}</span>
           </div>
-          <button className="modal-close-btn" onClick={onClose}>✕</button>
+          <button className="w-9 h-9 border-none bg-slate-100 rounded-full cursor-pointer text-lg text-slate-500 flex items-center justify-center transition-all hover:bg-slate-200 hover:text-slate-800" onClick={onClose}>✕</button>
         </div>
 
-        <div className="modal-body">
-          <div className="modal-status-row">
+        <div className="p-6">
+          <div className="mb-5">
             <div 
-              className="order-status-badge"
+              className="inline-block px-4 py-1.5 rounded-full font-semibold text-xs"
               style={{ backgroundColor: getStatusColor(order.status), color: 'white' }}
             >
               {getStatusText(order.status)}
             </div>
           </div>
 
-          <div className="modal-info-grid">
-            <div className="info-item">
-              <span className="info-label">👤 Customer</span>
-              <span className="info-value">{order.customerName || 'N/A'}</span>
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-slate-500 font-medium">👤 Customer</span>
+              <span className="text-sm text-slate-800 font-medium">{order.customerName || 'N/A'}</span>
             </div>
-            <div className="info-item">
-              <span className="info-label">📞 Phone</span>
-              <span className="info-value">{order.customerPhone || 'Not provided'}</span>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-slate-500 font-medium">📞 Phone</span>
+              <span className="text-sm text-slate-800 font-medium">{order.customerPhone || 'Not provided'}</span>
             </div>
-            <div className="info-item">
-              <span className="info-label">📦 Type</span>
-              <span className="info-value">{order.orderType || 'N/A'}</span>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-slate-500 font-medium">📦 Type</span>
+              <span className="text-sm text-slate-800 font-medium">{order.orderType || 'N/A'}</span>
             </div>
-            <div className="info-item">
-              <span className="info-label">📅 Date</span>
-              <span className="info-value">
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-slate-500 font-medium">📅 Date</span>
+              <span className="text-sm text-slate-800 font-medium">
                 {order.date && order.time 
                   ? `${order.date} at ${order.time}`
                   : order.createdAt 
@@ -400,36 +399,36 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate }) => {
                     : 'N/A'}
               </span>
             </div>
-            <div className="info-item">
-              <span className="info-label">🔢 Reference</span>
-              <span className="info-value">{order.referenceNumber || 'N/A'}</span>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-slate-500 font-medium">🔢 Reference</span>
+              <span className="text-sm text-slate-800 font-medium">{order.referenceNumber || 'N/A'}</span>
             </div>
           </div>
 
           {order.orderType === 'Delivery' && (
-            <div className="modal-delivery-section">
-              <h4>📍 Delivery Address</h4>
+            <div className="bg-sky-50 p-4 rounded-xl mb-6 border border-sky-200">
+              <h4 className="m-0 mb-2 text-sky-700 text-sm">📍 Delivery Address</h4>
               {addressLoading ? (
-                <p className="loading-text">Loading address...</p>
+                <p className="text-slate-400 italic">Loading address...</p>
               ) : (
                 <>
-                  <p className="delivery-address-text">{address}</p>
+                  <p className="m-0 mb-2 text-slate-800 font-medium">{address}</p>
                   {order.additionalDetails && (
-                    <div className="additional-instructions">
-                      <span className="instructions-label">📝 Additional Instructions:</span>
-                      <p>{order.additionalDetails}</p>
+                    <div className="my-2 p-3 bg-amber-50 rounded-md border-l-3 border-l-amber-500">
+                      <span className="font-semibold text-amber-800 text-xs">📝 Additional Instructions:</span>
+                      <p className="m-1 text-amber-700 text-sm">{order.additionalDetails}</p>
                     </div>
                   )}
                   {coords && (
                     <button 
-                      className="toggle-coords-link"
+                      className="bg-none border-none text-sky-600 cursor-pointer text-xs p-0 underline"
                       onClick={() => setShowRawLocation(!showRawLocation)}
                     >
                       {showRawLocation ? '📍 Show Address' : '🗺️ Show Coordinates'}
                     </button>
                   )}
                   {showRawLocation && coords && (
-                    <div className="coordinates-display">
+                    <div className="mt-2 font-mono text-xs text-slate-500 bg-white p-2 rounded border">
                       Lat: {coords.lat}, Lng: {coords.lng}
                     </div>
                   )}
@@ -438,100 +437,100 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate }) => {
             </div>
           )}
 
-          <div className="modal-order-items">
-            <h4>🛒 Order Items</h4>
-            <table className="items-table">
+          <div className="mb-6">
+            <h4 className="m-0 mb-3 text-slate-800 text-base">🛒 Order Items</h4>
+            <table className="w-full border-collapse text-sm">
               <thead>
                 <tr>
-                  <th>Item</th>
-                  <th>Qty</th>
-                  <th>Price</th>
+                  <th className="text-left p-2 border-b-2 border-slate-200 text-slate-500 font-semibold text-xs">Item</th>
+                  <th className="text-left p-2 border-b-2 border-slate-200 text-slate-500 font-semibold text-xs">Qty</th>
+                  <th className="text-left p-2 border-b-2 border-slate-200 text-slate-500 font-semibold text-xs">Price</th>
                 </tr>
               </thead>
               <tbody>
                 {order.pureWaterQty > 0 && (
                   <tr>
-                    <td>💧 Pure Water (Gallon)</td>
-                    <td>×{order.pureWaterQty}</td>
-                    <td>₱{parseFloat(pureTotal).toFixed(2)}</td>
+                    <td className="p-2.5 border-b border-slate-100">💧 Pure Water (Gallon)</td>
+                    <td className="p-2.5 border-b border-slate-100">×{order.pureWaterQty}</td>
+                    <td className="p-2.5 border-b border-slate-100">₱{parseFloat(pureTotal).toFixed(2)}</td>
                   </tr>
                 )}
                 {order.springWaterQty > 0 && (
                   <tr>
-                    <td>🌊 Spring Water (Liter)</td>
-                    <td>×{order.springWaterQty}</td>
-                    <td>₱{parseFloat(springTotal).toFixed(2)}</td>
+                    <td className="p-2.5 border-b border-slate-100">🌊 Spring Water (Liter)</td>
+                    <td className="p-2.5 border-b border-slate-100">×{order.springWaterQty}</td>
+                    <td className="p-2.5 border-b border-slate-100">₱{parseFloat(springTotal).toFixed(2)}</td>
                   </tr>
                 )}
                 {order.mineralWaterQty > 0 && (
                   <tr>
-                    <td>⛰️ Mineral Water (Gallon)</td>
-                    <td>×{order.mineralWaterQty}</td>
-                    <td>₱{parseFloat(mineralTotal).toFixed(2)}</td>
+                    <td className="p-2.5 border-b border-slate-100">⛰️ Mineral Water (Gallon)</td>
+                    <td className="p-2.5 border-b border-slate-100">×{order.mineralWaterQty}</td>
+                    <td className="p-2.5 border-b border-slate-100">₱{parseFloat(mineralTotal).toFixed(2)}</td>
                   </tr>
                 )}
                 {order.orderType === 'Delivery' && deliveryFee > 0 && (
                   <tr>
-                    <td>🚚 Delivery Fee</td>
-                    <td></td>
-                    <td>₱{parseFloat(deliveryFee).toFixed(2)}</td>
+                    <td className="p-2.5 border-b border-slate-100">🚚 Delivery Fee</td>
+                    <td className="p-2.5 border-b border-slate-100"></td>
+                    <td className="p-2.5 border-b border-slate-100">₱{parseFloat(deliveryFee).toFixed(2)}</td>
                   </tr>
                 )}
                 <tr>
-                  <td>💳 Transaction Fee</td>
-                  <td></td>
-                  <td>₱{parseFloat(transactionFee).toFixed(2)}</td>
+                    <td className="p-2.5 border-b border-slate-100">💳 Transaction Fee</td>
+                    <td className="p-2.5 border-b border-slate-100"></td>
+                    <td className="p-2.5 border-b border-slate-100">₱{parseFloat(transactionFee).toFixed(2)}</td>
                 </tr>
               </tbody>
               <tfoot>
                 <tr>
-                  <td colSpan="2"><strong>Total</strong></td>
-                  <td><strong>₱{parseFloat(grandTotal).toFixed(2)}</strong></td>
+                  <td colSpan="2" className="border-b-0 border-t-2 border-slate-200 pt-3"><strong>Total</strong></td>
+                  <td className="border-b-0 border-t-2 border-slate-200 pt-3"><strong>₱{parseFloat(grandTotal).toFixed(2)}</strong></td>
                 </tr>
               </tfoot>
             </table>
           </div>
 
           <div className="modal-status-actions">
-            <h4>📝 Update Status</h4>
-            <div className="status-buttons">
+            <h4 className="m-0 mb-3 text-slate-800 text-base">📝 Update Status</h4>
+            <div className="flex gap-3 flex-wrap">
               {(order.status === 'pending' || order.status === 'Pending') && (
                 <>
-                  <button onClick={() => handleStatusUpdate('confirmed')} disabled={isUpdating} className="status-btn confirm">
+                  <button onClick={() => handleStatusUpdate('confirmed')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-emerald-500 hover:bg-emerald-600">
                     ✓ Confirm Order
                   </button>
-                  <button onClick={() => handleStatusUpdate('cancelled')} disabled={isUpdating} className="status-btn cancel">
+                  <button onClick={() => handleStatusUpdate('cancelled')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-red-500 hover:bg-red-600">
                     ✕ Cancel Order
                   </button>
                 </>
               )}
               {(order.status === 'confirmed' || order.status === 'Confirmed') && (
-                <button onClick={() => handleStatusUpdate('preparing')} disabled={isUpdating} className="status-btn prepare">
+                <button onClick={() => handleStatusUpdate('preparing')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-violet-500 hover:bg-violet-600">
                   🔨 Start Preparing
                 </button>
               )}
               {(order.status === 'preparing' || order.status === 'Preparing') && (
                 <>
                   {order.orderType === 'Delivery' ? (
-                    <button onClick={() => handleStatusUpdate('on_delivery')} disabled={isUpdating} className="status-btn deliver">
+                    <button onClick={() => handleStatusUpdate('on_delivery')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-blue-500 hover:bg-blue-600">
                       🚚 Out for Delivery
                     </button>
                   ) : (
-                    <button onClick={() => handleStatusUpdate('ready')} disabled={isUpdating} className="status-btn ready">
+                    <button onClick={() => handleStatusUpdate('ready')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-amber-500 hover:bg-amber-600">
                       ✓ Ready for Pickup
                     </button>
                   )}
                 </>
               )}
               {(order.status === 'on_delivery' || order.status === 'ready') && (
-                <button onClick={() => handleStatusUpdate('completed')} disabled={isUpdating} className="status-btn complete">
+                <button onClick={() => handleStatusUpdate('completed')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-emerald-500 hover:bg-emerald-600">
                   ✅ Mark as Completed
                 </button>
               )}
               {(order.status === 'completed' || order.status === 'Completed' || 
                 order.status === 'cancelled' || order.status === 'Cancelled' ||
                 order.status === 'delivered' || order.status === 'Delivered') && (
-                <div className="status-final-message">
+                <div className="text-center p-3 bg-slate-100 rounded-lg text-slate-500 font-medium">
                   Order {getStatusText(order.status)}
                 </div>
               )}
@@ -783,39 +782,39 @@ const Dashboard = () => {
 
   if (stationData && stationData.status === 'pending') {
     return (
-      <div className="dashboard-container">
-        <header className="dashboard-header">
-          <div className="header-content">
+      <div className="min-h-screen bg-[#fafafa] font-sans">
+        <header className="bg-white border-b border-slate-200 px-8 py-6 shadow-sm">
+          <div className="flex justify-between items-center max-w-[1200px] mx-auto">
             <div className="header-info">
-              <h1>⏳ Pending Approval</h1>
-              <p className="station-location">
+              <h1 className="text-slate-800 m-0 mb-1 text-3xl">⏳ Pending Approval</h1>
+              <p className="text-slate-600 text-sm m-1 flex items-center gap-1">
                 {stationData.stationName || 'Your Station'}
               </p>
             </div>
-            <button onClick={handleLogout} className="logout-btn">
+            <button onClick={handleLogout} className="bg-red-500 text-white border-none px-4 py-2 rounded-md cursor-pointer font-medium ml-auto hover:bg-red-600">
               Logout
             </button>
           </div>
         </header>
 
-        <div className="pending-approval">
-          <div className="pending-icon">⏳</div>
-          <h2>Your station is pending admin approval</h2>
-          <p>Thank you for registering! An administrator will review your application soon.</p>
-          <p>You will receive an email notification once your station is approved.</p>
+        <div className="max-w-[800px] mx-auto my-8 p-12 bg-white rounded-xl shadow-sm text-center">
+          <div className="text-6xl mb-6 opacity-70">⏳</div>
+          <h2 className="text-slate-800 mb-4">Your station is pending admin approval</h2>
+          <p className="text-slate-500 mb-8 leading-relaxed">Thank you for registering! An administrator will review your application soon.</p>
+          <p className="text-slate-500 mb-8 leading-relaxed">You will receive an email notification once your station is approved.</p>
           
-          <div className="pending-details">
-            <h3>What happens next?</h3>
-            <ul>
-              <li>Admin reviews your business permit and station details</li>
-              <li>You'll receive an email notification (usually within 24-48 hours)</li>
-              <li>Once approved, you can start accepting orders!</li>
+          <div className="text-left max-w-md mx-auto">
+            <h3 className="text-slate-800 mb-4 text-lg">What happens next?</h3>
+            <ul className="list-disc pl-5 text-left">
+              <li className="mb-2 text-slate-600">Admin reviews your business permit and station details</li>
+              <li className="mb-2 text-slate-600">You'll receive an email notification (usually within 24-48 hours)</li>
+              <li className="mb-2 text-slate-600">Once approved, you can start accepting orders!</li>
             </ul>
           </div>
           
-          <div className="pending-actions">
+          <div className="flex gap-4 justify-center mt-8">
             <button 
-              className="btn-secondary"
+              className="bg-slate-500 text-white px-8 py-4 rounded-lg font-semibold cursor-pointer transition-all hover:bg-slate-600"
               onClick={() => window.location.href = 'mailto:support@aquallera.com'}
             >
               Contact Support
@@ -828,41 +827,41 @@ const Dashboard = () => {
 
   if (stationData && stationData.status === 'rejected') {
     return (
-      <div className="dashboard-container">
-        <header className="dashboard-header">
-          <div className="header-content">
+      <div className="min-h-screen bg-[#fafafa] font-sans">
+        <header className="bg-white border-b border-slate-200 px-8 py-6 shadow-sm">
+          <div className="flex justify-between items-center max-w-[1200px] mx-auto">
             <div className="header-info">
-              <h1>❌ Registration Rejected</h1>
-              <p className="station-location">
+              <h1 className="text-slate-800 m-0 mb-1 text-3xl">❌ Registration Rejected</h1>
+              <p className="text-slate-600 text-sm m-1 flex items-center gap-1">
                 {stationData.stationName || 'Your Station'}
               </p>
             </div>
-            <button onClick={handleLogout} className="logout-btn">
+            <button onClick={handleLogout} className="bg-red-500 text-white border-none px-4 py-2 rounded-md cursor-pointer font-medium ml-auto hover:bg-red-600">
               Logout
             </button>
           </div>
         </header>
 
-        <div className="rejected-station">
-          <div className="rejected-icon">❌</div>
-          <h2>Station Registration Rejected</h2>
+        <div className="max-w-[800px] mx-auto my-8 p-12 bg-white rounded-xl shadow-sm text-center">
+          <div className="text-6xl mb-6 text-red-600">❌</div>
+          <h2 className="text-slate-800 mb-4">Station Registration Rejected</h2>
           
           {stationData.rejectionReason && (
-            <div className="rejection-reason">
-              <h3>Reason for Rejection:</h3>
-              <p>{stationData.rejectionReason}</p>
+            <div className="bg-red-50 p-6 rounded-lg my-8 border border-red-200 text-left">
+              <h3 className="text-red-600 mb-2">Reason for Rejection:</h3>
+              <p className="text-red-800 leading-relaxed">{stationData.rejectionReason}</p>
             </div>
           )}
           
-          <div className="action-buttons">
+          <div className="flex gap-4 justify-center mt-8 flex-wrap">
             <button 
-              className="btn-primary"
+              className="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold cursor-pointer transition-all hover:bg-blue-700"
               onClick={() => navigate('/signup')}
             >
               Re-apply with Corrections
             </button>
             <button 
-              className="btn-secondary"
+              className="bg-slate-500 text-white px-8 py-4 rounded-lg font-semibold cursor-pointer transition-all hover:bg-slate-600"
               onClick={() => window.location.href = 'mailto:support@aquallera.com'}
             >
               Contact Support
@@ -874,52 +873,52 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="dashboard-container">
-      <header className="dashboard-header">
-        <div className="header-content">
+    <div className="min-h-screen bg-[#fafafa] font-sans">
+      <header className="bg-white border-b border-slate-200 px-8 py-6 shadow-sm">
+        <div className="flex justify-between items-center max-w-[1200px] mx-auto">
           <div className="header-info">
-            <h1>
+            <h1 className="text-slate-800 m-0 mb-1 text-3xl">
               {stationData && stationData.stationName 
                 ? `${stationData.stationName} Dashboard`
                 : "Station Dashboard"
               }
             </h1>
-            <p>Welcome back! Here's your business overview</p>
+            <p className="text-slate-500 m-0">Welcome back! Here's your business overview</p>
             
             {stationData && (stationData.city || stationData.address) && (
-              <p className="station-location">
+              <p className="text-slate-600 text-sm m-1 flex items-center gap-1">
                 📍 {stationData.address || ''} 
                 {stationData.address && stationData.city ? ', ' : ''}
                 {stationData.city || ''}
               </p>
             )}
           </div>
-          <div className="header-actions">
-            <div className="dashboard-nav">
+          <div className="flex items-center gap-4">
+            <div className="flex gap-2 mr-4">
               <button 
-                className={`nav-btn ${activeSection === 'orders' ? 'active' : ''}`}
+                className={`px-6 py-3 border-2 rounded-lg cursor-pointer transition-all font-medium flex items-center gap-2 text-sm ${activeSection === 'orders' ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-200 bg-white text-gray-700 hover:border-blue-600 hover:bg-slate-50'}`}
                 onClick={() => setActiveSection('orders')}
               >
                 📦 Orders
               </button>
               <button 
-                className={`nav-btn ${activeSection === 'stock' ? 'active' : ''}`}
+                className={`px-6 py-3 border-2 rounded-lg cursor-pointer transition-all font-medium flex items-center gap-2 text-sm ${activeSection === 'stock' ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-200 bg-white text-gray-700 hover:border-blue-600 hover:bg-slate-50'}`}
                 onClick={() => setActiveSection('stock')}
               >
                 💧 Stock & Analytics
               </button>
               <button 
-                className={`nav-btn ${activeSection === 'settings' ? 'active' : ''}`}
+                className={`px-6 py-3 border-2 rounded-lg cursor-pointer transition-all font-medium flex items-center gap-2 text-sm ${activeSection === 'settings' ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-200 bg-white text-gray-700 hover:border-blue-600 hover:bg-slate-50'}`}
                 onClick={() => setActiveSection('settings')}
               >
                 ⚙️ Settings
               </button>
             </div>
-            <div className="station-status">
-              <div className="status-indicator online"></div>
+            <div className="flex items-center gap-2 bg-emerald-50 px-4 py-2 rounded-full border border-emerald-200 text-sm text-emerald-700">
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-[pulse_2s_infinite]"></div>
               <span>Online</span>
             </div>
-            <button onClick={handleLogout} className="logout-btn-small">
+            <button onClick={handleLogout} className="bg-slate-500 text-white border-none px-3 py-1 rounded cursor-pointer text-sm ml-4 hover:bg-slate-600">
               Logout
             </button>
           </div>
@@ -928,57 +927,12 @@ const Dashboard = () => {
 
       {activeSection === 'orders' && (
         <>
-          <section className="stats-overview">
-            <div className="stat-card total">
-              <div className="stat-icon">📦</div>
-              <div className="stat-info">
-                <h3>{stats.totalOrders}</h3>
-                <p>Total Orders</p>
-              </div>
-            </div>
-            <div className="stat-card pending">
-              <div className="stat-icon">⏳</div>
-              <div className="stat-info">
-                <h3>{stats.pendingOrders}</h3>
-                <p>Pending Orders</p>
-              </div>
-            </div>
-            <div className="stat-card completed">
-              <div className="stat-icon">✅</div>
-              <div className="stat-info">
-                <h3>{stats.completedOrders}</h3>
-                <p>Completed Today</p>
-              </div>
-            </div>
-            <div className="stat-card revenue">
-              <div className="stat-icon">💰</div>
-              <div className="stat-info">
-                <h3>{formatCurrency(stats.todaysRevenue)}</h3>
-                <p>Today's Revenue</p>
-              </div>
-            </div>
-            <div className="stat-card popular">
-              <div className="stat-icon">💧</div>
-              <div className="stat-info">
-                <h3>{stats.mostBoughtWater}</h3>
-                <p>Most Popular Water</p>
-              </div>
-            </div>
-            <div className="stat-card location">
-              <div className="stat-icon">📍</div>
-              <div className="stat-info">
-                <h3>{stats.topLocation}</h3>
-                <p>Top Customer Location</p>
-              </div>
-            </div>
-          </section>
-
-          <section className="orders-section">
-            <div className="section-header">
-              <h2>📦 Order Management</h2>
-              <div className="order-filter-dropdown-wrapper">
+          <section className="max-w-[1200px] mx-auto px-8 pb-8">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-slate-800 m-0">📦 Order Management</h2>
+              <div className="relative">
                 <select 
-                  className="order-filter-dropdown"
+                  className="appearance-none bg-white border-2 border-slate-200 rounded-xl px-4 py-3 pr-10 text-sm font-medium text-slate-800 cursor-pointer min-w-[200px] transition-all hover:border-blue-500 focus:outline-none focus:border-blue-500 focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)]"
                   value={activeTab}
                   onChange={(e) => setActiveTab(e.target.value)}
                 >
