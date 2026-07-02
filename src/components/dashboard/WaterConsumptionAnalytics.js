@@ -247,8 +247,8 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
     const safePercentage = isNaN(percentage) ? 0 : Math.min(percentage, 100);
     
     const colors = {
-      pure: { bg: '#e0e7ff', fill: '#3b82f6' },
-      spring: { bg: '#cffafe', fill: '#06b6d4' },
+      pure: { bg: '#b3e0e3', fill: '#065A82' },
+      spring: { bg: '#d4f5f5', fill: '#1C7293' },
       mineral: { bg: '#fed7aa', fill: '#f59e0b' }
     };
     
@@ -317,7 +317,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-slate-500">
-        <div className="border-[3px] border-slate-200 border-t-blue-500 rounded-full w-[30px] h-[30px] animate-spin mb-4"></div>
+        <div className="border-[3px] border-slate-200 border-t-primary rounded-full w-[30px] h-[30px] animate-spin mb-4"></div>
         <p>Loading consumption data...</p>
       </div>
     );
@@ -346,7 +346,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
       {!useSampleData && projection.currentConsumption.pureWater === 0 && 
        projection.currentConsumption.springWater === 0 && 
        projection.currentConsumption.mineralWater === 0 && (
-        <div className="bg-blue-100 border-l-4 border-l-blue-500 px-4 py-3 mb-4 rounded-lg text-sm text-blue-700 flex items-center gap-2">
+        <div className="bg-primary/10 border-l-4 border-l-primary px-4 py-3 mb-4 rounded-lg text-sm text-blue-700 flex items-center gap-2">
           <span className="text-lg">📋</span>
           <span>No completed orders yet this month. Add orders to see consumption tracking.</span>
         </div>
@@ -437,13 +437,13 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
           <h4 className="text-slate-800 m-0 text-lg">📊 Water Consumption Reports</h4>
           <div className="flex gap-1 bg-slate-100 p-0.5 rounded-full">
             <button 
-              className={`px-4 py-1.5 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${consumptionViewMode === 'monthly' ? 'bg-white text-blue-500 shadow-sm' : ''}`}
+              className={`px-4 py-1.5 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${consumptionViewMode === 'monthly' ? 'bg-white text-primary shadow-sm' : ''}`}
               onClick={() => setConsumptionViewMode('monthly')}
             >
               📅 Monthly View
             </button>
             <button 
-              className={`px-4 py-1.5 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${consumptionViewMode === 'annual' ? 'bg-white text-blue-500 shadow-sm' : ''}`}
+              className={`px-4 py-1.5 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${consumptionViewMode === 'annual' ? 'bg-white text-primary shadow-sm' : ''}`}
               onClick={() => setConsumptionViewMode('annual')}
             >
               📈 Annual View
@@ -510,18 +510,18 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
                               <Line
                                 type="monotone"
                                 dataKey="pureWater"
-                                stroke="#3b82f6"
+                                stroke="#065A82"
                                 strokeWidth={2}
-                                dot={{ r: 2, fill: "#3b82f6" }}
+                                dot={{ r: 2, fill: "#065A82" }}
                                 activeDot={{ r: 5 }}
                                 name="Pure Water (gal)"
                               />
                               <Line
                                 type="monotone"
                                 dataKey="springWater"
-                                stroke="#06b6d4"
+                                stroke="#1C7293"
                                 strokeWidth={2}
-                                dot={{ r: 2, fill: "#06b6d4" }}
+                                dot={{ r: 2, fill: "#1C7293" }}
                                 activeDot={{ r: 5 }}
                                 name="Spring Water (L)"
                               />
@@ -545,7 +545,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
                             <span className="text-2xl font-bold text-slate-800 block">{formatNumber(month.pureWater)} gal</span>
                             <span className="text-xs text-slate-500">Pure Water</span>
                           </div>
-                          <div className="text-center p-4 rounded-lg bg-slate-100 border-l-3 border-l-cyan-500">
+                          <div className="text-center p-4 rounded-lg bg-slate-100 border-l-3 border-l-secondary">
                             <span className="text-2xl block mb-2">🌊</span>
                             <span className="text-2xl font-bold text-slate-800 block">{formatNumber(month.springWater)} L</span>
                             <span className="text-xs text-slate-500">Spring Water</span>
@@ -607,7 +607,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
           <div className="mt-2 p-5 bg-slate-50 rounded-lg border border-slate-200">
             <div className="flex flex-col gap-5">
               <div className="flex items-center gap-4">
-                <div className="bg-gradient-to-br from-blue-500 to-blue-600 text-white text-2xl font-bold px-5 py-2 rounded-full">{annualData.year}</div>
+                <div className="bg-gradient-to-br from-primary to-primary-dark text-white text-2xl font-bold px-5 py-2 rounded-full">{annualData.year}</div>
                 <div className="year-summary">
                   <h3 className="m-0 mb-1 text-lg text-slate-800">{formatNumber(annualData.totals.pureWater + annualData.totals.mineralWater + annualData.totals.springWater)} total units</h3>
                   <p className="m-0 text-xs text-slate-500">{annualData.totalOrders} orders • {formatNumber(annualData.avgMonthly.pureWater)} pure/mo avg</p>
@@ -615,7 +615,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
               </div>
 
               <div className="grid grid-cols-3 gap-4">
-                <div className="flex items-center gap-4 rounded-xl p-5 transition-all hover:shadow-sm bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-300">
+                <div className="flex items-center gap-4 rounded-xl p-5 transition-all hover:shadow-sm bg-gradient-to-br from-secondary/5 to-secondary/10 border border-secondary/30">
                   <span className="text-3xl">🏆</span>
                   <div>
                     <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Best Month</span>
@@ -635,7 +635,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 rounded-xl p-5 transition-all hover:shadow-sm bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-300">
+                <div className="flex items-center gap-4 rounded-xl p-5 transition-all hover:shadow-sm bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/30">
                   <span className="text-3xl">📊</span>
                   <div>
                     <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Monthly Average</span>
@@ -647,7 +647,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl p-6 text-white">
+              <div className="bg-gradient-to-br from-primary-dark to-primary-dark rounded-xl p-6 text-white">
                 <h4 className="text-white m-0 mb-4 text-lg">📈 Year Summary</h4>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col gap-2 bg-white/10 p-4 rounded-lg backdrop-blur">

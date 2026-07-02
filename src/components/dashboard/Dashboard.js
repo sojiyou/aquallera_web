@@ -140,7 +140,7 @@ const OrdersTable = ({ orders, onOrderClick }) => {
                 onClick={() => onOrderClick(order)}
               >
                 <td className="w-[120px]" data-label="Order #">
-                  <span className="font-semibold text-blue-600 font-mono text-xs">#{orderId}</span>
+                  <span className="font-semibold text-primary font-mono text-xs">#{orderId}</span>
                 </td>
                 <td className="min-w-[180px]" data-label="Customer">
                   <div className="flex flex-col gap-0.5">
@@ -149,7 +149,7 @@ const OrdersTable = ({ orders, onOrderClick }) => {
                   </div>
                 </td>
                 <td className="w-[110px]" data-label="Type">
-                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${orderType === 'Delivery' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-800'}`}>
+                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${orderType === 'Delivery' ? 'bg-primary/10 text-primary-dark' : 'bg-emerald-100 text-emerald-800'}`}>
                     {orderType === 'Delivery' ? '🚚' : '🏪'} {orderType}
                   </span>
                 </td>
@@ -165,7 +165,7 @@ const OrdersTable = ({ orders, onOrderClick }) => {
                   </span>
                 </td>
                 <td className="w-[80px] text-center" data-label="Action">
-                  <button className="bg-blue-600 text-white border-none px-3 py-1.5 rounded-md cursor-pointer text-xs font-medium transition-all hover:bg-blue-700 hover:-translate-y-0.5" onClick={(e) => { e.stopPropagation(); onOrderClick(order); }}>
+                  <button className="bg-primary text-white border-none px-3 py-1.5 rounded-md cursor-pointer text-xs font-medium transition-all hover:bg-primary-dark hover:-translate-y-0.5" onClick={(e) => { e.stopPropagation(); onOrderClick(order); }}>
                     👁️ View
                   </button>
                 </td>
@@ -197,7 +197,7 @@ const OrdersTable = ({ orders, onOrderClick }) => {
           
           <div className="flex items-center gap-2">
             <button 
-              className="w-8 h-8 border border-slate-200 bg-white rounded-md cursor-pointer flex items-center justify-center text-xs transition-all hover:bg-blue-600 hover:text-white hover:border-blue-600 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-8 h-8 border border-slate-200 bg-white rounded-md cursor-pointer flex items-center justify-center text-xs transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed"
               onClick={() => handlePageChange(1)}
               disabled={currentPage === 1}
               title="First page"
@@ -205,7 +205,7 @@ const OrdersTable = ({ orders, onOrderClick }) => {
               ⏮
             </button>
             <button 
-              className="w-8 h-8 border border-slate-200 bg-white rounded-md cursor-pointer flex items-center justify-center text-xs transition-all hover:bg-blue-600 hover:text-white hover:border-blue-600 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-8 h-8 border border-slate-200 bg-white rounded-md cursor-pointer flex items-center justify-center text-xs transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed"
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
               title="Previous page"
@@ -218,7 +218,7 @@ const OrdersTable = ({ orders, onOrderClick }) => {
             </span>
             
             <button 
-              className="w-8 h-8 border border-slate-200 bg-white rounded-md cursor-pointer flex items-center justify-center text-xs transition-all hover:bg-blue-600 hover:text-white hover:border-blue-600 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-8 h-8 border border-slate-200 bg-white rounded-md cursor-pointer flex items-center justify-center text-xs transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed"
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
               title="Next page"
@@ -226,7 +226,7 @@ const OrdersTable = ({ orders, onOrderClick }) => {
               ▶
             </button>
             <button 
-              className="w-8 h-8 border border-slate-200 bg-white rounded-md cursor-pointer flex items-center justify-center text-xs transition-all hover:bg-blue-600 hover:text-white hover:border-blue-600 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-8 h-8 border border-slate-200 bg-white rounded-md cursor-pointer flex items-center justify-center text-xs transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed"
               onClick={() => handlePageChange(totalPages)}
               disabled={currentPage === totalPages}
               title="Last page"
@@ -406,8 +406,8 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate }) => {
           </div>
 
           {order.orderType === 'Delivery' && (
-            <div className="bg-sky-50 p-4 rounded-xl mb-6 border border-sky-200">
-              <h4 className="m-0 mb-2 text-sky-700 text-sm">📍 Delivery Address</h4>
+            <div className="bg-surface p-4 rounded-xl mb-6 border border-secondary/20">
+              <h4 className="m-0 mb-2 text-primary-dark text-sm">📍 Delivery Address</h4>
               {addressLoading ? (
                 <p className="text-slate-400 italic">Loading address...</p>
               ) : (
@@ -421,7 +421,7 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate }) => {
                   )}
                   {coords && (
                     <button 
-                      className="bg-none border-none text-sky-600 cursor-pointer text-xs p-0 underline"
+                      className="bg-none border-none text-primary cursor-pointer text-xs p-0 underline"
                       onClick={() => setShowRawLocation(!showRawLocation)}
                     >
                       {showRawLocation ? '📍 Show Address' : '🗺️ Show Coordinates'}
@@ -496,7 +496,7 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate }) => {
             <div className="flex gap-3 flex-wrap">
               {(order.status === 'pending' || order.status === 'Pending') && (
                 <>
-                  <button onClick={() => handleStatusUpdate('confirmed')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-emerald-500 hover:bg-emerald-600">
+                  <button onClick={() => handleStatusUpdate('confirmed')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-secondary hover:bg-primary-dark">
                     ✓ Confirm Order
                   </button>
                   <button onClick={() => handleStatusUpdate('cancelled')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-red-500 hover:bg-red-600">
@@ -505,14 +505,14 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate }) => {
                 </>
               )}
               {(order.status === 'confirmed' || order.status === 'Confirmed') && (
-                <button onClick={() => handleStatusUpdate('preparing')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-violet-500 hover:bg-violet-600">
+                <button onClick={() => handleStatusUpdate('preparing')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-primary hover:bg-primary-dark">
                   🔨 Start Preparing
                 </button>
               )}
               {(order.status === 'preparing' || order.status === 'Preparing') && (
                 <>
                   {order.orderType === 'Delivery' ? (
-                    <button onClick={() => handleStatusUpdate('on_delivery')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-blue-500 hover:bg-blue-600">
+                    <button onClick={() => handleStatusUpdate('on_delivery')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-primary hover:bg-primary-dark">
                       🚚 Out for Delivery
                     </button>
                   ) : (
@@ -523,7 +523,7 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate }) => {
                 </>
               )}
               {(order.status === 'on_delivery' || order.status === 'ready') && (
-                <button onClick={() => handleStatusUpdate('completed')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-emerald-500 hover:bg-emerald-600">
+                <button onClick={() => handleStatusUpdate('completed')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-secondary hover:bg-primary-dark">
                   ✅ Mark as Completed
                 </button>
               )}
@@ -782,7 +782,7 @@ const Dashboard = () => {
 
   if (stationData && stationData.status === 'pending') {
     return (
-      <div className="min-h-screen bg-[#fafafa] font-sans">
+      <div className="min-h-screen bg-surface font-sans">
         <header className="bg-white border-b border-slate-200 px-8 py-6 shadow-sm">
           <div className="flex justify-between items-center max-w-[1200px] mx-auto">
             <div className="header-info">
@@ -827,7 +827,7 @@ const Dashboard = () => {
 
   if (stationData && stationData.status === 'rejected') {
     return (
-      <div className="min-h-screen bg-[#fafafa] font-sans">
+      <div className="min-h-screen bg-surface font-sans">
         <header className="bg-white border-b border-slate-200 px-8 py-6 shadow-sm">
           <div className="flex justify-between items-center max-w-[1200px] mx-auto">
             <div className="header-info">
@@ -855,7 +855,7 @@ const Dashboard = () => {
           
           <div className="flex gap-4 justify-center mt-8 flex-wrap">
             <button 
-              className="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold cursor-pointer transition-all hover:bg-blue-700"
+              className="bg-primary text-white px-8 py-4 rounded-lg font-semibold cursor-pointer transition-all hover:bg-primary-dark"
               onClick={() => navigate('/signup')}
             >
               Re-apply with Corrections
@@ -873,7 +873,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#fafafa] font-sans">
+    <div className="min-h-screen bg-surface font-sans">
       <header className="bg-white border-b border-slate-200 px-8 py-6 shadow-sm">
         <div className="flex justify-between items-center max-w-[1200px] mx-auto">
           <div className="header-info">
@@ -896,26 +896,26 @@ const Dashboard = () => {
           <div className="flex items-center gap-4">
             <div className="flex gap-2 mr-4">
               <button 
-                className={`px-6 py-3 border-2 rounded-lg cursor-pointer transition-all font-medium flex items-center gap-2 text-sm ${activeSection === 'orders' ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-200 bg-white text-gray-700 hover:border-blue-600 hover:bg-slate-50'}`}
+                className={`px-6 py-3 border-2 rounded-lg cursor-pointer transition-all font-medium flex items-center gap-2 text-sm ${activeSection === 'orders' ? 'border-primary bg-primary text-white' : 'border-slate-200 bg-white text-gray-700 hover:border-primary hover:bg-slate-50'}`}
                 onClick={() => setActiveSection('orders')}
               >
                 📦 Orders
               </button>
               <button 
-                className={`px-6 py-3 border-2 rounded-lg cursor-pointer transition-all font-medium flex items-center gap-2 text-sm ${activeSection === 'stock' ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-200 bg-white text-gray-700 hover:border-blue-600 hover:bg-slate-50'}`}
+                className={`px-6 py-3 border-2 rounded-lg cursor-pointer transition-all font-medium flex items-center gap-2 text-sm ${activeSection === 'stock' ? 'border-primary bg-primary text-white' : 'border-slate-200 bg-white text-gray-700 hover:border-primary hover:bg-slate-50'}`}
                 onClick={() => setActiveSection('stock')}
               >
                 💧 Stock & Analytics
               </button>
               <button 
-                className={`px-6 py-3 border-2 rounded-lg cursor-pointer transition-all font-medium flex items-center gap-2 text-sm ${activeSection === 'settings' ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-200 bg-white text-gray-700 hover:border-blue-600 hover:bg-slate-50'}`}
+                className={`px-6 py-3 border-2 rounded-lg cursor-pointer transition-all font-medium flex items-center gap-2 text-sm ${activeSection === 'settings' ? 'border-primary bg-primary text-white' : 'border-slate-200 bg-white text-gray-700 hover:border-primary hover:bg-slate-50'}`}
                 onClick={() => setActiveSection('settings')}
               >
                 ⚙️ Settings
               </button>
             </div>
-            <div className="flex items-center gap-2 bg-emerald-50 px-4 py-2 rounded-full border border-emerald-200 text-sm text-emerald-700">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-[pulse_2s_infinite]"></div>
+            <div className="flex items-center gap-2 bg-secondary/5 px-4 py-2 rounded-full border border-secondary/20 text-sm text-primary-dark">
+              <div className="w-2 h-2 rounded-full bg-secondary animate-[pulse_2s_infinite]"></div>
               <span>Online</span>
             </div>
             <button onClick={handleLogout} className="bg-slate-500 text-white border-none px-3 py-1 rounded cursor-pointer text-sm ml-4 hover:bg-slate-600">
@@ -932,7 +932,7 @@ const Dashboard = () => {
               <h2 className="text-slate-800 m-0">📦 Order Management</h2>
               <div className="relative">
                 <select 
-                  className="appearance-none bg-white border-2 border-slate-200 rounded-xl px-4 py-3 pr-10 text-sm font-medium text-slate-800 cursor-pointer min-w-[200px] transition-all hover:border-blue-500 focus:outline-none focus:border-blue-500 focus:shadow-[0_0_0_3px_rgba(59,130,246,0.15)]"
+                  className="appearance-none bg-white border-2 border-slate-200 rounded-xl px-4 py-3 pr-10 text-sm font-medium text-slate-800 cursor-pointer min-w-[200px] transition-all hover:border-primary focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.15)]"
                   value={activeTab}
                   onChange={(e) => setActiveTab(e.target.value)}
                 >

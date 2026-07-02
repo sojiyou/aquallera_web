@@ -573,9 +573,9 @@ const Stock = () => {
 
   if (loading) {
     return (
-      <div className="p-8 bg-[#fafafa] min-h-screen">
+      <div className="p-8 bg-surface min-h-screen">
         <div className="flex flex-col items-center justify-center min-h-[50vh]">
-          <div className="border-4 border-slate-200 border-t-blue-600 rounded-full w-[50px] h-[50px] animate-spin mb-4"></div>
+          <div className="border-4 border-slate-200 border-t-primary rounded-full w-[50px] h-[50px] animate-spin mb-4"></div>
           <p>Loading stock data...</p>
         </div>
       </div>
@@ -583,7 +583,7 @@ const Stock = () => {
   }
 
   return (
-    <div className="p-8 bg-[#fafafa] min-h-screen">
+    <div className="p-8 bg-surface min-h-screen">
 
       {/* Analytics Section */}
       <section className="bg-white rounded-xl p-8 mb-8 shadow-sm">
@@ -647,19 +647,19 @@ const Stock = () => {
         <div className="flex justify-between items-center mb-8 pb-4 border-b-2 border-slate-200">
           <h2 className="text-slate-800 text-2xl m-0">💧 Water Stock Inventory</h2>
           {!editingStock ? (
-            <button className="bg-blue-600 text-white border-none px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all hover:bg-blue-700 hover:-translate-y-0.5" onClick={() => setEditingStock(true)}>
+            <button className="bg-primary text-white border-none px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all hover:bg-primary-dark hover:-translate-y-0.5" onClick={() => setEditingStock(true)}>
               ✏️ Edit Stock
             </button>
           ) : (
             <div className="flex gap-3">
-              <button className="bg-emerald-500 text-white border-none px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all hover:bg-emerald-600 hover:-translate-y-0.5" onClick={handleSaveStock}>✓ Save</button>
+              <button className="bg-secondary text-white border-none px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all hover:bg-primary-dark hover:-translate-y-0.5" onClick={handleSaveStock}>✓ Save</button>
               <button className="bg-red-500 text-white border-none px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all hover:bg-red-600 hover:-translate-y-0.5" onClick={handleCancelEdit}>✕ Cancel</button>
             </div>
           )}
         </div>
 
         <div className="grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-6">
-          <div className="rounded-xl p-8 text-center text-white shadow-md transition-transform hover:-translate-y-1.5 bg-gradient-to-br from-[#667eea] to-[#764ba2]">
+          <div className="rounded-xl p-8 text-center text-white shadow-md transition-transform hover:-translate-y-1.5 bg-gradient-to-br from-primary to-primary-dark">
             <div className="text-5xl mb-4">💧</div>
             <h3 className="text-lg mb-4 font-semibold">Pure Water (Gallons)</h3>
             {editingStock ? (
@@ -672,7 +672,7 @@ const Stock = () => {
             </div>
           </div>
 
-          <div className="rounded-xl p-8 text-center text-white shadow-md transition-transform hover:-translate-y-1.5 bg-gradient-to-br from-cyan-500 to-blue-500">
+          <div className="rounded-xl p-8 text-center text-white shadow-md transition-transform hover:-translate-y-1.5 bg-gradient-to-br from-secondary to-primary">
             <div className="text-5xl mb-4">🌊</div>
             <h3 className="text-lg mb-4 font-semibold">Spring Water (gallons)</h3>
             {editingStock ? (
@@ -706,13 +706,13 @@ const Stock = () => {
           <h2 className="text-slate-800 text-2xl m-0">📊 Performance Reports</h2>
           <div className="flex gap-2 bg-slate-100 p-1 rounded-full">
             <button 
-              className={`px-5 py-2 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${dataViewMode === 'monthly' ? 'bg-white text-blue-500 shadow-sm' : ''}`}
+              className={`px-5 py-2 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${dataViewMode === 'monthly' ? 'bg-white text-primary shadow-sm' : ''}`}
               onClick={() => setDataViewMode('monthly')}
             >
               📅 Monthly View
             </button>
             <button 
-              className={`px-5 py-2 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${dataViewMode === 'annual' ? 'bg-white text-blue-500 shadow-sm' : ''}`}
+              className={`px-5 py-2 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${dataViewMode === 'annual' ? 'bg-white text-primary shadow-sm' : ''}`}
               onClick={() => setDataViewMode('annual')}
             >
               📈 Annual View
@@ -722,7 +722,7 @@ const Stock = () => {
 
         {/* Revenue Projection Card - ALWAYS VISIBLE */}
         {!projectionLoading && revenueProjection && yearForecast?.hasMinimumData ? (
-          <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-8 mb-8 text-white shadow-lg border border-white/10">
+          <div className="bg-gradient-to-br from-primary-dark to-primary-dark rounded-2xl p-8 mb-8 text-white shadow-lg border border-white/10">
             <div className="flex justify-between items-start mb-8">
               <div className="flex items-center gap-4">
                 <span className="text-4xl">📈</span>
@@ -751,12 +751,12 @@ const Stock = () => {
             <div className="grid grid-cols-4 gap-6 mb-8">
               <div className="bg-white/10 rounded-xl p-5 backdrop-blur border border-white/10">
                 <span className="block text-base uppercase tracking-wider mb-2">Revenue to Date</span>
-                <span className="block text-3xl font-bold mb-1 text-blue-400">₱{revenueProjection.currentRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                <span className="block text-3xl font-bold mb-1 text-secondary">₱{revenueProjection.currentRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
                 <span className="block text-slate-400 text-xs">{revenueProjection.daysPassed} days</span>
               </div>
               <div className="bg-white/10 rounded-xl p-5 backdrop-blur border border-white/10">
                 <span className="block text-base uppercase tracking-wider mb-2">Projected End of Month</span>
-                <span className="block text-3xl font-bold mb-1 text-purple-400">₱{revenueProjection.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                <span className="block text-3xl font-bold mb-1 text-secondary">₱{revenueProjection.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
                 <span className="block text-slate-400 text-xs">Target</span>
               </div>
               <div className="bg-white/10 rounded-xl p-5 backdrop-blur border border-white/10">
@@ -766,7 +766,7 @@ const Stock = () => {
               </div>
               <div className="bg-white/10 rounded-xl p-5 backdrop-blur border border-white/10">
                 <span className="block text-base uppercase tracking-wider mb-2">Remaining Potential</span>
-                <span className="block text-3xl font-bold mb-1 text-emerald-400">₱{(revenueProjection.projectedRevenue - revenueProjection.currentRevenue)?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                <span className="block text-3xl font-bold mb-1 text-secondary">₱{(revenueProjection.projectedRevenue - revenueProjection.currentRevenue)?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
                 <span className="block text-slate-400 text-xs">{revenueProjection.daysRemaining} days left</span>
               </div>
             </div>
@@ -780,7 +780,7 @@ const Stock = () => {
                     <YAxis tickFormatter={(value) => `₱${(value/1000).toFixed(0)}k`} stroke="#64748b" />
                     <Tooltip formatter={(value) => [`₱${value?.toLocaleString() || 0}`, 'Revenue']} labelFormatter={(label) => `Day ${label}`} />
                     <Legend />
-                    <Line type="monotone" dataKey="actual" stroke="#2563eb" strokeWidth={3} dot={{ r: 4, fill: "#2563eb" }} name="Actual Revenue" />
+                    <Line type="monotone" dataKey="actual" stroke="#065A82" strokeWidth={3} dot={{ r: 4, fill: "#065A82" }} name="Actual Revenue" />
                     <Line type="monotone" dataKey="projected" stroke="#94a3b8" strokeWidth={3} strokeDasharray="5 5" dot={{ r: 3, fill: "#94a3b8" }} name="Projected Revenue" />
                   </LineChart>
                 </ResponsiveContainer>
@@ -791,13 +791,13 @@ const Stock = () => {
               <div className="bg-white/5 rounded-xl p-6 mb-6">
                 <div className="flex justify-between items-center mb-6">
                   <h4 className="text-white m-0 text-lg">📅 {yearForecast.year} Year Forecast</h4>
-                  <span className="text-purple-400 font-bold text-2xl">Total Projected: ₱{yearForecast.totalYearProjection?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                  <span className="text-secondary font-bold text-2xl">Total Projected: ₱{yearForecast.totalYearProjection?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                 </div>
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-4">
-                  <div className="bg-blue-600/20 border border-blue-500 rounded-lg p-4 text-center relative">
+                  <div className="bg-primary/20 border border-primary rounded-lg p-4 text-center relative">
                     <span className="block text-white text-base font-semibold mb-2">{revenueProjection.monthName}</span>
   <span className="block text-white font-bold text-2xl">₱{revenueProjection.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
-                    <span className="absolute -top-2 right-2 bg-blue-500 text-white text-[0.7rem] px-2 py-1 rounded-full">Current</span>
+                    <span className="absolute -top-2 right-2 bg-primary text-white text-[0.7rem] px-2 py-1 rounded-full">Current</span>
                   </div>
                   {yearForecast.futureMonths.map((month, index) => (
                     <div key={index} className="bg-white/3 rounded-lg p-4 text-center relative">
@@ -839,16 +839,16 @@ const Stock = () => {
             )}
           </div>
         ) : (
-          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-12 text-center text-white mb-8">
+          <div className="bg-gradient-to-br from-primary-dark to-primary-dark rounded-2xl p-12 text-center text-white mb-8">
             <div className="text-6xl mb-4 opacity-50">📊</div>
             <h3 className="text-white mb-2">Monthly Revenue Prediction</h3>
             <p className="text-slate-400 mb-6">{projectionLoading ? 'Loading revenue projections...' : `Predictions will be available on ${new Date(new Date().getFullYear(), new Date().getMonth(), 4).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}.`}</p>
             {!projectionLoading && (
               <div className="flex flex-col items-center gap-4">
                 <div className="flex gap-2">
-                  <span className="w-2 h-2 bg-blue-500 rounded-full animate-[pulse_1.5s_infinite]"></span>
-                  <span className="w-2 h-2 bg-blue-500 rounded-full animate-[pulse_1.5s_infinite]"></span>
-                  <span className="w-2 h-2 bg-blue-500 rounded-full animate-[pulse_1.5s_infinite]"></span>
+                  <span className="w-2 h-2 bg-primary rounded-full animate-[pulse_1.5s_infinite]"></span>
+                  <span className="w-2 h-2 bg-primary rounded-full animate-[pulse_1.5s_infinite]"></span>
+                  <span className="w-2 h-2 bg-primary rounded-full animate-[pulse_1.5s_infinite]"></span>
                 </div>
                 <span>We're calibrating the prediction system. Check back in {4 - new Date().getDate()} day{4 - new Date().getDate() !== 1 ? 's' : ''}!</span>
               </div>

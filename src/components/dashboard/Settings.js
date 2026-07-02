@@ -310,7 +310,7 @@ const Settings = ({ stationData, setStationData }) => {
     return (
       <section className="p-8 max-w-[1200px] mx-auto">
         <div className="flex flex-col items-center justify-center py-16 text-center">
-          <div className="w-10 h-10 border-4 border-slate-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
+          <div className="w-10 h-10 border-4 border-slate-200 border-t-primary rounded-full animate-spin mb-4"></div>
           <p className="text-slate-500 text-lg">Loading station data...</p>
         </div>
       </section>
@@ -324,7 +324,7 @@ const Settings = ({ stationData, setStationData }) => {
         <div className="settings-actions">
           {!isEditing ? (
             <button 
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all flex items-center gap-2 hover:bg-blue-700 hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed"
+              className="bg-primary text-white px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all flex items-center gap-2 hover:bg-primary-dark hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed"
               onClick={() => setIsEditing(true)}
             >
               ✏️ Edit Settings
@@ -345,7 +345,7 @@ const Settings = ({ stationData, setStationData }) => {
                 Cancel
               </button>
               <button 
-                className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all flex items-center gap-2 hover:bg-blue-700 hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed"
+                className="bg-primary text-white px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all flex items-center gap-2 hover:bg-primary-dark hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed"
                 onClick={handleSave}
                 disabled={loading}
               >
@@ -382,7 +382,7 @@ const Settings = ({ stationData, setStationData }) => {
               onChange={handleInputChange}
               disabled={!isEditing}
               placeholder="Enter station name"
-              className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
+              className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
             />
           </div>
           <div className="mb-5">
@@ -394,7 +394,7 @@ const Settings = ({ stationData, setStationData }) => {
               onChange={handleInputChange}
               disabled={!isEditing}
               placeholder="Enter owner name"
-              className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
+              className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
             />
           </div>
           <div className="mb-5">
@@ -406,7 +406,7 @@ const Settings = ({ stationData, setStationData }) => {
               onChange={handleInputChange}
               disabled={!isEditing}
               placeholder="Enter phone number"
-              className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
+              className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
             />
           </div>
           <div className="mb-5">
@@ -418,7 +418,7 @@ const Settings = ({ stationData, setStationData }) => {
               onChange={handleInputChange}
               disabled={!isEditing}
               placeholder="Enter email address"
-              className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
+              className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
             />
           </div>
         </div>
@@ -435,7 +435,7 @@ const Settings = ({ stationData, setStationData }) => {
               onChange={handleInputChange}
               disabled={!isEditing}
               placeholder="Enter street address"
-              className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
+              className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -448,7 +448,7 @@ const Settings = ({ stationData, setStationData }) => {
                 onChange={handleInputChange}
                 disabled={!isEditing}
                 placeholder="City"
-                className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
+                className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
               />
             </div>
             <div className="mb-5">
@@ -460,7 +460,7 @@ const Settings = ({ stationData, setStationData }) => {
                 onChange={handleInputChange}
                 disabled={!isEditing}
                 placeholder="State"
-                className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
+                className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
               />
             </div>
           </div>
@@ -473,7 +473,7 @@ const Settings = ({ stationData, setStationData }) => {
               onChange={handleInputChange}
               disabled={!isEditing}
               placeholder="ZIP code"
-              className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
+              className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
             />
           </div>
           
@@ -503,8 +503,8 @@ const Settings = ({ stationData, setStationData }) => {
               </div>
               
               {(formData.latitude && formData.longitude) && (
-                <div className="flex flex-col gap-2 p-4 bg-sky-50 rounded-md border border-sky-200 mt-3">
-                  <span className="text-sky-700 text-sm font-semibold flex items-center gap-2">🏠 Actual Location:</span>
+                <div className="flex flex-col gap-2 p-4 bg-surface rounded-md border border-secondary/20 mt-3">
+                  <span className="text-primary-dark text-sm font-semibold flex items-center gap-2">🏠 Actual Location:</span>
                   <span className="text-slate-800 text-xs leading-relaxed italic">{actualLocation || 'Loading location details...'}</span>
                 </div>
               )}
@@ -514,7 +514,7 @@ const Settings = ({ stationData, setStationData }) => {
                   type="button"
                   onClick={getCurrentLocation}
                   disabled={isGettingLocation || !isEditing}
-                  className={`w-full py-3 px-4 bg-blue-600 text-white border-none rounded-lg font-semibold cursor-pointer transition-all flex items-center justify-center gap-2 text-base hover:bg-blue-700 hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed ${isGettingLocation ? 'loading' : ''}`}
+                  className={`w-full py-3 px-4 bg-primary text-white border-none rounded-lg font-semibold cursor-pointer transition-all flex items-center justify-center gap-2 text-base hover:bg-primary-dark hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed ${isGettingLocation ? 'loading' : ''}`}
                 >
                   {isGettingLocation ? (
                     <>
@@ -549,7 +549,7 @@ const Settings = ({ stationData, setStationData }) => {
                   value={formData.businessHours?.open || '08:00'}
                   onChange={handleInputChange}
                   disabled={!isEditing}
-                  className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
+                  className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
                 />
               </div>
               <div className="mb-5">
@@ -560,11 +560,11 @@ const Settings = ({ stationData, setStationData }) => {
                   value={formData.businessHours?.close || '18:00'}
                   onChange={handleInputChange}
                   disabled={!isEditing}
-                  className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
+                  className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
-            <div className="mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-center text-emerald-700 font-medium">
+            <div className="mt-4 p-4 bg-secondary/5 border border-secondary/20 rounded-lg text-center text-primary-dark font-medium">
               <span>Current Hours: </span>
               <strong>{formData.businessHours?.open || '08:00'} - {formData.businessHours?.close || '18:00'}</strong>
             </div>
@@ -577,7 +577,7 @@ const Settings = ({ stationData, setStationData }) => {
           <div className="mb-6">
             <label>Available Services</label>
             <div className="flex flex-col gap-4 mt-3">
-              <label className="flex items-center gap-3 cursor-pointer p-3 border-2 border-slate-200 rounded-lg transition-all hover:border-blue-600 hover:bg-slate-50">
+              <label className="flex items-center gap-3 cursor-pointer p-3 border-2 border-slate-200 rounded-lg transition-all hover:border-primary hover:bg-primary/5">
                 <input
                   type="checkbox"
                   name="serviceTypes"
@@ -589,7 +589,7 @@ const Settings = ({ stationData, setStationData }) => {
                 />
                 <span className="font-medium text-gray-700">🚚 Delivery Service</span>
               </label>
-              <label className="flex items-center gap-3 cursor-pointer p-3 border-2 border-slate-200 rounded-lg transition-all hover:border-blue-600 hover:bg-slate-50">
+              <label className="flex items-center gap-3 cursor-pointer p-3 border-2 border-slate-200 rounded-lg transition-all hover:border-primary hover:bg-primary/5">
                 <input
                   type="checkbox"
                   name="serviceTypes"
@@ -613,7 +613,7 @@ const Settings = ({ stationData, setStationData }) => {
                   value={formData.deliveryRadius || 5}
                   onChange={handleInputChange}
                   disabled={!isEditing}
-                  className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
+                  className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
                 >
                   <option value="5">5 km</option>
                   <option value="10">10 km</option>
@@ -691,7 +691,7 @@ const Settings = ({ stationData, setStationData }) => {
                 min="0"
                 step="0.01"
                 placeholder="Enter price per gallon"
-                className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
+                className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
               />
               {formData.pricing_gallon_pure === null && (
                 <div className="text-xs text-slate-500 italic mt-1">Not yet set</div>
@@ -709,7 +709,7 @@ const Settings = ({ stationData, setStationData }) => {
                 min="0"
                 step="0.01"
                 placeholder="Enter price per liter"
-                className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
+                className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
               />
               {formData.pricing_liter_spring === null && (
                 <div className="text-xs text-slate-500 italic mt-1">Not yet set</div>
@@ -727,7 +727,7 @@ const Settings = ({ stationData, setStationData }) => {
                 min="0"
                 step="0.01"
                 placeholder="Enter price per gallon"
-                className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
+                className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
               />
               {formData.pricing_gallon_mineral === null && (
                 <div className="text-xs text-slate-500 italic mt-1">Not yet set</div>
@@ -745,7 +745,7 @@ const Settings = ({ stationData, setStationData }) => {
                 min="0"
                 step="0.01"
                 placeholder="Enter delivery fee"
-                className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
+                className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
               />
               {formData.pricing_delivery_fee === null && (
                 <div className="text-xs text-slate-500 italic mt-1">Not yet set</div>

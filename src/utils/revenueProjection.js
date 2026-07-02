@@ -109,19 +109,19 @@ export const getConfidenceLevel = (daysPassed) => {
   };
   if (daysPassed < 15) return { 
     level: 'Medium', 
-    color: '#3b82f6', 
+    color: '#065A82', 
     message: 'Growing confidence in predictions',
     icon: '📈'
   };
   if (daysPassed < 25) return { 
     level: 'High', 
-    color: '#10b981', 
+    color: '#1C7293', 
     message: 'Strong prediction accuracy',
     icon: '🔮'
   };
   return { 
     level: 'Very High', 
-    color: '#059669', 
+    color: '#1B3B6F', 
     message: 'Month almost complete - highly accurate',
     icon: '✅'
   };

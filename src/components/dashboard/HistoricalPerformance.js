@@ -254,7 +254,7 @@ const HistoricalPerformance = ({ stationId }) => {
           <h2 className="text-slate-800 text-2xl m-0 mb-2">📚 Monthly Reports</h2>
         </div>
         <div className="flex flex-col items-center justify-center py-12 text-slate-500">
-          <div className="border-[3px] border-slate-200 border-t-blue-600 rounded-full w-10 h-10 animate-spin mb-4"></div>
+          <div className="border-[3px] border-slate-200 border-t-primary rounded-full w-10 h-10 animate-spin mb-4"></div>
           <p>Loading historical data...</p>
         </div>
       </section>
@@ -280,7 +280,7 @@ const HistoricalPerformance = ({ stationId }) => {
 
       {/* Live Data Indicator - Shows when using real orders */}
       {!showSkeleton && historicalData.some(m => m.fromOrders) && (
-        <div className="bg-emerald-100 border-l-4 border-l-emerald-500 p-3 mb-6 rounded-lg text-sm text-emerald-800 flex items-center gap-2">
+        <div className="bg-secondary/10 border-l-4 border-l-secondary p-3 mb-6 rounded-lg text-sm text-primary-dark flex items-center gap-2">
           <span className="text-lg">✅</span>
           <span>Showing real data from your orders. {historicalData.some(m => m.fromOrders) && '(Some months calculated directly from orders)'}</span>
         </div>
@@ -294,7 +294,7 @@ const HistoricalPerformance = ({ stationId }) => {
           return (
             <div
               key={`${month.monthKey}-${month.year}`}
-              className={`bg-slate-50 border border-slate-200 rounded-xl overflow-hidden transition-all hover:shadow-lg hover:-translate-y-0.5 ${isExpanded ? 'bg-white border-blue-500 shadow-[0_4px_16px_rgba(59,130,246,0.1)]' : ''} ${month.isSkeleton ? 'skeleton-card' : ''}`}
+              className={`bg-slate-50 border border-slate-200 rounded-xl overflow-hidden transition-all hover:shadow-lg hover:-translate-y-0.5 ${isExpanded ? 'bg-white border-primary shadow-[0_4px_16px_rgba(2,128,144,0.1)]' : ''} ${month.isSkeleton ? 'skeleton-card' : ''}`}
             >
               <div
                 className="flex justify-between items-center p-5 cursor-pointer select-none"
@@ -305,7 +305,7 @@ const HistoricalPerformance = ({ stationId }) => {
                   <div>
                     <h3 className="text-slate-800 text-lg m-0 mb-1">
                       {formatMonthName(month.monthKey)} {month.year}
-                      {month.fromOrders && <span className="bg-emerald-500 text-white text-[0.7rem] px-2 py-1 rounded-full ml-2 font-medium align-middle"> Live</span>}
+                      {month.fromOrders && <span className="bg-secondary text-white text-[0.7rem] px-2 py-1 rounded-full ml-2 font-medium align-middle"> Live</span>}
                     </h3>
                     <p className="text-slate-500 text-sm m-0">
                       {month.orders} orders • ₱{month.actual?.toLocaleString(undefined, {
@@ -328,7 +328,7 @@ const HistoricalPerformance = ({ stationId }) => {
                     <span className="text-base">{accuracyInfo.icon}</span>
                     <span className="font-bold">{month.accuracy.toFixed(1)}%</span>
                   </div>
-                  <button className="bg-blue-500/10 border border-blue-500/30 text-blue-500 px-3 py-2 rounded-lg cursor-pointer text-sm font-semibold transition-all hover:bg-blue-500/20 hover:border-blue-500">
+                  <button className="bg-primary/10 border border-primary/30 text-primary px-3 py-2 rounded-lg cursor-pointer text-sm font-semibold transition-all hover:bg-primary/20 hover:border-primary">
                     {isExpanded ? '▲' : '▼'}
                   </button>
                 </div>
@@ -336,7 +336,7 @@ const HistoricalPerformance = ({ stationId }) => {
 
               {isExpanded && (
                 <div className="px-5 pb-5 border-t border-slate-200 animate-[slideDown_0.3s_ease]">
-                  <div className="flex items-center justify-around bg-gradient-to-br from-sky-50 to-sky-100 rounded-xl p-6 mb-6 gap-4">
+                  <div className="flex items-center justify-around bg-gradient-to-br from-surface to-surface rounded-xl p-6 mb-6 gap-4">
                     <div className="flex flex-col items-center gap-2">
                       <span className="text-slate-500 text-xs uppercase tracking-wider font-semibold">Projected</span>
                       <span className="text-xl font-bold text-slate-400">
@@ -349,7 +349,7 @@ const HistoricalPerformance = ({ stationId }) => {
                     <div className="text-2xl text-slate-400">→</div>
                     <div className="flex flex-col items-center gap-2">
                       <span className="text-slate-500 text-xs uppercase tracking-wider font-semibold">Actual</span>
-                      <span className="text-xl font-bold text-blue-600">
+                      <span className="text-xl font-bold text-primary">
                         ₱{month.actual?.toLocaleString(undefined, {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2
@@ -391,7 +391,7 @@ const HistoricalPerformance = ({ stationId }) => {
                           />
                           <Bar
                             dataKey="revenue"
-                            fill="#3b82f6"
+                            fill="#065A82"
                             radius={[4, 4, 0, 0]}
                           />
                         </BarChart>

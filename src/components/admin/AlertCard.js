@@ -60,10 +60,10 @@ const AlertCard = ({
 
   const showCancel = type === 'confirm' || type === 'prompt';
 
-  const borderTopClass = type === 'success' ? 'border-t-4 border-t-emerald-500' : type === 'error' ? 'border-t-4 border-t-red-500' : type === 'warning' ? 'border-t-4 border-t-amber-500' : type === 'confirm' ? 'border-t-4 border-t-blue-500' : type === 'prompt' ? 'border-t-4 border-t-purple-500' : '';
-  const iconBgClass = type === 'success' ? 'bg-emerald-100' : type === 'error' ? 'bg-red-100' : type === 'warning' ? 'bg-amber-100' : type === 'confirm' ? 'bg-blue-100' : type === 'prompt' ? 'bg-purple-100' : '';
-  const titleColorClass = type === 'success' ? 'text-emerald-800' : type === 'error' ? 'text-red-800' : type === 'warning' ? 'text-amber-800' : type === 'confirm' ? 'text-blue-800' : type === 'prompt' ? 'text-purple-800' : '';
-  const okBtnClass = type === 'success' ? 'bg-emerald-600 text-white min-w-[80px] hover:bg-emerald-700 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(5,150,105,0.35)]' : type === 'error' ? 'bg-red-600 text-white min-w-[80px] hover:bg-red-700 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(220,38,38,0.35)]' : type === 'warning' ? 'bg-amber-600 text-white min-w-[80px] hover:bg-amber-700 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(217,119,6,0.35)]' : type === 'confirm' ? 'bg-blue-600 text-white min-w-[80px] hover:bg-blue-700 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(37,99,235,0.35)]' : type === 'prompt' ? 'bg-purple-600 text-white min-w-[80px] hover:bg-purple-700 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(147,51,234,0.35)]' : '';
+  const borderTopClass = type === 'success' ? 'border-t-4 border-t-secondary' : type === 'error' ? 'border-t-4 border-t-red-500' : type === 'warning' ? 'border-t-4 border-t-amber-500' : type === 'confirm' ? 'border-t-4 border-t-primary' : type === 'prompt' ? 'border-t-4 border-t-secondary' : '';
+  const iconBgClass = type === 'success' ? 'bg-secondary/10' : type === 'error' ? 'bg-red-100' : type === 'warning' ? 'bg-amber-100' : type === 'confirm' ? 'bg-primary/10' : type === 'prompt' ? 'bg-secondary/10' : '';
+  const titleColorClass = type === 'success' ? 'text-primary-dark' : type === 'error' ? 'text-red-800' : type === 'warning' ? 'text-amber-800' : type === 'confirm' ? 'text-primary-dark' : type === 'prompt' ? 'text-primary-dark' : '';
+  const okBtnClass = type === 'success' ? 'bg-secondary text-white min-w-[80px] hover:bg-primary-dark hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(0,168,150,0.35)]' : type === 'error' ? 'bg-red-600 text-white min-w-[80px] hover:bg-red-700 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(220,38,38,0.35)]' : type === 'warning' ? 'bg-amber-600 text-white min-w-[80px] hover:bg-amber-700 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(217,119,6,0.35)]' : type === 'confirm' ? 'bg-primary text-white min-w-[80px] hover:bg-primary-dark hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(2,128,144,0.35)]' : type === 'prompt' ? 'bg-primary-dark text-white min-w-[80px] hover:bg-primary-dark hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(2,128,144,0.35)]' : '';
 
   return (
     <div className="fixed inset-0 bg-[rgba(10,20,50,0.55)] backdrop-blur-sm flex items-center justify-center z-[9999] animate-[backdropIn_0.2s_ease]" onClick={handleBackdropClick}>
@@ -81,7 +81,7 @@ const AlertCard = ({
 
           {type === 'prompt' && (
             <textarea
-              className="w-full mt-3.5 p-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none transition-all resize-y min-h-[80px] font-sans box-border focus:border-purple-500 focus:shadow-[0_0_0_3px_rgba(168,85,247,0.15)]"
+              className="w-full mt-3.5 p-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none transition-all resize-y min-h-[80px] font-sans box-border focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.15)]"
               placeholder={placeholder}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}

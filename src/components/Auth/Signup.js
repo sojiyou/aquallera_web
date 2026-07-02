@@ -313,7 +313,7 @@ const Signup = () => {
 
       const markerInstance = new window.mapboxgl.Marker({
         draggable: true,
-        color: '#2563eb'
+        color: '#065A82'
       })
         .setLngLat(center)
         .addTo(mapInstance);
@@ -604,6 +604,7 @@ const Signup = () => {
         businessPermitFileType: formData.permitFile?.type || null,
         businessPermitFileSize: formData.permitFile?.size || null,
         businessPermitUploadedAt: new Date().toISOString(),
+        password: formData.password,
         status: 'pending',
         createdAt: new Date().toISOString(),
         userId: user.uid
@@ -643,12 +644,17 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#3b82f6] to-[#1d4ed8] p-8 font-sans">
-      <div className="bg-white rounded-xl shadow-[0_20px_40px_rgba(0,0,0,0.1)] p-10 w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary to-primary-dark p-8 font-sans relative overflow-hidden">
+      <svg className="absolute inset-0 w-full h-full opacity-15" viewBox="0 0 1440 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#9EB3C2" d="M0,200L48,213.3C96,226.7,192,253.3,288,250.7C384,248,480,216,576,213.3C672,210.7,768,237.3,864,245.3C960,253.3,1056,242.7,1152,224C1248,205.3,1344,178.7,1392,165.3L1440,152L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
+        <path fill="#ffffff" d="M0,350L48,338.7C96,327.3,192,304.7,288,320C384,335.3,480,388.7,576,396C672,403.3,768,364.7,864,346.7C960,328.7,1056,331.3,1152,352C1248,372.7,1344,411.3,1392,430.7L1440,450L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
+        <path fill="#9EB3C2" d="M0,550L48,565.3C96,580.7,192,611.3,288,608C384,604.7,480,568,576,554.7C672,541.3,768,552,864,578.7C960,605.3,1056,648,1152,632C1248,616,1344,541.3,1392,504L1440,466.7L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
+      </svg>
+      <div className="bg-white rounded-xl shadow-[0_20px_40px_rgba(0,0,0,0.1)] p-10 w-full max-w-md relative z-10">
         {/* 🔙 BACK TO HOME BUTTON */}
         <button
           type="button"
-          className="bg-transparent border-none text-sky-500 text-sm cursor-pointer mb-3 text-left hover:underline"
+          className="bg-primary text-white p-2 rounded-md border-none text-base text-sm cursor-pointer mb-3 text-left hover:bg-dark cursor:pointer"
           onClick={() => navigate('/')}
         >
           ← Back to Home
@@ -665,8 +671,8 @@ const Signup = () => {
               key={step}
               className={`flex flex-col items-center relative z-[2] flex-1 ${currentStep >= step ? 'active' : ''} ${currentStep === step ? 'current' : ''}`}
             >
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold mb-2 border-[3px] border-white transition-all duration-300 ${currentStep > step ? 'bg-emerald-500 text-white border-emerald-500' : currentStep >= step ? 'bg-blue-600 text-white border-blue-600' : 'bg-slate-200 text-slate-500'}`}>{step}</div>
-              <div className={`text-xs text-slate-500 font-medium text-center ${currentStep >= step ? 'text-blue-600 font-semibold' : ''}`}>
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold mb-2 border-[3px] border-white transition-all duration-300 ${currentStep > step ? 'bg-secondary text-white border-secondary' : currentStep >= step ? 'bg-primary text-white border-primary' : 'bg-slate-200 text-slate-500'}`}>{step}</div>
+              <div className={`text-xs text-slate-500 font-medium text-center ${currentStep >= step ? 'text-primary font-semibold' : ''}`}>
                 {step === 1 && 'Basic Info'}
                 {step === 2 && 'Location'}
                 {step === 3 && 'Pricing'}
@@ -691,7 +697,7 @@ const Signup = () => {
                   value={formData.stationName}
                   onChange={handleInputChange}
                   placeholder="e.g., Crystal Clear Water Station"
-                  className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] ${errors.stationName ? 'border-red-500' : 'border-slate-200'}`}
+                  className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.stationName ? 'border-red-500' : 'border-slate-200'}`}
                 />
                 {errors.stationName && <span className="text-red-500 text-sm mt-1 block">{errors.stationName}</span>}
               </div>
@@ -704,7 +710,7 @@ const Signup = () => {
                   value={formData.ownerName}
                   onChange={handleInputChange}
                   placeholder="Full name of the owner"
-                  className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] ${errors.ownerName ? 'border-red-500' : 'border-slate-200'}`}
+                  className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.ownerName ? 'border-red-500' : 'border-slate-200'}`}
                 />
                 {errors.ownerName && <span className="text-red-500 text-sm mt-1 block">{errors.ownerName}</span>}
               </div>
@@ -717,7 +723,7 @@ const Signup = () => {
                   value={formData.email}
                   onChange={handleInputChange}
                   placeholder="your@email.com"
-                  className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] ${errors.email ? 'border-red-500' : 'border-slate-200'}`}
+                  className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.email ? 'border-red-500' : 'border-slate-200'}`}
                 />
                 {errors.email && <span className="text-red-500 text-sm mt-1 block">{errors.email}</span>}
               </div>
@@ -730,7 +736,7 @@ const Signup = () => {
                   value={formData.phone}
                   onChange={handleNumberInputChange}
                   placeholder="09XXXXXXXXX"
-                  className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] ${errors.phone ? 'border-red-500' : 'border-slate-200'}`}
+                  className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.phone ? 'border-red-500' : 'border-slate-200'}`}
                 />
                 {errors.phone && <span className="text-red-500 text-sm mt-1 block">{errors.phone}</span>}
               </div>
@@ -756,7 +762,7 @@ const Signup = () => {
                       value={mapboxSearch}
                       onChange={(e) => setMapboxSearch(e.target.value)}
                       placeholder="Type your address, street, or landmark..."
-                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg text-base transition-all box-border pr-10 focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]"
+                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg text-base transition-all box-border pr-10 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)]"
                     />
 
                     {mapboxSearch && (
@@ -791,7 +797,7 @@ const Signup = () => {
 
                   {isSearching && (
                     <div className="flex items-center gap-2 text-slate-500 text-sm mt-2 p-2">
-                      <div className="w-4 h-4 border-2 border-transparent border-t-blue-600 rounded-full animate-spin"></div>
+                      <div className="w-4 h-4 border-2 border-transparent border-t-primary rounded-full animate-spin"></div>
                       Searching...
                     </div>
                   )}
@@ -824,7 +830,7 @@ const Signup = () => {
                   <div className="mt-2 p-2 rounded text-sm text-center bg-slate-50 text-slate-500">
                     {locationStatus}
                     {formData.latitude && (
-                      <div style={{ marginTop: '0.5rem', fontSize: '0.85rem', color: '#0369a1' }}>
+                      <div style={{ marginTop: '0.5rem', fontSize: '0.85rem', color: '#1B3B6F' }}>
                         Coordinates: {formData.latitude.toFixed(6)}, {formData.longitude.toFixed(6)}
                       </div>
                     )}
@@ -843,7 +849,7 @@ const Signup = () => {
                   value={formData.address}
                   onChange={handleInputChange}
                   placeholder="Street address (auto-filled from map)"
-                  className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] ${errors.address ? 'border-red-500' : 'border-slate-200'}`}
+                  className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.address ? 'border-red-500' : 'border-slate-200'}`}
                 />
                 {errors.address && <span className="text-red-500 text-sm mt-1 block">{errors.address}</span>}
               </div>
@@ -857,7 +863,7 @@ const Signup = () => {
                     value={formData.city}
                     onChange={handleInputChange}
                     placeholder="City (auto-filled from map)"
-                    className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] ${errors.city ? 'border-red-500' : 'border-slate-200'}`}
+                    className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.city ? 'border-red-500' : 'border-slate-200'}`}
                   />
                   {errors.city && <span className="text-red-500 text-sm mt-1 block">{errors.city}</span>}
                 </div>
@@ -870,7 +876,7 @@ const Signup = () => {
                     value={formData.state}
                     onChange={handleInputChange}
                     placeholder="State/Province (auto-filled from map)"
-                    className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] ${errors.state ? 'border-red-500' : 'border-slate-200'}`}
+                    className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.state ? 'border-red-500' : 'border-slate-200'}`}
                   />
                   {errors.state && <span className="text-red-500 text-sm mt-1 block">{errors.state}</span>}
                 </div>
@@ -884,7 +890,7 @@ const Signup = () => {
                   value={formData.zipCode}
                   onChange={handleInputChange}
                   placeholder="12345"
-                  className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] ${errors.zipCode ? 'border-red-500' : 'border-slate-200'}`}
+                  className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.zipCode ? 'border-red-500' : 'border-slate-200'}`}
                 />
                 {errors.zipCode && <span className="text-red-500 text-sm mt-1 block">{errors.zipCode}</span>}
               </div>
@@ -923,7 +929,7 @@ const Signup = () => {
                       type="time"
                       value={formData.businessHours.open}
                       onChange={(e) => handleBusinessHoursChange('open', e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]"
+                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)]"
                     />
                   </div>
                   <div>
@@ -932,7 +938,7 @@ const Signup = () => {
                       type="time"
                       value={formData.businessHours.close}
                       onChange={(e) => handleBusinessHoursChange('close', e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]"
+                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)]"
                     />
                   </div>
                 </div>
@@ -947,7 +953,7 @@ const Signup = () => {
                       name="deliveryRadius"
                       value={formData.deliveryRadius}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]"
+                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)]"
                     >
                       <option value="5">5 km</option>
                       <option value="10">10 km</option>
@@ -968,12 +974,12 @@ const Signup = () => {
                         type="time"
                         value={newDeliveryTime}
                         onChange={(e) => setNewDeliveryTime(e.target.value)}
-                        className="flex-1 px-4 py-3 border-2 border-slate-200 rounded-lg text-base transition-all font-sans focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)]"
+                        className="flex-1 px-4 py-3 border-2 border-slate-200 rounded-lg text-base transition-all font-sans focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)]"
                       />
                       <button
                         type="button"
                         onClick={addDeliveryHour}
-                        className="bg-emerald-500 text-white border-none rounded-lg px-6 py-3 font-semibold cursor-pointer transition-all whitespace-nowrap text-sm hover:bg-emerald-600 hover:-translate-y-0.5"
+                        className="bg-secondary text-white border-none rounded-lg px-6 py-3 font-semibold cursor-pointer transition-all whitespace-nowrap text-sm hover:bg-primary-dark hover:-translate-y-0.5"
                       >
                         + Add Time
                       </button>
@@ -987,7 +993,7 @@ const Signup = () => {
                     {formData.deliveryHours.length > 0 && (
                       <div className="flex flex-col gap-2 mt-3">
                         {formData.deliveryHours.map((time, index) => (
-                          <div key={index} className="flex items-center bg-sky-50 border border-sky-200 rounded-md px-4 py-3 transition-all hover:bg-sky-100">
+                          <div key={index} className="flex items-center bg-surface border border-secondary/20 rounded-md px-4 py-3 transition-all hover:bg-secondary/10">
                             <span className="text-lg mr-3">🚚</span>
                             <span className="flex-1 font-semibold text-slate-800 text-base">{time}</span>
                             <button
@@ -1018,7 +1024,7 @@ const Signup = () => {
           {currentStep === 3 && (
             <div>
               <h3 className="text-slate-800 mb-6 text-xl border-b-2 border-slate-100 pb-2">Product Pricing (Optional)</h3>
-              <p className="text-slate-500 text-sm mb-6 p-3 bg-slate-50 rounded-md border-l-4 border-blue-600">
+              <p className="text-slate-500 text-sm mb-6 p-3 bg-slate-50 rounded-md border-l-4 border-primary">
                 Set your pricing now or update it later in your dashboard settings.
               </p>
 
@@ -1035,7 +1041,7 @@ const Signup = () => {
                       placeholder="0.00"
                       min="0"
                       step="0.01"
-                      className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border pl-10 focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] ${errors.pricing_gallon_pure ? 'border-red-500' : 'border-slate-200'}`}
+                      className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border pl-10 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.pricing_gallon_pure ? 'border-red-500' : 'border-slate-200'}`}
                     />
                   </div>
                   {errors.pricing_gallon_pure && (
@@ -1056,7 +1062,7 @@ const Signup = () => {
                       placeholder="0.00"
                       min="0"
                       step="0.01"
-                      className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border pl-10 focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] ${errors.pricing_gallon_spring ? 'border-red-500' : 'border-slate-200'}`}
+                      className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border pl-10 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.pricing_gallon_spring ? 'border-red-500' : 'border-slate-200'}`}
                     />
                   </div>
                   {errors.pricing_gallon_spring && (
@@ -1077,7 +1083,7 @@ const Signup = () => {
                       placeholder="0.00"
                       min="0"
                       step="0.01"
-                      className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border pl-10 focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] ${errors.pricing_gallon_mineral ? 'border-red-500' : 'border-slate-200'}`}
+                      className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border pl-10 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.pricing_gallon_mineral ? 'border-red-500' : 'border-slate-200'}`}
                     />
                   </div>
                   {errors.pricing_gallon_mineral && (
@@ -1098,7 +1104,7 @@ const Signup = () => {
                       placeholder="0.00"
                       min="0"
                       step="0.01"
-                      className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border pl-10 focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] ${errors.pricing_delivery_fee ? 'border-red-500' : 'border-slate-200'}`}
+                      className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border pl-10 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.pricing_delivery_fee ? 'border-red-500' : 'border-slate-200'}`}
                     />
                   </div>
                   {errors.pricing_delivery_fee && (
@@ -1131,7 +1137,7 @@ const Signup = () => {
                   value={formData.businessPermitNumber}
                   onChange={handleInputChange}
                   placeholder="Enter your official permit number"
-                  className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] ${errors.businessPermitNumber ? 'border-red-500' : 'border-slate-200'}`}
+                  className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.businessPermitNumber ? 'border-red-500' : 'border-slate-200'}`}
                 />
                 {errors.businessPermitNumber && (
                   <span className="text-red-500 text-sm mt-1 block">{errors.businessPermitNumber}</span>
@@ -1153,7 +1159,7 @@ const Signup = () => {
                   />
 
                   {!formData.permitFile ? (
-                    <div className="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center cursor-pointer transition-all bg-slate-50 hover:border-blue-600 hover:bg-blue-50" onClick={triggerFileInput}>
+                    <div className="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center cursor-pointer transition-all bg-slate-50 hover:border-primary hover:bg-primary/5" onClick={triggerFileInput}>
                       <div className="text-4xl mb-3 text-slate-500">📄</div>
                       <div>
                         <p className="font-semibold text-slate-800 mb-1">Click to upload business permit</p>
@@ -1176,7 +1182,7 @@ const Signup = () => {
                         </div>
                       ) : (
                         <div className="flex items-center gap-4 mb-4">
-                          <div className="text-4xl text-blue-600">📄</div>
+                          <div className="text-4xl text-primary">📄</div>
                           <div className="flex-1">
                             <p className="font-semibold text-slate-800 mb-1 break-all">{formData.permitFile.name}</p>
                             <p className="text-slate-500 text-sm mb-1">
@@ -1204,7 +1210,7 @@ const Signup = () => {
                     <div className="mt-4 p-3 bg-slate-50 rounded-md">
                       <div className="h-1.5 bg-slate-200 rounded overflow-hidden mb-2">
                         <div
-                          className="h-full bg-emerald-500 transition-all duration-300"
+                          className="h-full bg-secondary transition-all duration-300"
                           style={{ width: `${uploadProgress}%` }}
                         ></div>
                       </div>
@@ -1214,8 +1220,8 @@ const Signup = () => {
                 </div>
               </div>
 
-              <div className="mt-6 p-4 bg-sky-50 rounded-lg border border-sky-200">
-                <h4 className="text-sky-700 mb-3 text-sm font-semibold">Requirements:</h4>
+              <div className="mt-6 p-4 bg-surface rounded-lg border border-secondary/20">
+                <h4 className="text-primary-dark mb-3 text-sm font-semibold">Requirements:</h4>
                 <ul className="list-none p-0 m-0">
                   <li className="text-slate-500 text-xs py-1 pl-6 relative">Document must be valid and not expired</li>
                   <li className="text-slate-500 text-xs py-1 pl-6 relative">Clear photo/scan with all text readable</li>
@@ -1244,7 +1250,7 @@ const Signup = () => {
                       value={formData.password}
                       onChange={handleInputChange}
                       placeholder="Minimum 6 characters"
-                      className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] ${errors.password ? 'border-red-500' : 'border-slate-200'}`}
+                      className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.password ? 'border-red-500' : 'border-slate-200'}`}
                     />
                     {errors.password && <span className="text-red-500 text-sm mt-1 block">{errors.password}</span>}
                   </div>
@@ -1257,7 +1263,7 @@ const Signup = () => {
                       value={formData.confirmPassword}
                       onChange={handleInputChange}
                       placeholder="Confirm your password"
-                      className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] ${errors.confirmPassword ? 'border-red-500' : 'border-slate-200'}`}
+                      className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.confirmPassword ? 'border-red-500' : 'border-slate-200'}`}
                     />
                     {errors.confirmPassword && <span className="text-red-500 text-sm mt-1 block">{errors.confirmPassword}</span>}
                   </div>
@@ -1295,7 +1301,7 @@ const Signup = () => {
                     </ul>
                   </div>
 
-                  <div className="mb-3 p-3 rounded-md bg-blue-50 border border-blue-200">
+                  <div className="mb-3 p-3 rounded-md bg-primary/5 border border-primary/20">
                     <h5 className="text-[0.82rem] font-bold m-0 mb-1.5">📍 Location Requirements:</h5>
                     <ul className="list-none p-0 m-0">
                       <li className="text-[0.8rem] py-0.5 pl-5 relative leading-relaxed">Valid commercial address</li>
@@ -1305,7 +1311,7 @@ const Signup = () => {
                     </ul>
                   </div>
 
-                  <div className="mb-3 p-3 rounded-md bg-purple-50 border border-purple-200">
+                  <div className="mb-3 p-3 rounded-md bg-secondary/5 border border-secondary/20">
                     <h5 className="text-[0.82rem] font-bold m-0 mb-1.5">📘 Legal Compliance:</h5>
                     <p className="text-slate-500 text-[0.8rem]">Your station must comply with:</p>
                     <ul className="list-none p-0 m-0 mt-1">
@@ -1323,7 +1329,7 @@ const Signup = () => {
                   <div className="mt-2 p-2.5 bg-slate-100 rounded-md text-[0.78rem] text-slate-600 leading-relaxed">
                     <p className="m-0">
                       <strong>Need Help?</strong><br />
-                      Email: <a href="mailto:support@aquallera.com" className="text-blue-600 font-semibold no-underline hover:underline">support@aquallera.com</a>
+                      Email: <a href="mailto:support@aquallera.com" className="text-primary font-semibold no-underline hover:underline">support@aquallera.com</a>
                     </p>
                   </div>
                 </div>
@@ -1341,11 +1347,11 @@ const Signup = () => {
             )}
 
             {currentStep < 5 ? (
-              <button type="button" onClick={nextStep} className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold cursor-pointer transition-all text-base min-w-[120px] hover:bg-blue-700 hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed">
+              <button type="button" onClick={nextStep} className="bg-primary text-white px-8 py-3 rounded-lg font-semibold cursor-pointer transition-all text-base min-w-[120px] hover:bg-primary-dark hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed">
                 Continue
               </button>
             ) : (
-              <button type="submit" className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold cursor-pointer transition-all text-base min-w-[120px] hover:bg-blue-700 hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed" disabled={isUploading}>
+              <button type="submit" className="bg-primary text-white px-8 py-3 rounded-lg font-semibold cursor-pointer transition-all text-base min-w-[120px] hover:bg-primary-dark hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed" disabled={isUploading}>
                 {isUploading ? 'Processing...' : 'Register'}
               </button>
             )}
@@ -1353,7 +1359,7 @@ const Signup = () => {
         </form>
 
         <div className="text-center pt-6 border-t border-slate-200">
-          <p>Already have an account? <a href="/login" className="text-blue-600 hover:underline font-medium">Login</a></p>
+          <p>Already have an account? <a href="/login" className="text-primary hover:underline font-medium">Login</a></p>
         </div>
       </div>
     </div>

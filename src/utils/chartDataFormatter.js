@@ -117,9 +117,9 @@ export const getChartConfig = () => ({
   lineProps: {
     actual: {
       type: "monotone",
-      stroke: "#2563eb",
+      stroke: "#065A82",
       strokeWidth: 3,
-      dot: { r: 4, fill: "#2563eb" },
+      dot: { r: 4, fill: "#065A82" },
       activeDot: { r: 6 },
       name: "Actual Revenue"
     },

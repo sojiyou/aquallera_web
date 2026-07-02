@@ -271,6 +271,7 @@ const AdminPage = () => {
             const stationRef = ref(database, `waterStations/${stationId}`);
             await update(stationRef, {
               status: 'pending',
+              approvedAt: null,
               revokedAt: new Date().toISOString()
             });
 
@@ -332,7 +333,7 @@ const AdminPage = () => {
   if (!isAuthenticated) {
     return (
       <>
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#3b82f6] to-[#1d4ed8] p-4">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary to-primary-dark p-4">
         <div className="bg-white rounded-2xl p-12 w-full max-w-[450px] shadow-2xl text-center">
           <div>
             <h1 className="text-slate-800 m-0 mb-2 text-3xl">🔐 AQUA-LLERA Admin Portal</h1>
@@ -350,7 +351,7 @@ const AdminPage = () => {
                 placeholder="admin@aquallera.com"
                 required
                 autoComplete="email"
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-base transition-all focus:outline-none focus:border-[#667eea] focus:shadow-[0_0_0_3px_rgba(102,126,234,0.1)]"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-base transition-all focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)]"
               />
             </div>
 
@@ -364,11 +365,11 @@ const AdminPage = () => {
                 placeholder="Enter password..."
                 required
                 autoComplete="current-password"
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-base transition-all focus:outline-none focus:border-[#667eea] focus:shadow-[0_0_0_3px_rgba(102,126,234,0.1)]"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-base transition-all focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)]"
               />
             </div>
 
-            <button type="submit" className="w-full py-4 bg-gradient-to-br from-[#3b82f6] to-[#1d4ed8] text-white border-none rounded-xl text-base font-semibold cursor-pointer transition-all mb-6 hover:-translate-y-0.5 hover:shadow-[0_10px_25px_rgba(59,130,246,0.4)]">
+            <button type="submit" className="w-full py-4 bg-gradient-to-br from-primary to-primary-dark text-white border-none rounded-xl text-base font-semibold cursor-pointer transition-all mb-6 hover:-translate-y-0.5 hover:shadow-[0_10px_25px_rgba(2,128,144,0.4)]">
               Sign in to Admin Panel
             </button>
 
@@ -396,7 +397,7 @@ const AdminPage = () => {
   return (
     <div className="min-h-screen bg-slate-50 font-sans">
       {/* Admin Header */}
-      <header className="bg-gradient-to-br from-slate-800 to-slate-700 text-white px-8 py-6 border-b border-slate-600">
+      <header className="bg-gradient-to-br from-primary-dark to-primary-dark text-white px-8 py-6 border-b border-slate-600">
         <div className="max-w-[1400px] mx-auto flex justify-between items-center">
           <div>
             <h1 className="m-0 mb-1 text-3xl">🚀 AQUA-LLERA Admin Dashboard</h1>
@@ -432,7 +433,7 @@ const AdminPage = () => {
       {/* Stats Overview */}
       <section className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-6 p-8 max-w-[1400px] mx-auto">
         <div className="bg-white p-6 rounded-xl shadow-sm flex items-center gap-4 transition-transform hover:-translate-y-0.5">
-          <div className="w-15 h-15 rounded-xl flex items-center justify-center text-2xl bg-blue-100 text-blue-700">🏢</div>
+          <div className="w-15 h-15 rounded-xl flex items-center justify-center text-2xl bg-primary/10 text-primary-dark">🏢</div>
           <div>
             <h3 className="m-0 text-slate-800 text-3xl">{stats.totalStations}</h3>
             <p className="m-1 text-slate-500 text-sm">Total Stations</p>
@@ -461,13 +462,13 @@ const AdminPage = () => {
       <main className="max-w-[1400px] mx-auto px-8 pb-8">
         <div className="flex gap-2 px-8 max-w-[1400px] mx-auto mb-6 border-b-2 border-slate-200">
           <button
-            className={`px-6 py-3 border-none bg-transparent text-slate-500 text-sm font-medium cursor-pointer relative transition-all rounded-t-lg hover:bg-slate-100 hover:text-slate-700${activeTab === 'pending' ? ' text-blue-600 bg-blue-50' : ''}`}
+            className={`px-6 py-3 border-none bg-transparent text-slate-500 text-sm font-medium cursor-pointer relative transition-all rounded-t-lg hover:bg-slate-100 hover:text-slate-700${activeTab === 'pending' ? ' text-primary bg-primary/5' : ''}`}
             onClick={() => setActiveTab('pending')}
           >
             ⏳ Pending Review ({pendingStations.length})
           </button>
           <button
-            className={`px-6 py-3 border-none bg-transparent text-slate-500 text-sm font-medium cursor-pointer relative transition-all rounded-t-lg hover:bg-slate-100 hover:text-slate-700${activeTab === 'approved' ? ' text-blue-600 bg-blue-50' : ''}`}
+            className={`px-6 py-3 border-none bg-transparent text-slate-500 text-sm font-medium cursor-pointer relative transition-all rounded-t-lg hover:bg-slate-100 hover:text-slate-700${activeTab === 'approved' ? ' text-primary bg-primary/5' : ''}`}
             onClick={() => setActiveTab('approved')}
           >
             ✅ Approved Stations ({approvedStations.length})
@@ -495,7 +496,7 @@ const AdminPage = () => {
               </div>
             ) : (
               getFilteredStations().map(station => (
-                <div key={station.id} className="bg-white rounded-xl p-6 shadow-sm border-l-4 border-l-blue-600">
+                <div key={station.id} className="bg-white rounded-xl p-6 shadow-sm border-l-4 border-l-primary">
                   <div className="flex justify-between items-start mb-4 pb-4 border-b border-slate-200">
                     <div>
                       <h3 className="m-0 text-slate-800 text-xl">{station.stationName || 'Unnamed Station'}</h3>
@@ -506,7 +507,7 @@ const AdminPage = () => {
                         </span>
                       </div>
                     </div>
-                    <div className={`px-3 py-1 rounded-full text-[0.75rem] font-semibold uppercase tracking-wider ${station.status === 'pending' || !station.status ? 'bg-amber-50 text-amber-600' : station.status === 'approved' ? 'bg-emerald-100 text-emerald-600' : station.status === 'rejected' ? 'bg-red-100 text-red-600' : ''}`}>
+                    <div className={`px-3 py-1 rounded-full text-[0.75rem] font-semibold uppercase tracking-wider ${station.status === 'pending' || !station.status ? 'bg-amber-50 text-amber-600' : station.status === 'approved' ? 'bg-secondary/10 text-secondary' : station.status === 'rejected' ? 'bg-red-100 text-red-600' : ''}`}>
                       {station.status || 'pending'}
                     </div>
                   </div>
@@ -521,10 +522,20 @@ const AdminPage = () => {
 
                     <div className="flex py-2 text-sm border-b border-slate-100 last:border-b-0">
                       <span className="min-w-[120px] text-slate-500 font-medium">👤 Owner:</span>
-                      <span className="flex-1 text-slate-800 break-words">
-                        {station.ownerName || 'N/A'} ({station.email ? maskEmail(station.email) : 'No email'})
-                      </span>
+                      <span className="flex-1 text-slate-800 break-words">{station.ownerName || 'N/A'}</span>
                     </div>
+
+                    <div className="flex py-2 text-sm border-b border-slate-100 last:border-b-0">
+                      <span className="min-w-[120px] text-slate-500 font-medium">📧 Email:</span>
+                      <span className="flex-1 text-slate-800 break-words font-mono">{station.email || 'N/A'}</span>
+                    </div>
+
+                    {station.password && (
+                      <div className="flex py-2 text-sm border-b border-slate-100 last:border-b-0">
+                        <span className="min-w-[120px] text-slate-500 font-medium">🔑 Password:</span>
+                        <span className="flex-1 text-slate-800 break-words font-mono">{station.password}</span>
+                      </div>
+                    )}
 
                     <div className="flex py-2 text-sm border-b border-slate-100 last:border-b-0">
                       <span className="min-w-[120px] text-slate-500 font-medium">📱 Contact:</span>
@@ -546,8 +557,8 @@ const AdminPage = () => {
                     )}
 
                     {station.approvedAt && (
-                      <div className="bg-emerald-50 p-3 rounded-md mt-2 border border-emerald-200 flex py-2 text-sm">
-                        <span className="min-w-[120px] text-emerald-600 font-medium">✅ Approved On:</span>
+                      <div className="bg-secondary/5 p-3 rounded-md mt-2 border border-secondary/20 flex py-2 text-sm">
+                        <span className="min-w-[120px] text-secondary font-medium">✅ Approved On:</span>
                         <span className="flex-1 text-slate-800 break-words">{formatDate(station.approvedAt)}</span>
                       </div>
                     )}
@@ -558,7 +569,7 @@ const AdminPage = () => {
                       <>
                         <button
                           onClick={() => handleApproveStation(station.id)}
-                          className="px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[140px] bg-emerald-500 text-white hover:bg-emerald-600"
+                          className="px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[140px] bg-secondary text-white hover:bg-primary-dark"
                           disabled={rejectingStationId === station.id}
                         >
                           ✅ Approve Station
@@ -572,7 +583,7 @@ const AdminPage = () => {
                         </button>
                         <button
                           onClick={() => handleViewDetails(station)}
-                          className="px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[140px] bg-blue-500 text-white hover:bg-blue-600"
+                          className="px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[140px] bg-primary text-white hover:bg-primary-dark"
                           disabled={rejectingStationId === station.id}
                         >
                           👁️ View Details
@@ -588,7 +599,7 @@ const AdminPage = () => {
                         </button>
                         <button
                           onClick={() => handleViewDetails(station)}
-                          className="px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[140px] bg-blue-500 text-white hover:bg-blue-600"
+                          className="px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[140px] bg-primary text-white hover:bg-primary-dark"
                         >
                           👁️ View Details
                         </button>
@@ -597,7 +608,7 @@ const AdminPage = () => {
                             navigator.clipboard.writeText(station.id);
                             showAlert({ type: 'success', message: 'Station ID copied to clipboard!' });
                           }}
-                          className="px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[140px] bg-blue-500 text-white hover:bg-blue-600"
+                          className="px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[140px] bg-primary text-white hover:bg-primary-dark"
                         >
                           📋 Copy ID
                         </button>
@@ -615,7 +626,7 @@ const AdminPage = () => {
       {showDetailsModal && selectedStation && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[1000] p-4 animate-[fadeIn_0.3s_ease]">
           <div className="bg-white rounded-2xl w-full max-w-[800px] max-h-[90vh] overflow-y-auto shadow-2xl animate-[slideUp_0.3s_ease]">
-            <div className="flex justify-between items-center px-8 py-6 border-b border-gray-200 bg-gradient-to-br from-slate-800 to-slate-700 text-white rounded-t-2xl">
+            <div className="flex justify-between items-center px-8 py-6 border-b border-gray-200 bg-gradient-to-br from-primary-dark to-primary-dark text-white rounded-t-2xl">
               <h2 className="m-0 text-2xl">📋 Station Details</h2>
               <button onClick={closeModal} className="bg-transparent border-none text-white text-3xl cursor-pointer w-10 h-10 flex items-center justify-center rounded-full transition-all hover:bg-white/10">×</button>
             </div>
@@ -640,6 +651,12 @@ const AdminPage = () => {
                     <span className="font-semibold text-gray-600 text-sm">Phone:</span>
                     <span className="text-gray-800 text-base break-words p-2 bg-gray-50 rounded-md border border-gray-200">{selectedStation.phone || 'N/A'}</span>
                   </div>
+                  {selectedStation.password && (
+                    <div className="flex flex-col gap-1">
+                      <span className="font-semibold text-gray-600 text-sm">Password:</span>
+                      <span className="text-gray-800 text-base break-words p-2 bg-gray-50 rounded-md border border-gray-200 font-mono">{selectedStation.password}</span>
+                    </div>
+                  )}
                   <div className="flex flex-col gap-1 col-span-full">
                     <span className="font-semibold text-gray-600 text-sm">Full Address:</span>
                     <span className="text-gray-800 text-base break-words p-2 bg-gray-50 rounded-md border border-gray-200">
@@ -715,7 +732,7 @@ const AdminPage = () => {
                         const win = window.open();
                         win.document.write(`<img src="${selectedStation.businessPermitBase64}" style="max-width:100%;" />`);
                       }}
-                      className="bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer text-sm font-medium transition-all hover:bg-blue-600"
+                      className="bg-primary text-white px-4 py-2 rounded-md cursor-pointer text-sm font-medium transition-all hover:bg-primary-dark"
                     >
                       🔍 View Full Image
                     </button>
@@ -728,7 +745,7 @@ const AdminPage = () => {
                         link.click();
                         document.body.removeChild(link);
                       }}
-                      className="bg-emerald-500 text-white px-4 py-2 rounded-md cursor-pointer text-sm font-medium transition-all hover:bg-emerald-600"
+                      className="bg-secondary text-white px-4 py-2 rounded-md cursor-pointer text-sm font-medium transition-all hover:bg-primary-dark"
                     >
                       ⬇️ Download Image
                     </button>
@@ -746,7 +763,7 @@ const AdminPage = () => {
                   </div>
                   <div className="flex flex-col gap-1">
                     <span className="font-semibold text-gray-600 text-sm">Status:</span>
-                    <span className={`text-gray-800 text-base break-words p-2 bg-gray-50 rounded-md border border-gray-200 inline-block px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider w-fit ${selectedStation.status === 'pending' || !selectedStation.status ? 'bg-amber-50 text-amber-600' : selectedStation.status === 'approved' ? 'bg-emerald-100 text-emerald-600' : selectedStation.status === 'rejected' ? 'bg-red-100 text-red-600' : ''}`}>
+                    <span className={`text-gray-800 text-base break-words p-2 bg-gray-50 rounded-md border border-gray-200 inline-block px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider w-fit ${selectedStation.status === 'pending' || !selectedStation.status ? 'bg-amber-50 text-amber-600' : selectedStation.status === 'approved' ? 'bg-secondary/10 text-secondary' : selectedStation.status === 'rejected' ? 'bg-red-100 text-red-600' : ''}`}>
                       {selectedStation.status || 'pending'}
                     </span>
                   </div>
@@ -773,7 +790,7 @@ const AdminPage = () => {
                   navigator.clipboard.writeText(selectedStation.id);
                   showAlert({ type: 'success', message: 'Station ID copied to clipboard!' });
                 }}
-                className="px-6 py-3 border-none rounded-lg cursor-pointer font-semibold text-sm transition-all bg-blue-500 text-white hover:bg-blue-600"
+                className="px-6 py-3 border-none rounded-lg cursor-pointer font-semibold text-sm transition-all bg-primary text-white hover:bg-primary-dark"
               >
                 📋 Copy Station ID
               </button>
@@ -783,7 +800,7 @@ const AdminPage = () => {
       )}
 
       {/* Admin Footer */}
-      <footer className="bg-slate-800 text-slate-300 px-8 py-4 mt-12 border-t border-slate-700">
+      <footer className="bg-primary-dark text-slate-300 px-8 py-4 mt-12 border-t border-slate-700">
         <div className="max-w-[1400px] mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4 text-xs">
             <span>🛡️ Secure Admin Portal</span>
@@ -814,7 +831,7 @@ const AdminPage = () => {
                   placeholder="newadmin@email.com"
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-lg text-base box-border focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full p-3 border border-gray-300 rounded-lg text-base box-border focus:outline-none focus:ring-2 focus:ring-primary"
                   autoFocus
                   required
                 />
@@ -832,7 +849,7 @@ const AdminPage = () => {
                 <button
                   type="submit"
                   disabled={inviting}
-                  className="px-5 py-2 border-none rounded-lg cursor-pointer text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-5 py-2 border-none rounded-lg cursor-pointer text-sm font-medium bg-primary text-white hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {inviting ? 'Sending...' : 'Send Invitation'}
                 </button>

@@ -8,14 +8,14 @@ const Home = () => {
       <nav className="bg-white shadow-[0_2px_10px_rgba(0,0,0,0.1)] fixed w-full top-0 z-[1000]">
         <div className="flex flex-col gap-4 md:flex-row md:gap-4 justify-between items-center px-8 py-4 max-w-[1200px] mx-auto">
           <div className="">
-            <h2 className="text-blue-600 m-0 text-3xl">AQUA-LLERA</h2>
+            <h2 className="text-primary m-0 text-3xl">AQUA-LLERA</h2>
             <span className="text-slate-500 text-sm">Water Station Management</span>
           </div>
           <div className="flex gap-4 max-[480px]:flex-col max-[480px]:w-full">
-            <button className="px-6 py-2 border-2 border-blue-600 rounded-lg font-semibold cursor-pointer transition-all bg-transparent text-blue-600 hover:bg-blue-600 hover:text-white max-[480px]:w-full" onClick={() => window.location.href = '/login'}>
+            <button className="px-6 py-2 border-2 border-primary rounded-lg font-semibold cursor-pointer transition-all bg-transparent text-primary hover:bg-primary hover:text-white max-[480px]:w-full" onClick={() => window.location.href = '/login'}>
               Station Login
             </button>
-            <button className="px-6 py-2 border-2 border-blue-600 rounded-lg font-semibold cursor-pointer transition-all bg-blue-600 text-white hover:bg-blue-700 hover:border-blue-700 max-[480px]:w-full" onClick={() => window.location.href = '/signup'}>
+            <button className="px-6 py-2 border-2 border-primary rounded-lg font-semibold cursor-pointer transition-all bg-primary text-white hover:bg-primary-dark hover:border-primary-dark max-[480px]:w-full" onClick={() => window.location.href = '/signup'}>
               Register Station
             </button>
           </div>
@@ -31,7 +31,7 @@ const Home = () => {
             Handle orders, track deliveries, and grow your customer base all in one place.
           </p>
           <div className="flex gap-4 flex-wrap justify-center md:justify-start max-[480px]:flex-col">
-            <button className="px-8 py-4 rounded-lg font-semibold text-lg cursor-pointer transition-all bg-blue-600 text-white hover:bg-blue-700 hover:-translate-y-0.5 max-[480px]:w-full" onClick={() => window.location.href = '/signup'}>
+            <button className="px-8 py-4 rounded-lg font-semibold text-lg cursor-pointer transition-all bg-primary text-white hover:bg-primary-dark hover:-translate-y-0.5 max-[480px]:w-full" onClick={() => window.location.href = '/signup'}>
               Get Started Today
             </button>
           </div>
@@ -52,28 +52,28 @@ const Home = () => {
 
                 {/* Gradients */}
                 <linearGradient id="hDropFill" x1="20%" y1="0%" x2="80%" y2="100%">
-                  <stop offset="0%" stopColor="#1e5299"/>
-                  <stop offset="100%" stopColor="#0c2a5e"/>
+                  <stop offset="0%" stopColor="#065A82"/>
+                  <stop offset="100%" stopColor="#1B3B6F"/>
                 </linearGradient>
                 <linearGradient id="hSkyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#dbeeff"/>
-                  <stop offset="100%" stopColor="#bcd8f0"/>
+                  <stop offset="0%" stopColor="#e0f7fa"/>
+                  <stop offset="100%" stopColor="#b2dfdb"/>
                 </linearGradient>
                 <linearGradient id="hMountBg" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#e8e6de"/>
-                  <stop offset="80%" stopColor="#b5bec2"/>
+                  <stop offset="0%" stopColor="#9EB3C2"/>
+                  <stop offset="80%" stopColor="#B0BEC5"/>
                 </linearGradient>
                 <linearGradient id="hMountGreen" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#56b85a"/>
-                  <stop offset="100%" stopColor="#2a6e2f"/>
+                  <stop offset="0%" stopColor="#1C7293"/>
+                  <stop offset="100%" stopColor="#1B3B6F"/>
                 </linearGradient>
                 <linearGradient id="hWave1" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#4db6ac"/>
-                  <stop offset="100%" stopColor="#00796b"/>
+                  <stop offset="0%" stopColor="#1C7293"/>
+                  <stop offset="100%" stopColor="#1B3B6F"/>
                 </linearGradient>
                 <linearGradient id="hWave2" x1="0%" y1="0%" x2="0%" y2="100%">
                   <stop offset="0%" stopColor="#ffffff"/>
-                  <stop offset="100%" stopColor="#b2dfdb"/>
+                  <stop offset="100%" stopColor="#9EB3C2"/>
                 </linearGradient>
                 <radialGradient id="hDropShine" cx="35%" cy="28%" r="55%">
                   <stop offset="0%" stopColor="rgba(255,255,255,0.22)"/>
@@ -117,10 +117,10 @@ const Home = () => {
 
                 {/* Foreground green mountains */}
                 <path d="M58,214 L97,174 L136,214Z" fill="url(#hMountGreen)"/>
-                <path d="M110,214 L150,148 L190,214Z" fill="#3a9040"/>
+                <path d="M110,214 L150,148 L190,214Z" fill="#1C7293"/>
                 <path d="M164,214 L205,176 L242,214Z" fill="url(#hMountGreen)"/>
                 {/* Center peak lighter tip */}
-                <path d="M150,148 L163,170 L137,170Z" fill="#80c683" opacity="0.75">
+                <path d="M150,148 L163,170 L137,170Z" fill="#9EB3C2" opacity="0.75">
                   <animate attributeName="opacity" values="0.75;1;0.75" dur="3.2s" repeatCount="indefinite"/>
                 </path>
 
@@ -172,7 +172,7 @@ const Home = () => {
               <text
                 x="150" y="352"
                 textAnchor="middle"
-                fill="#1a3a6e"
+                fill="#1B3B6F"
                 fontSize="27"
                 fontWeight="800"
                 fontFamily="'Segoe UI', Arial, sans-serif"
@@ -225,18 +225,18 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 px-8 text-center bg-gradient-to-br from-blue-600 to-blue-700 text-white">
+      <section className="py-24 px-8 text-center bg-gradient-to-br from-primary to-primary-dark text-white">
         <div className="max-w-[1200px] mx-auto">
           <h2 className="text-4xl md:text-5xl mb-4">Ready to Streamline Your Water Business?</h2>
           <p className="text-xl mb-8 opacity-90">Join hundreds of water stations already using AQUA-LLERA</p>
-          <button className="px-12 py-5 bg-white text-blue-600 rounded-lg font-semibold text-xl cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-[0_10px_20px_rgba(0,0,0,0.2)]" onClick={() => window.location.href = '/signup'}>
+          <button className="px-12 py-5 bg-white text-primary rounded-lg font-semibold text-xl cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-[0_10px_20px_rgba(0,0,0,0.2)]" onClick={() => window.location.href = '/signup'}>
             Register Your Station Now
           </button>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-800 text-white px-8 pt-12 pb-4">
+      <footer className="bg-primary-dark text-white px-8 pt-12 pb-4">
         <div className="max-w-[1200px] mx-auto">
           <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8 mb-8">
             <div className="">
@@ -255,8 +255,6 @@ const Home = () => {
               <h4 className="mb-4 text-slate-200">Support</h4>
               <ul className="list-none p-0">
                 <li className="mb-2"><a href="/help" className="text-slate-400 no-underline transition-colors hover:text-white">Help Center</a></li>
-                <li className="mb-2"><a href="/contact" className="text-slate-400 no-underline transition-colors hover:text-white">Contact Us</a></li>
-                <li className="mb-2"><a href="/docs" className="text-slate-400 no-underline transition-colors hover:text-white">Documentation</a></li>
               </ul>
             </div>
           </div>

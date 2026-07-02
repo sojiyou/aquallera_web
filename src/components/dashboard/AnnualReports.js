@@ -263,9 +263,9 @@ const AnnualReports = ({ stationId }) => {
   };
 
   const getBarColor = (revenue, avgRevenue) => {
-    if (revenue > avgRevenue * 1.2) return '#10b981';
+    if (revenue > avgRevenue * 1.2) return '#1C7293';
     if (revenue < avgRevenue * 0.8) return '#ef4444';
-    return '#3b82f6';
+    return '#065A82';
   };
 
   if (loading) {
@@ -275,7 +275,7 @@ const AnnualReports = ({ stationId }) => {
           <h2 className="text-slate-800 text-2xl m-0 mb-2">📊 Annual Performance Reports</h2>
         </div>
         <div className="flex flex-col items-center justify-center py-12 text-slate-500">
-          <div className="border-[3px] border-slate-200 border-t-blue-600 rounded-full w-10 h-10 animate-spin mb-4"></div>
+          <div className="border-[3px] border-slate-200 border-t-primary rounded-full w-10 h-10 animate-spin mb-4"></div>
           <p>Loading annual reports...</p>
         </div>
       </section>
@@ -304,7 +304,7 @@ const AnnualReports = ({ stationId }) => {
 
       {/* Live Data Indicator - Shows when using real orders */}
       {!showSkeleton && reports.some(r => r.fromOrders) && (
-        <div className="bg-emerald-100 border-l-4 border-l-emerald-500 p-3 mb-6 rounded-lg text-sm text-emerald-800 flex items-center gap-2">
+        <div className="bg-secondary/10 border-l-4 border-l-secondary p-3 mb-6 rounded-lg text-sm text-primary-dark flex items-center gap-2">
           <span className="text-lg">✅</span>
           <span>Showing real data from your orders. {reports.some(r => r.fromOrders) && '(Some years calculated directly from orders)'}</span>
         </div>
@@ -322,21 +322,21 @@ const AnnualReports = ({ stationId }) => {
           return (
             <div
               key={report.year}
-              className={`bg-gradient-to-br from-slate-50 to-slate-100 border-2 border-slate-200 rounded-2xl overflow-hidden transition-all hover:shadow-lg hover:-translate-y-0.5 ${isExpanded ? 'bg-white border-blue-500 shadow-[0_8px_24px_rgba(59,130,246,0.15)]' : ''} ${report.isSkeleton ? 'skeleton-card' : ''}`}
+              className={`bg-gradient-to-br from-slate-50 to-slate-100 border-2 border-slate-200 rounded-2xl overflow-hidden transition-all hover:shadow-lg hover:-translate-y-0.5 ${isExpanded ? 'bg-white border-primary shadow-[0_8px_24px_rgba(2,128,144,0.15)]' : ''} ${report.isSkeleton ? 'skeleton-card' : ''}`}
             >
               <div className="flex justify-between items-center p-6 bg-white border-b border-slate-200">
                 <div className="flex items-center gap-6">
-                  <div className="bg-gradient-to-br from-blue-500 to-blue-600 text-white text-2xl font-bold px-6 py-4 rounded-xl shadow-lg">{report.year}</div>
+                  <div className="bg-gradient-to-br from-primary to-primary-dark text-white text-2xl font-bold px-6 py-4 rounded-xl shadow-lg">{report.year}</div>
                   <div>
                     <h3 className="text-slate-800 text-3xl m-0 mb-1 font-bold">
                       {formatCurrency(report.total)}
-                      {report.fromOrders && <span className="bg-emerald-500 text-white text-[0.7rem] px-2 py-1 rounded-full ml-3 font-medium align-middle"> Live</span>}
+                      {report.fromOrders && <span className="bg-secondary text-white text-[0.7rem] px-2 py-1 rounded-full ml-3 font-medium align-middle"> Live</span>}
                     </h3>
                     <p className="text-slate-500 text-sm m-0">{report.totalOrders} orders • {formatCurrency(report.avgMonthly)}/month avg</p>
                   </div>
                 </div>
                 <button
-                  className="bg-blue-500/10 border border-blue-500/30 text-blue-500 px-6 py-3 rounded-lg cursor-pointer font-semibold text-sm transition-all hover:bg-blue-500/20 hover:border-blue-500 hover:-translate-y-0.5"
+                  className="bg-primary/10 border border-primary/30 text-primary px-6 py-3 rounded-lg cursor-pointer font-semibold text-sm transition-all hover:bg-primary/20 hover:border-primary hover:-translate-y-0.5"
                   onClick={() => toggleYear(report.year)}
                 >
                   {isExpanded ? '▲ Hide Details' : '▼ View Details'}
@@ -385,7 +385,7 @@ const AnnualReports = ({ stationId }) => {
               </div>
 
               <div className="grid grid-cols-3 gap-4 p-6 bg-white border-t border-slate-200">
-                <div className="flex items-center gap-4 bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-300 rounded-xl p-5 transition-all hover:border-blue-500 hover:shadow-[0_4px_12px_rgba(59,130,246,0.1)]">
+                <div className="flex items-center gap-4 bg-gradient-to-br from-secondary/5 to-secondary/10 border border-secondary/30 rounded-xl p-5 transition-all hover:border-primary hover:shadow-[0_4px_12px_rgba(2,128,144,0.1)]">
                   <span className="text-3xl">🏆</span>
                   <div className="flex flex-col gap-1">
                     <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Best Month</span>
@@ -397,7 +397,7 @@ const AnnualReports = ({ stationId }) => {
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 bg-gradient-to-br from-red-50 to-red-100 border border-red-300 rounded-xl p-5 transition-all hover:border-blue-500 hover:shadow-[0_4px_12px_rgba(59,130,246,0.1)]">
+                <div className="flex items-center gap-4 bg-gradient-to-br from-red-50 to-red-100 border border-red-300 rounded-xl p-5 transition-all hover:border-primary hover:shadow-[0_4px_12px_rgba(2,128,144,0.1)]">
                   <span className="text-3xl">📉</span>
                   <div className="flex flex-col gap-1">
                     <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Lowest Month</span>
@@ -409,7 +409,7 @@ const AnnualReports = ({ stationId }) => {
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-300 rounded-xl p-5 transition-all hover:border-blue-500 hover:shadow-[0_4px_12px_rgba(59,130,246,0.1)]">
+                <div className="flex items-center gap-4 bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/30 rounded-xl p-5 transition-all hover:border-primary hover:shadow-[0_4px_12px_rgba(2,128,144,0.1)]">
                   <span className="text-3xl">📊</span>
                   <div className="flex flex-col gap-1">
                     <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Monthly Average</span>
@@ -434,7 +434,7 @@ const AnnualReports = ({ stationId }) => {
                       return (
                         <div
                           key={index}
-                          className={`flex justify-between items-center p-4 bg-white rounded-lg mb-2 transition-all hover:bg-sky-50 hover:translate-x-1 ${isBest ? 'bg-gradient-to-r from-emerald-50 to-white border-l-3 border-l-emerald-500' : ''} ${isWorst ? 'bg-gradient-to-r from-red-50 to-white border-l-3 border-l-red-500' : ''}`}
+                          className={`flex justify-between items-center p-4 bg-white rounded-lg mb-2 transition-all hover:bg-primary/5 hover:translate-x-1 ${isBest ? 'bg-gradient-to-r from-secondary/5 to-white border-l-3 border-l-secondary' : ''} ${isWorst ? 'bg-gradient-to-r from-red-50 to-white border-l-3 border-l-red-500' : ''}`}
                         >
                           <div className="flex items-center gap-3">
                             <span className="text-slate-800 font-semibold text-sm min-w-[100px]">{month.month}</span>
@@ -459,7 +459,7 @@ const AnnualReports = ({ stationId }) => {
                     })}
                   </div>
 
-                  <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl p-6 text-white">
+                  <div className="bg-gradient-to-br from-primary-dark to-primary-dark rounded-xl p-6 text-white">
                     <h4 className="text-white m-0 mb-4 text-lg">📈 Year Summary</h4>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="flex flex-col gap-2 bg-white/10 p-4 rounded-lg backdrop-blur">
@@ -493,7 +493,7 @@ const AnnualReports = ({ stationId }) => {
 
       {hasMoreReports && (
         <div className="flex justify-center mt-8">
-          <button className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-none px-8 py-4 rounded-xl font-semibold text-base cursor-pointer transition-all shadow-lg hover:-translate-y-0.5 hover:shadow-xl" onClick={loadMoreYears}>
+          <button className="bg-gradient-to-br from-primary to-primary-dark text-white border-none px-8 py-4 rounded-xl font-semibold text-base cursor-pointer transition-all shadow-lg hover:-translate-y-0.5 hover:shadow-xl" onClick={loadMoreYears}>
             ⬇️ Load More Years ({reports.length - visibleYears} older)
           </button>
         </div>

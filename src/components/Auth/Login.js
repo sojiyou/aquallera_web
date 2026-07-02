@@ -187,6 +187,11 @@ const Login = () => {
 
       const stationDataAfterLogin = stationSnapshot.val();
 
+        if (stationDataAfterLogin.revokedAt) {
+          throw new Error('Your station approval has been revoked. Please contact support for more information.');
+        }
+
+
       if (stationDataAfterLogin.status === 'pending') {
         throw new Error('Your station is still pending approval. Please wait for admin approval.');
       }
@@ -196,9 +201,6 @@ const Login = () => {
         throw new Error(`Your station registration was rejected.${reason} Please contact support if you believe this is an error.`);
       }
 
-      if (stationDataAfterLogin.status !== 'approved') {
-        throw new Error('Your station is not yet approved. Please contact support.');
-      }
 
       if (formData.rememberMe) {
         localStorage.setItem('rememberedEmail', formData.email);
@@ -263,13 +265,18 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#3b82f6] to-[#1d4ed8] p-8 font-sans">
-      <div className="bg-white rounded-xl shadow-[0_20px_40px_rgba(0,0,0,0.1)] p-10 w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary to-primary-dark p-8 font-sans relative overflow-hidden">
+      <svg className="absolute inset-0 w-full h-full opacity-15" viewBox="0 0 1440 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#9EB3C2" d="M0,200L48,213.3C96,226.7,192,253.3,288,250.7C384,248,480,216,576,213.3C672,210.7,768,237.3,864,245.3C960,253.3,1056,242.7,1152,224C1248,205.3,1344,178.7,1392,165.3L1440,152L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
+        <path fill="#ffffff" d="M0,350L48,338.7C96,327.3,192,304.7,288,320C384,335.3,480,388.7,576,396C672,403.3,768,364.7,864,346.7C960,328.7,1056,331.3,1152,352C1248,372.7,1344,411.3,1392,430.7L1440,450L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
+        <path fill="#9EB3C2" d="M0,550L48,565.3C96,580.7,192,611.3,288,608C384,604.7,480,568,576,554.7C672,541.3,768,552,864,578.7C960,605.3,1056,648,1152,632C1248,616,1344,541.3,1392,504L1440,466.7L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
+      </svg>
+      <div className="bg-white rounded-xl shadow-[0_20px_40px_rgba(0,0,0,0.1)] p-10 w-full max-w-md relative z-10">
 
         {/* 🔙 BACK TO HOME BUTTON */}
         <button
           type="button"
-          className="bg-transparent border-none text-sky-500 text-sm cursor-pointer mb-3 text-left hover:underline"
+          className="bg-primary text-white p-2 rounded-md border-none text-base text-sm cursor-pointer mb-3 text-left hover:bg-dark cursor:pointer"
           onClick={() => navigate('/')}
         >
           ← Back to Home
@@ -390,7 +397,7 @@ const Login = () => {
             <div className="flex gap-3 flex-wrap">
               <button
                 onClick={handleReapply}
-                className="border-none px-6 py-3 rounded-md cursor-pointer font-medium flex-1 min-w-[140px] transition-all text-sm bg-blue-600 text-white hover:bg-blue-700 hover:-translate-y-0.5"
+                className="border-none px-6 py-3 rounded-md cursor-pointer font-medium flex-1 min-w-[140px] transition-all text-sm bg-primary text-white hover:bg-primary-dark hover:-translate-y-0.5"
               >
                 ↻ Reapply Now
               </button>
@@ -401,10 +408,6 @@ const Login = () => {
                 ✕ Clear & Try Again
               </button>
             </div>
-
-            <p className="mt-4 text-xs text-amber-800 text-center">
-              Need help? <a href="mailto:support@aquallera.com" className="text-red-600 font-semibold no-underline hover:underline">Contact Support</a>
-            </p>
           </div>
         )}
 
@@ -423,7 +426,7 @@ const Login = () => {
               value={formData.email}
               onChange={handleInputChange}
               placeholder="your@email.com"
-              className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] ${errors.email ? 'border-red-500' : 'border-slate-200'} ${isLoading ? 'bg-slate-50 cursor-not-allowed opacity-70' : ''}`}
+              className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.email ? 'border-red-500' : 'border-slate-200'} ${isLoading ? 'bg-slate-50 cursor-not-allowed opacity-70' : ''}`}
               disabled={isLoading}
               autoComplete="email"
             />
@@ -438,7 +441,7 @@ const Login = () => {
               value={formData.password}
               onChange={handleInputChange}
               placeholder="Enter your password"
-              className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] ${errors.password ? 'border-red-500' : 'border-slate-200'} ${isLoading ? 'bg-slate-50 cursor-not-allowed opacity-70' : ''}`}
+              className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.password ? 'border-red-500' : 'border-slate-200'} ${isLoading ? 'bg-slate-50 cursor-not-allowed opacity-70' : ''}`}
               disabled={isLoading}
               autoComplete="current-password"
             />
@@ -461,7 +464,7 @@ const Login = () => {
             <button
               type="button"
               onClick={handleForgotPassword}
-              className="bg-transparent border-none text-blue-600 cursor-pointer text-sm p-0 font-sans hover:underline disabled:text-slate-400 disabled:cursor-not-allowed"
+              className="bg-transparent border-none text-primary cursor-pointer text-sm p-0 font-sans hover:underline disabled:text-slate-400 disabled:cursor-not-allowed"
               disabled={isLoading}
             >
               Forgot Password?
@@ -470,7 +473,7 @@ const Login = () => {
 
           <button
             type="submit"
-            className={`w-full py-3 px-4 rounded-lg font-semibold cursor-pointer transition-all text-base bg-blue-600 text-white flex items-center justify-center gap-2 min-h-[48px] hover:bg-blue-700 hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed`}
+            className={`w-full py-3 px-4 rounded-lg font-semibold cursor-pointer transition-all text-base bg-primary text-white flex items-center justify-center gap-2 min-h-[48px] hover:bg-primary-dark hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed`}
             disabled={isLoading}
           >
             {isLoading ? (
@@ -494,8 +497,8 @@ const Login = () => {
             <li className="py-2 text-slate-500 flex items-center gap-3 text-sm"> Manage service areas</li>
           </ul>
 
-          <div style={{ marginTop: '1rem', padding: '0.75rem', background: '#f0f9ff', borderRadius: '6px', borderLeft: '4px solid #0ea5e9' }}>
-            <small style={{ color: '#0369a1', display: 'block', marginBottom: '0.25rem' }}>
+          <div style={{ marginTop: '1rem', padding: '0.75rem', background: '#9EB3C2', borderRadius: '6px', borderLeft: '4px solid #065A82' }}>
+            <small style={{ color: '#1B3B6F', display: 'block', marginBottom: '0.25rem' }}>
               <strong>Note:</strong> New stations require admin approval before full access.
             </small>
             <small style={{ color: '#64748b' }}>
@@ -505,9 +508,9 @@ const Login = () => {
         </div>
 
         <div className="text-center pt-6 border-t border-slate-200">
-          <p>Don't have an account? <a href="/signup" className="text-blue-600 hover:underline font-medium">Register your station</a></p>
+          <p>Don't have an account? <a href="/signup" className="text-primary hover:underline font-medium">Register your station</a></p>
           <p style={{ marginTop: '0.5rem', fontSize: '0.85rem', color: '#64748b' }}>
-            Need help? <a href="mailto:support@aquallera.com">Contact Support</a>
+            Need help? <a href="/login" className="text-primary">Help Center</a>
           </p>
         </div>
       </div>
