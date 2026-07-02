@@ -1,12 +1,14 @@
 // src/components/Admin/AdminPage.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ref, onValue, update } from 'firebase/database';
+import { ref, onValue, update, push, set, get } from 'firebase/database';
 import { database } from '../config/Firebase';
-import { sendRejectionEmail, testEmailJSConnection } from '../services/EmailService'; // Add this import
+import { sendRejectionEmail, sendAdminInvitation } from '../services/EmailService';
+import AlertCard, { useAlert } from './AlertCard';
 
 const AdminPage = () => {
-  const [accessCode, setAccessCode] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [pendingStations, setPendingStations] = useState([]);
   const [approvedStations, setApprovedStations] = useState([]);
@@ -22,9 +24,14 @@ const AdminPage = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [rejectingStationId, setRejectingStationId] = useState(null); // Track rejecting station
   const navigate = useNavigate();
+  const [alertProps, showAlert, closeAlert] = useAlert();
+  const [showInviteDialog, setShowInviteDialog] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviting, setInviting] = useState(false);
 
-  // Secret admin code (you should change this and keep it secure)
-  const ADMIN_SECRET_CODE = 'AQUA-LLERA-ADMIN-CODE';
+  // Admin credentials (you should change these and keep them secure)
+  const ADMIN_EMAIL = 'admin@aquallera.com';
+  const ADMIN_PASSWORD = 'admin123';
 
   useEffect(() => {
     // Check if already authenticated from localStorage
@@ -62,7 +69,7 @@ const AdminPage = () => {
 
         setStats(prev => ({
           ...prev,
-          totalStations: stationsArray.length,
+          totalStations: pending.length + approved.length,
           pendingStations: pending.length,
           approvedStations: approved.length
         }));
@@ -92,23 +99,86 @@ const AdminPage = () => {
     };
   };
 
-  const handleLogin = (e) => {
+  const generatePassword = (length = 10) => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  };
+
+  const handleInviteAdmin = async (e) => {
+    e.preventDefault();
+    if (!inviteEmail || !inviteEmail.includes('@')) {
+      showAlert({ type: 'error', message: 'Please enter a valid email address' });
+      return;
+    }
+
+    setInviting(true);
+    try {
+      const generatedPassword = generatePassword();
+      const adminsRef = ref(database, 'admins');
+      const newAdminRef = push(adminsRef);
+      await set(newAdminRef, {
+        email: inviteEmail,
+        password: generatedPassword,
+        invitedBy: email,
+        createdAt: new Date().toISOString()
+      });
+
+      await sendAdminInvitation(inviteEmail, generatedPassword, email);
+
+      showAlert({ type: 'success', message: `Invitation sent to ${inviteEmail}` });
+      setShowInviteDialog(false);
+      setInviteEmail('');
+    } catch (error) {
+      console.error('Error inviting admin:', error);
+      showAlert({ type: 'error', message: error.message || 'Failed to send invitation' });
+    } finally {
+      setInviting(false);
+    }
+  };
+
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    if (accessCode === ADMIN_SECRET_CODE) {
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
       localStorage.setItem('adminAuthenticated', 'true');
       fetchAllData();
-    } else {
-      alert('Invalid access code!');
-      setAccessCode('');
+      return;
+    }
+
+    try {
+      const adminsRef = ref(database, 'admins');
+      const snapshot = await get(adminsRef);
+      if (snapshot.exists()) {
+        const admins = snapshot.val();
+        const match = Object.values(admins).find(
+          (a) => a.email === email && a.password === password
+        );
+        if (match) {
+          setIsAuthenticated(true);
+          localStorage.setItem('adminAuthenticated', 'true');
+          fetchAllData();
+          return;
+        }
+      }
+      showAlert({ type: 'error', message: 'Invalid email or password' });
+      setPassword('');
+    } catch (error) {
+      console.error('Login error:', error);
+      showAlert({ type: 'error', message: 'Login failed. Please try again.' });
+      setPassword('');
     }
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
     localStorage.removeItem('adminAuthenticated');
-    setAccessCode('');
+    setEmail('');
+    setPassword('');
   };
 
   const handleApproveStation = async (stationId) => {
@@ -118,100 +188,100 @@ const AdminPage = () => {
         status: 'approved',
         approvedAt: new Date().toISOString()
       });
-
-      // Update local state
-      setPendingStations(prev => prev.filter(station => station.id !== stationId));
-      const approvedStation = pendingStations.find(station => station.id === stationId);
-      if (approvedStation) {
-        setApprovedStations(prev => [...prev, { ...approvedStation, status: 'approved' }]);
-      }
-
-      alert('Station approved successfully!');
+      showAlert({ type: 'success', message: 'Station approved successfully!' });
     } catch (error) {
       console.error('Error approving station:', error);
-      alert('Error approving station. Please try again.');
+      showAlert({ type: 'error', message: 'Error approving station. Please try again.' });
     }
   };
 
   const handleRejectStation = async (stationId) => {
-    // Set the rejecting station ID to disable the button during processing
     setRejectingStationId(stationId);
 
-    // Find the station data
     const stationToReject = pendingStations.find(station => station.id === stationId);
     if (!stationToReject) {
-      alert('Station not found!');
+      showAlert({ type: 'error', message: 'Station not found!' });
       setRejectingStationId(null);
       return;
     }
 
-    // Get rejection reason from admin
-    const reason = prompt('Please provide a detailed reason for rejection:');
-    if (reason === null || reason.trim() === '') {
-      // User cancelled or entered empty reason
-      setRejectingStationId(null);
-      return;
-    }
+    showAlert({
+      type: 'prompt',
+      title: 'Reject Station',
+      message: 'Please provide a detailed reason for rejection:',
+      placeholder: 'Enter rejection reason...',
+      onConfirm: (reason) => {
+        closeAlert();
 
-    try {
-      console.log('Attempting to send rejection email to:', stationToReject.email);
+        if (!reason || reason.trim() === '') {
+          showAlert({ type: 'error', message: 'Rejection reason is required.' });
+          setRejectingStationId(null);
+          return;
+        }
 
-      // Step 1: Send rejection email
-      await sendRejectionEmail(stationToReject, reason);
-      console.log('Rejection email sent successfully');
+        (async () => {
+          try {
+            await sendRejectionEmail(stationToReject, reason);
 
-      // Step 2: Update station status to 'deletion_pending'
-      const stationRef = ref(database, `waterStations/${stationId}`);
-      await update(stationRef, {
-        status: 'deletion_pending',
-        rejectionReason: reason,
-        rejectedAt: new Date().toISOString(),
-        rejectionEmailSent: true,
-        rejectionEmailSentAt: new Date().toISOString()
-      });
+            const stationRef = ref(database, `waterStations/${stationId}`);
+            await update(stationRef, {
+              status: 'deletion_pending',
+              rejectionReason: reason,
+              rejectedAt: new Date().toISOString(),
+              rejectionEmailSent: true,
+              rejectionEmailSentAt: new Date().toISOString()
+            });
 
-      // Step 3: Update local state
-      setPendingStations(prev => prev.filter(station => station.id !== stationId));
+            showAlert({
+              type: 'success',
+              message: `Station rejected successfully!\n\nRejection email has been sent to: ${stationToReject.email}\n\nNote: Their account will be permanently deleted when they try to login.`
+            });
+          } catch (error) {
+            console.error('Error in rejection process:', error);
 
-      // Show success message
-      alert(`✅ Station rejected successfully!\n\nRejection email has been sent to: ${stationToReject.email}\n\nNote: Their account will be permanently deleted when they try to login.`);
-
-    } catch (error) {
-      console.error('Error in rejection process:', error);
-
-      // Check if it's an email error or database error
-      if (error.message && error.message.includes('Email sending failed')) {
-        alert(`❌ Failed to send rejection email!\n\nError: ${error.message}\n\nThe station has NOT been rejected. Please try again or check your EmailJS configuration.`);
-      } else {
-        alert(`❌ Error rejecting station!\n\nError: ${error.message}\n\nPlease try again.`);
+            if (error.message && error.message.includes('Email sending failed')) {
+              showAlert({
+                type: 'error',
+                message: `Failed to send rejection email!\n\nError: ${error.message}\n\nThe station has NOT been rejected. Please try again or check your EmailJS configuration.`
+              });
+            } else {
+              showAlert({
+                type: 'error',
+                message: `Error rejecting station!\n\nError: ${error.message}\n\nPlease try again.`
+              });
+            }
+          } finally {
+            setRejectingStationId(null);
+          }
+        })();
       }
-    } finally {
-      // Reset rejecting state
-      setRejectingStationId(null);
-    }
+    });
   };
 
   const handleRevokeApproval = async (stationId) => {
-    if (!window.confirm('Are you sure you want to revoke this station\'s approval?')) return;
+    showAlert({
+      type: 'confirm',
+      message: 'Are you sure you want to revoke this station\'s approval?',
+      onConfirm: (confirmed) => {
+        closeAlert();
+        if (!confirmed) return;
 
-    try {
-      const stationRef = ref(database, `waterStations/${stationId}`);
-      await update(stationRef, {
-        status: 'pending',
-        revokedAt: new Date().toISOString()
-      });
+        (async () => {
+          try {
+            const stationRef = ref(database, `waterStations/${stationId}`);
+            await update(stationRef, {
+              status: 'pending',
+              revokedAt: new Date().toISOString()
+            });
 
-      const revokedStation = approvedStations.find(station => station.id === stationId);
-      if (revokedStation) {
-        setApprovedStations(prev => prev.filter(station => station.id !== stationId));
-        setPendingStations(prev => [...prev, { ...revokedStation, status: 'pending' }]);
+            showAlert({ type: 'success', message: 'Approval revoked successfully!' });
+          } catch (error) {
+            console.error('Error revoking approval:', error);
+            showAlert({ type: 'error', message: 'Error revoking approval. Please try again.' });
+          }
+        })();
       }
-
-      alert('Approval revoked successfully!');
-    } catch (error) {
-      console.error('Error revoking approval:', error);
-      alert('Error revoking approval. Please try again.');
-    }
+    });
   };
 
   const handleViewDetails = (station) => {
@@ -261,7 +331,8 @@ const AdminPage = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#667eea] to-[#764ba2] p-4">
+      <>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#3b82f6] to-[#1d4ed8] p-4">
         <div className="bg-white rounded-2xl p-12 w-full max-w-[450px] shadow-2xl text-center">
           <div>
             <h1 className="text-slate-800 m-0 mb-2 text-3xl">🔐 AQUA-LLERA Admin Portal</h1>
@@ -269,23 +340,36 @@ const AdminPage = () => {
           </div>
 
           <form onSubmit={handleLogin} className="text-left">
-            <div className="mb-6">
-              <label htmlFor="accessCode" className="block mb-2 text-gray-700 font-medium text-sm">Enter Admin Access Code</label>
+            <div className="mb-4">
+              <label htmlFor="email" className="block mb-2 text-gray-700 font-medium text-sm">Admin Email</label>
               <input
-                type="password"
-                id="accessCode"
-                value={accessCode}
-                onChange={(e) => setAccessCode(e.target.value)}
-                placeholder="Enter secret code..."
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="admin@aquallera.com"
                 required
-                autoComplete="off"
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-base transition-all font-mono tracking-wider focus:outline-none focus:border-[#667eea] focus:shadow-[0_0_0_3px_rgba(102,126,234,0.1)]"
+                autoComplete="email"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-base transition-all focus:outline-none focus:border-[#667eea] focus:shadow-[0_0_0_3px_rgba(102,126,234,0.1)]"
               />
-              <small className="block mt-2 text-gray-400 text-xs italic">Access restricted to developers only</small>
             </div>
 
-            <button type="submit" className="w-full py-4 bg-gradient-to-br from-[#667eea] to-[#764ba2] text-white border-none rounded-xl text-base font-semibold cursor-pointer transition-all mb-6 hover:-translate-y-0.5 hover:shadow-[0_10px_25px_rgba(102,126,234,0.4)]">
-              Access Admin Panel
+            <div className="mb-6">
+              <label htmlFor="password" className="block mb-2 text-gray-700 font-medium text-sm">Password</label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter password..."
+                required
+                autoComplete="current-password"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-base transition-all focus:outline-none focus:border-[#667eea] focus:shadow-[0_0_0_3px_rgba(102,126,234,0.1)]"
+              />
+            </div>
+
+            <button type="submit" className="w-full py-4 bg-gradient-to-br from-[#3b82f6] to-[#1d4ed8] text-white border-none rounded-xl text-base font-semibold cursor-pointer transition-all mb-6 hover:-translate-y-0.5 hover:shadow-[0_10px_25px_rgba(59,130,246,0.4)]">
+              Sign in to Admin Panel
             </button>
 
             <div className="bg-amber-50 border border-amber-300 rounded-lg p-4 mt-6 text-center">
@@ -304,6 +388,8 @@ const AdminPage = () => {
           </div>
         </div>
       </div>
+      {alertProps && <AlertCard {...alertProps} onClose={() => { if (alertProps.onClose) alertProps.onClose(); closeAlert(); }} />}
+      </>
     );
   }
 
@@ -319,6 +405,12 @@ const AdminPage = () => {
 
 
           <div className="flex gap-3">
+            <button
+              onClick={() => setShowInviteDialog(true)}
+              className="px-4 py-2 border border-white/20 rounded-md cursor-pointer font-medium text-sm transition-all bg-white/10 text-white hover:bg-white/20">
+              + Add Admin
+            </button>
+    
             <button
               onClick={() => window.location.reload()}
               className="px-4 py-2 border border-white/20 rounded-md cursor-pointer font-medium text-sm transition-all bg-white/10 text-white hover:bg-white/20"
@@ -503,9 +595,9 @@ const AdminPage = () => {
                         <button
                           onClick={() => {
                             navigator.clipboard.writeText(station.id);
-                            alert('Station ID copied to clipboard!');
+                            showAlert({ type: 'success', message: 'Station ID copied to clipboard!' });
                           }}
-                          className="px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[140px] bg-violet-500 text-white hover:bg-violet-600"
+                          className="px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[140px] bg-blue-500 text-white hover:bg-blue-600"
                         >
                           📋 Copy ID
                         </button>
@@ -679,9 +771,9 @@ const AdminPage = () => {
               <button
                 onClick={() => {
                   navigator.clipboard.writeText(selectedStation.id);
-                  alert('Station ID copied to clipboard!');
+                  showAlert({ type: 'success', message: 'Station ID copied to clipboard!' });
                 }}
-                className="px-6 py-3 border-none rounded-lg cursor-pointer font-semibold text-sm transition-all bg-violet-500 text-white hover:bg-violet-600"
+                className="px-6 py-3 border-none rounded-lg cursor-pointer font-semibold text-sm transition-all bg-blue-500 text-white hover:bg-blue-600"
               >
                 📋 Copy Station ID
               </button>
@@ -706,6 +798,51 @@ const AdminPage = () => {
           </div>
         </div>
       </footer>
+
+      {/* Invite Admin Dialog */}
+      {showInviteDialog && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-2xl w-[400px]">
+            <div className="px-6 py-5 border-b border-gray-200">
+              <h2 className="m-0 text-xl text-slate-800">Invite New Admin</h2>
+            </div>
+            <form onSubmit={handleInviteAdmin}>
+              <div className="px-6 py-5">
+                <label className="block text-sm font-medium text-slate-700 mb-2">Email Address</label>
+                <input
+                  type="email"
+                  placeholder="newadmin@email.com"
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-lg text-base box-border focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  autoFocus
+                  required
+                />
+                <p className="text-xs text-slate-500 mt-2">A random password will be generated and sent to this email.</p>
+              </div>
+              <div className="px-6 py-4 border-t border-gray-200 flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => { setShowInviteDialog(false); setInviteEmail(''); }}
+                  className="px-5 py-2 border-none rounded-lg cursor-pointer text-sm font-medium bg-gray-200 text-slate-700 hover:bg-gray-300"
+                  disabled={inviting}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={inviting}
+                  className="px-5 py-2 border-none rounded-lg cursor-pointer text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {inviting ? 'Sending...' : 'Send Invitation'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {alertProps && <AlertCard {...alertProps} onClose={() => { if (alertProps.onClose) alertProps.onClose(); closeAlert(); }} />}
     </div>
   );
 };

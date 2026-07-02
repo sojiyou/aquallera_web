@@ -33,7 +33,7 @@ const Signup = () => {
 
     // PRICING VARIABLES
     pricing_gallon_pure: '',
-    pricing_liter_spring: '',
+    pricing_gallon_spring: '',
     pricing_gallon_mineral: '',
     pricing_delivery_fee: '',
 
@@ -595,7 +595,7 @@ const Signup = () => {
         deliveryRadius: Number(formData.deliveryRadius),
         deliveryHours: formData.deliveryHours,
         pricing_gallon_pure: formData.pricing_gallon_pure ? parseFloat(formData.pricing_gallon_pure) : null,
-        pricing_liter_spring: formData.pricing_liter_spring ? parseFloat(formData.pricing_liter_spring) : null,
+        pricing_gallon_spring: formData.pricing_gallon_spring ? parseFloat(formData.pricing_gallon_spring) : null,
         pricing_gallon_mineral: formData.pricing_gallon_mineral ? parseFloat(formData.pricing_gallon_mineral) : null,
         pricing_delivery_fee: formData.pricing_delivery_fee ? parseFloat(formData.pricing_delivery_fee) : null,
         businessPermitNumber: formData.businessPermitNumber,
@@ -643,7 +643,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#667eea] to-[#764ba2] p-8 font-sans">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#3b82f6] to-[#1d4ed8] p-8 font-sans">
       <div className="bg-white rounded-xl shadow-[0_20px_40px_rgba(0,0,0,0.1)] p-10 w-full max-w-md">
         {/* 🔙 BACK TO HOME BUTTON */}
         <button
@@ -1045,22 +1045,22 @@ const Signup = () => {
                 </div>
 
                 <div className="mb-6">
-                  <label className="block mb-2 text-gray-700 font-medium text-sm">Liter Spring Water</label>
+                  <label className="block mb-2 text-gray-700 font-medium text-sm">gallon Spring Water</label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-700 font-semibold z-[2]">₱</span>
                     <input
                       type="number"
-                      name="pricing_liter_spring"
-                      value={formData.pricing_liter_spring}
+                      name="pricing_gallon_spring"
+                      value={formData.pricing_gallon_spring}
                       onChange={handleInputChange}
                       placeholder="0.00"
                       min="0"
                       step="0.01"
-                      className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border pl-10 focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] ${errors.pricing_liter_spring ? 'border-red-500' : 'border-slate-200'}`}
+                      className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border pl-10 focus:outline-none focus:border-blue-600 focus:shadow-[0_0_0_3px_rgba(37,99,235,0.1)] ${errors.pricing_gallon_spring ? 'border-red-500' : 'border-slate-200'}`}
                     />
                   </div>
-                  {errors.pricing_liter_spring && (
-                    <span className="text-red-500 text-sm mt-1 block">{errors.pricing_liter_spring}</span>
+                  {errors.pricing_gallon_spring && (
+                    <span className="text-red-500 text-sm mt-1 block">{errors.pricing_gallon_spring}</span>
                   )}
                   <small className="block text-slate-400 text-xs mt-1 italic">Optional - set later if needed</small>
                 </div>

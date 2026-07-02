@@ -263,7 +263,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#667eea] to-[#764ba2] p-8 font-sans">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#3b82f6] to-[#1d4ed8] p-8 font-sans">
       <div className="bg-white rounded-xl shadow-[0_20px_40px_rgba(0,0,0,0.1)] p-10 w-full max-w-md">
 
         {/* 🔙 BACK TO HOME BUTTON */}

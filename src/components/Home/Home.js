@@ -189,36 +189,36 @@ const Home = () => {
       <section className="py-24 px-8 bg-slate-50">
         <div className="max-w-[1200px] mx-auto">
           <h2 className="text-center text-4xl md:text-5xl text-slate-800 mb-12">Why Choose AQUA-LLERA?</h2>
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-8">
-            <div className="bg-white p-6 md:p-8 rounded-xl text-center shadow-md transition-transform duration-300 hover:-translate-y-1.5">
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(290px,1fr))] gap-8">
+            <div className="bg-gray-100 border p-6 md:p-8 rounded-xl text-center shadow-2xl transition-transform duration-300 hover:-translate-y-1.5">
               <div className="text-5xl mb-4">📊</div>
               <h3 className="text-slate-800 mb-4 text-xl">Real-time Dashboard</h3>
-              <p className="text-slate-500 leading-relaxed">Monitor your business performance with live statistics and analytics</p>
+              <p className="text-gray-600 leading-relaxed">Monitor your business performance with live statistics and analytics</p>
             </div>
-            <div className="bg-white p-6 md:p-8 rounded-xl text-center shadow-md transition-transform duration-300 hover:-translate-y-1.5">
+            <div className="bg-gray-100 p-6 md:p-4 rounded-xl text-center shadow-2xl transition-transform duration-300 hover:-translate-y-1.5">
               <div className="text-5xl mb-4">🚚</div>
               <h3 className="text-slate-800 mb-4 text-xl">Order Management</h3>
-              <p className="text-slate-500 leading-relaxed">Accept, track, and manage delivery orders efficiently</p>
+              <p className="text-gray-600 leading-relaxed">Accept, track, and manage delivery orders efficiently</p>
             </div>
-            <div className="bg-white p-6 md:p-8 rounded-xl text-center shadow-md transition-transform duration-300 hover:-translate-y-1.5">
+            <div className="bg-gray-100 p-6 md:p-8 rounded-xl text-center shadow-2xl transition-transform duration-300 hover:-translate-y-1.5">
               <div className="text-5xl mb-4">💰</div>
               <h3 className="text-slate-800 mb-4 text-xl">Pricing Control</h3>
-              <p className="text-slate-500 leading-relaxed">Set and update your water prices and delivery fees easily</p>
+              <p className="text-gray-600 leading-relaxed">Set and update your water prices and delivery fees easily</p>
             </div>
-            <div className="bg-white p-6 md:p-8 rounded-xl text-center shadow-md transition-transform duration-300 hover:-translate-y-1.5">
+            <div className="bg-gray-100 p-6 md:p-8 rounded-xl text-center shadow-2xl transition-transform duration-300 hover:-translate-y-1.5">
               <div className="text-5xl mb-4">⏰</div>
               <h3 className="text-slate-800 mb-4 text-xl">Business Hours</h3>
-              <p className="text-slate-500 leading-relaxed">Manage your operating hours and service availability</p>
+              <p className="text-gray-600 leading-relaxed">Manage your operating hours and service availability</p>
             </div>
-            <div className="bg-white p-6 md:p-8 rounded-xl text-center shadow-md transition-transform duration-300 hover:-translate-y-1.5">
+            <div className="bg-gray-100  p-6 md:p-8 rounded-xl text-center shadow-2xl transition-transform duration-300 hover:-translate-y-1.5">
               <div className="text-5xl mb-4">📍</div>
               <h3 className="text-slate-800 mb-4 text-xl">Location Management</h3>
-              <p className="text-slate-500 leading-relaxed">Update your station location and service areas</p>
+              <p className="text-gray-600 leading-relaxed">Update your station location and service areas</p>
             </div>
-            <div className="bg-white p-6 md:p-8 rounded-xl text-center shadow-md transition-transform duration-300 hover:-translate-y-1.5">
+            <div className="bg-gray-100 p-6 md:p-8 rounded-xl text-center shadow-2xl transition-transform duration-300 hover:-translate-y-1.5">
               <div className="text-5xl mb-4">📱</div>
               <h3 className="text-slate-800 mb-4 text-xl">Mobile Friendly</h3>
-              <p className="text-slate-500 leading-relaxed">Manage your station on-the-go with our responsive design</p>
+              <p className="text-gray-600 leading-relaxed">Manage your station on-the-go with our responsive design</p>
             </div>
           </div>
         </div>

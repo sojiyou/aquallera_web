@@ -592,7 +592,7 @@ const Stock = () => {
         </div>
 
         <div className="grid grid-cols-[repeat(auto-fit,minmax(400px,1fr))] gap-6">
-          <div className="bg-white rounded-xl p-6 shadow-md transition-transform flex items-center gap-4 hover:-translate-y-1">
+          <div className="bg-gray-100 rounded-xl p-6 shadow-lg transition-transform flex items-center gap-4 hover:-translate-y-1">
             <div className="text-4xl">📦</div>
             <div className="flex-1">
               <h3 className="text-3xl font-bold m-0 mb-1">{stats.totalOrders}</h3>
@@ -600,7 +600,7 @@ const Stock = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-md transition-transform flex items-center gap-4 hover:-translate-y-1">
+          <div className="bg-gray-100 rounded-xl p-6 shadow-lg transition-transform flex items-center gap-4 hover:-translate-y-1">
             <div className="text-4xl">⏳</div>
             <div className="flex-1">
               <h3 className="text-3xl font-bold m-0 mb-1">{stats.pendingOrders}</h3>
@@ -608,7 +608,7 @@ const Stock = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-md transition-transform flex items-center gap-4 hover:-translate-y-1">
+          <div className="bg-gray-100 rounded-xl p-6 shadow-lg transition-transform flex items-center gap-4 hover:-translate-y-1">
             <div className="text-4xl">✅</div>
             <div className="flex-1">
               <h3 className="text-3xl font-bold m-0 mb-1">{stats.completedOrders}</h3>
@@ -616,7 +616,7 @@ const Stock = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-md transition-transform flex items-center gap-4 hover:-translate-y-1">
+          <div className="bg-gray-100 rounded-xl p-6 shadow-lg transition-transform flex items-center gap-4 hover:-translate-y-1">
             <div className="text-4xl">💰</div>
             <div className="flex-1">
               <h3 className="text-3xl font-bold m-0 mb-1">{formatCurrency(stats.todaysRevenue)}</h3>
@@ -624,7 +624,7 @@ const Stock = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-md transition-transform flex items-center gap-4 hover:-translate-y-1">
+          <div className="bg-gray-100 rounded-xl p-6 shadow-lg transition-transform flex items-center gap-4 hover:-translate-y-1">
             <div className="text-4xl">💧</div>
             <div className="flex-1">
               <h3 className="text-3xl font-bold m-0 mb-1">{stats.mostBoughtWater}</h3>
@@ -632,7 +632,7 @@ const Stock = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-md transition-transform flex items-center gap-4 hover:-translate-y-1">
+          <div className="bg-gray-100 rounded-xl p-6 shadow-lg transition-transform flex items-center gap-4 hover:-translate-y-1">
             <div className="text-4xl">📍</div>
             <div className="flex-1">
               <h3 className="text-3xl font-bold m-0 mb-1">{stats.topLocation}</h3>
