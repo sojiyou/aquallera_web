@@ -249,6 +249,18 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate }) => {
 
   useEffect(() => {
     const fetchAddress = async () => {
+      if (order.deliveryAddress) {
+        setAddress(order.deliveryAddress);
+        setAddressLoading(false);
+        return;
+      }
+
+      if (order.locationDetails) {
+        setAddress(order.locationDetails);
+        setAddressLoading(false);
+        return;
+      }
+
       const lat = order.deliveryLatitude || order.latitude;
       const lng = order.deliveryLongitude || order.longitude;
       
@@ -420,16 +432,36 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate }) => {
                     </div>
                   )}
                   {coords && (
-                    <button 
-                      className="bg-none border-none text-primary cursor-pointer text-xs p-0 underline"
-                      onClick={() => setShowRawLocation(!showRawLocation)}
-                    >
-                      {showRawLocation ? '📍 Show Address' : '🗺️ Show Coordinates'}
-                    </button>
-                  )}
-                  {showRawLocation && coords && (
-                    <div className="mt-2 font-mono text-xs text-slate-500 bg-white p-2 rounded border">
-                      Lat: {coords.lat}, Lng: {coords.lng}
+                    <div className="mt-2">
+                      <button 
+                        className="bg-none border-none text-primary cursor-pointer text-xs p-0 underline"
+                        onClick={() => setShowRawLocation(!showRawLocation)}
+                      >
+                        {showRawLocation ? '📍 Hide Map' : '🗺️ Show on Map'}
+                      </button>
+                      {showRawLocation && (
+                        <div className="mt-2 rounded-lg overflow-hidden border border-slate-200">
+                          <iframe
+                            title="Delivery Location"
+                            width="100%"
+                            height="250"
+                            frameBorder="0"
+                            scrolling="no"
+                            src={`https://www.openstreetmap.org/export/embed.html?bbox=${parseFloat(coords.lng) - 0.005},${parseFloat(coords.lat) - 0.005},${parseFloat(coords.lng) + 0.005},${parseFloat(coords.lat) + 0.005}&layer=mapnik&marker=${coords.lat},${coords.lng}`}
+                            style={{ border: 0 }}
+                          />
+                          <div className="text-xs text-center text-slate-400 p-1 bg-slate-50">
+                            <a 
+                              href={`https://www.openstreetmap.org/?mlat=${coords.lat}&mlon=${coords.lng}&zoom=15`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary underline"
+                            >
+                              View Larger Map
+                            </a>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </>
@@ -782,7 +814,7 @@ const Dashboard = () => {
 
   if (stationData && stationData.status === 'pending') {
     return (
-      <div className="min-h-screen bg-surface font-sans">
+      <div className="min-h-screen bg-app-bg font-sans">
         <header className="bg-white border-b border-slate-200 px-8 py-6 shadow-sm">
           <div className="flex justify-between items-center max-w-[1200px] mx-auto">
             <div className="header-info">
@@ -827,7 +859,7 @@ const Dashboard = () => {
 
   if (stationData && stationData.status === 'rejected') {
     return (
-      <div className="min-h-screen bg-surface font-sans">
+      <div className="min-h-screen bg-app-bg font-sans">
         <header className="bg-white border-b border-slate-200 px-8 py-6 shadow-sm">
           <div className="flex justify-between items-center max-w-[1200px] mx-auto">
             <div className="header-info">
@@ -873,7 +905,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-surface font-sans">
+    <div className="min-h-screen bg-app-bg font-sans">
       <header className="bg-white border-b border-slate-200 px-8 py-6 shadow-sm">
         <div className="flex justify-between items-center max-w-[1200px] mx-auto">
           <div className="header-info">

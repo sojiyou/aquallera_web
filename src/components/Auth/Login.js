@@ -160,6 +160,12 @@ const Login = () => {
 
         const dbDeleted = await deleteStationFromDB(stationData.id);
 
+        try {
+          await remove(ref(database, `rejectionRecords/${stationData.id}`));
+        } catch (e) {
+          console.warn('Failed to remove rejection record:', e);
+        }
+
         setRejectionData(prev => ({
           ...prev,
           cleanupComplete: true
@@ -182,6 +188,25 @@ const Login = () => {
       const stationSnapshot = await get(stationRef);
 
       if (!stationSnapshot.exists()) {
+        const rejectionSnap = await get(ref(database, `rejectionRecords/${user.uid}`));
+        if (rejectionSnap.exists()) {
+          const rec = rejectionSnap.val();
+          setRejectionData({
+            reason: rec.rejectionReason || 'No specific reason provided.',
+            stationName: rec.stationName || 'Your station',
+            cleanupComplete: false
+          });
+          setShowRejectionMessage(true);
+          await remove(ref(database, `rejectionRecords/${user.uid}`));
+          try {
+            await deleteUser(user);
+          } catch (e) {
+            console.warn('Could not delete auth account:', e);
+          }
+          await auth.signOut();
+          setIsLoading(false);
+          return;
+        }
         throw new Error('Station profile not found. Please contact support.');
       }
 

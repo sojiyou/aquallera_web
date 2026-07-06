@@ -186,7 +186,8 @@ const AdminPage = () => {
       const stationRef = ref(database, `waterStations/${stationId}`);
       await update(stationRef, {
         status: 'approved',
-        approvedAt: new Date().toISOString()
+        approvedAt: new Date().toISOString(),
+        revokedAt: null
       });
       showAlert({ type: 'success', message: 'Station approved successfully!' });
     } catch (error) {
@@ -223,13 +224,21 @@ const AdminPage = () => {
           try {
             await sendRejectionEmail(stationToReject, reason);
 
-            const stationRef = ref(database, `waterStations/${stationId}`);
+              const stationRef = ref(database, `waterStations/${stationId}`);
             await update(stationRef, {
               status: 'deletion_pending',
               rejectionReason: reason,
               rejectedAt: new Date().toISOString(),
               rejectionEmailSent: true,
               rejectionEmailSentAt: new Date().toISOString()
+            });
+
+            const rejectionRecordRef = ref(database, `rejectionRecords/${stationId}`);
+            await set(rejectionRecordRef, {
+              email: stationToReject.email,
+              stationName: stationToReject.stationName,
+              rejectionReason: reason,
+              rejectedAt: new Date().toISOString()
             });
 
             showAlert({

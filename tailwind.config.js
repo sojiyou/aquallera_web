@@ -18,6 +18,7 @@ module.exports = {
           DEFAULT: '#1C7293',
         },
         surface: '#9EB3C2',
+        appBg: '#FFFCF2',
       },
     },
   },

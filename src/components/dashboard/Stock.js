@@ -573,7 +573,7 @@ const Stock = () => {
 
   if (loading) {
     return (
-      <div className="p-8 bg-surface min-h-screen">
+      <div className="p-8 bg-app-bg min-h-screen">
         <div className="flex flex-col items-center justify-center min-h-[50vh]">
           <div className="border-4 border-slate-200 border-t-primary rounded-full w-[50px] h-[50px] animate-spin mb-4"></div>
           <p>Loading stock data...</p>
@@ -583,7 +583,7 @@ const Stock = () => {
   }
 
   return (
-    <div className="p-8 bg-surface min-h-screen">
+    <div className="p-8 bg-app-bg min-h-screen">
 
       {/* Analytics Section */}
       <section className="bg-white rounded-xl p-8 mb-8 shadow-sm">
