@@ -220,7 +220,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
   
   // Helper to get unit for water type
   const getUnit = (waterType) => {
-    if (waterType === 'springWater') return 'L';
+    if (waterType === 'springWater') return 'gal';
     return 'gal';
   };
   
@@ -472,7 +472,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
                         <div className="month-info">
                           <h3 className="m-0 mb-1 text-base text-slate-800">{month.monthName} {month.year}</h3>
                           <p className="m-0 text-xs text-slate-500">
-                            {month.totalOrders} orders • 💧{formatNumber(month.pureWater)}g • 🌊{formatNumber(month.springWater)}L • ⛰️{formatNumber(month.mineralWater)}g
+                            {month.totalOrders} orders • 💧{formatNumber(month.pureWater)}g • 🌊{formatNumber(month.springWater)} gal • ⛰️{formatNumber(month.mineralWater)}g
                           </p>
                         </div>
                       </div>
@@ -501,7 +501,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
                               <YAxis tick={{ fontSize: 11 }} stroke="#64748b" />
                               <Tooltip 
                                 formatter={(value, name) => {
-                                  const unit = name === 'Spring Water (L)' ? 'L' : 'gal';
+                                  const unit = 'gal';
                                   return [`${Math.round(value)} ${unit}`, name];
                                 }}
                                 labelFormatter={(label) => `Day ${label}`}
@@ -523,7 +523,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
                                 strokeWidth={2}
                                 dot={{ r: 2, fill: "#1C7293" }}
                                 activeDot={{ r: 5 }}
-                                name="Spring Water (L)"
+                                name="Spring Water (gal)"
                               />
                               <Line
                                 type="monotone"
@@ -547,7 +547,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
                           </div>
                           <div className="text-center p-4 rounded-lg bg-slate-100 border-l-3 border-l-secondary">
                             <span className="text-2xl block mb-2">🌊</span>
-                            <span className="text-2xl font-bold text-slate-800 block">{formatNumber(month.springWater)} L</span>
+                            <span className="text-2xl font-bold text-slate-800 block">{formatNumber(month.springWater)} gal</span>
                             <span className="text-xs text-slate-500">Spring Water</span>
                           </div>
                           <div className="text-center p-4 rounded-lg bg-slate-100 border-l-3 border-l-amber-500">
@@ -579,7 +579,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
                             <div>
                               <span className="text-[0.7rem] text-slate-500 font-medium">Avg Spring/Order</span>
                               <span className="text-sm text-slate-800 font-bold">
-                                {(month.springWater / month.totalOrders).toFixed(1)} L
+                                {(month.springWater / month.totalOrders).toFixed(1)} gal
                               </span>
                             </div>
                           </div>
@@ -621,7 +621,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
                     <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Best Month</span>
                     <span className="text-slate-800 text-lg font-bold">{annualData.bestMonth.name}</span>
                     <span className="text-slate-500 text-xs">
-                      💧{annualData.bestMonth.pureWater}g • 🌊{annualData.bestMonth.springWater}L • ⛰️{annualData.bestMonth.mineralWater}g
+                      💧{annualData.bestMonth.pureWater}g • 🌊{annualData.bestMonth.springWater} gal • ⛰️{annualData.bestMonth.mineralWater}g
                     </span>
                   </div>
                 </div>
@@ -631,7 +631,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
                     <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Slowest Month</span>
                     <span className="text-slate-800 text-lg font-bold">{annualData.slowestMonth.name}</span>
                     <span className="text-slate-500 text-xs">
-                      💧{annualData.slowestMonth.pureWater}g • 🌊{annualData.slowestMonth.springWater}L • ⛰️{annualData.slowestMonth.mineralWater}g
+                      💧{annualData.slowestMonth.pureWater}g • 🌊{annualData.slowestMonth.springWater} gal • ⛰️{annualData.slowestMonth.mineralWater}g
                     </span>
                   </div>
                 </div>
@@ -641,7 +641,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
                     <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Monthly Average</span>
                     <span className="text-slate-800 text-lg font-bold">Per Month</span>
                     <span className="text-slate-500 text-xs">
-                      💧{annualData.avgMonthly.pureWater}g • 🌊{annualData.avgMonthly.springWater}L • ⛰️{annualData.avgMonthly.mineralWater}g
+                      💧{annualData.avgMonthly.pureWater}g • 🌊{annualData.avgMonthly.springWater} gal • ⛰️{annualData.avgMonthly.mineralWater}g
                     </span>
                   </div>
                 </div>
@@ -656,7 +656,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
                   </div>
                   <div className="flex flex-col gap-2 bg-white/10 p-4 rounded-lg backdrop-blur">
                     <span className="text-slate-400 text-xs uppercase tracking-wider">Total Spring Water</span>
-                    <span className="text-white text-xl font-bold">{formatNumber(annualData.totals.springWater)} L</span>
+                    <span className="text-white text-xl font-bold">{formatNumber(annualData.totals.springWater)} gal</span>
                   </div>
                   <div className="flex flex-col gap-2 bg-white/10 p-4 rounded-lg backdrop-blur">
                     <span className="text-slate-400 text-xs uppercase tracking-wider">Total Mineral Water</span>

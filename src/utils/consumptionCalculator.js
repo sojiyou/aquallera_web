@@ -45,7 +45,7 @@ export const calculateMonthlyConsumption = async (stationId, year, month) => {
           return acc;
         }, { pureWater: 0, springWater: 0, mineralWater: 0 });
 
-        console.log(`💧 Month ${month + 1}/${year}: Pure ${consumption.pureWater}gal, Spring ${consumption.springWater}L, Mineral ${consumption.mineralWater}gal (${monthlyOrders.length} orders)`);
+        console.log(`💧 Month ${month + 1}/${year}: Pure ${consumption.pureWater}gal, Spring ${consumption.springWater} gal, Mineral ${consumption.mineralWater}gal (${monthlyOrders.length} orders)`);
         
         resolve({
           ...consumption,

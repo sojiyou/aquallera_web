@@ -7,6 +7,15 @@ import { ref, set, get, query, orderByChild, equalTo } from 'firebase/database';
 import { auth, database } from '../config/Firebase';
 import { useNavigate } from 'react-router-dom';
 
+const convertTo12Hour = (time24) => {
+  if (!time24) return '';
+  const [hours, minutes] = time24.split(':');
+  const h = parseInt(hours, 10);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const h12 = h % 12 || 12;
+  return `${h12}:${minutes} ${ampm}`;
+};
+
 const Signup = () => {
 
   const [alertProps, showAlert, closeAlert] = useAlert();
@@ -844,11 +853,7 @@ const Signup = () => {
                 {locationStatus && (
                   <div className="mt-2 p-2 rounded text-sm text-center bg-slate-50 text-slate-500">
                     {locationStatus}
-                    {formData.latitude && (
-                      <div style={{ marginTop: '0.5rem', fontSize: '0.85rem', color: '#1B3B6F' }}>
-                        Coordinates: {formData.latitude.toFixed(6)}, {formData.longitude.toFixed(6)}
-                      </div>
-                    )}
+
                   </div>
                 )}
 
@@ -1010,7 +1015,7 @@ const Signup = () => {
                         {formData.deliveryHours.map((time, index) => (
                           <div key={index} className="flex items-center bg-surface border border-secondary/20 rounded-md px-4 py-3 transition-all hover:bg-secondary/10">
                             <span className="text-lg mr-3">🚚</span>
-                            <span className="flex-1 font-semibold text-slate-800 text-base">{time}</span>
+                            <span className="flex-1 font-semibold text-slate-800 text-base">{convertTo12Hour(time)}</span>
                             <button
                               type="button"
                               onClick={() => removeDeliveryHour(time)}
@@ -1066,7 +1071,7 @@ const Signup = () => {
                 </div>
 
                 <div className="mb-6">
-                  <label className="block mb-2 text-gray-700 font-medium text-sm">gallon Spring Water</label>
+                  <label className="block mb-2 text-gray-700 font-medium text-sm">Gallon Spring Water</label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-700 font-semibold z-[2]">₱</span>
                     <input

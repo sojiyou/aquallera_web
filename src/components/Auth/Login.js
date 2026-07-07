@@ -536,7 +536,7 @@ const Login = () => {
             <small style={{ color: '#1B3B6F', display: 'block', marginBottom: '0.25rem' }}>
               <strong>Note:</strong> New stations require admin approval before full access.
             </small>
-            <small style={{ color: '#64748b' }}>
+            <small style={{ color: '#004ab1' }}>
               Check your email for approval notifications or contact support if waiting more than 48 hours.
             </small>
           </div>
@@ -545,7 +545,7 @@ const Login = () => {
         <div className="text-center pt-6 border-t border-slate-200">
           <p>Don't have an account? <a href="/signup" className="text-primary hover:underline font-medium">Register your station</a></p>
           <p style={{ marginTop: '0.5rem', fontSize: '0.85rem', color: '#64748b' }}>
-            Need help? <a href="/login" className="text-primary">Help Center</a>
+            Need help? <a href="/help" className="text-primary">Help Center</a>
           </p>
         </div>
       </div>

@@ -408,7 +408,7 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
                 {order.date && order.time 
                   ? `${order.date} at ${order.time}`
                   : order.createdAt 
-                    ? new Date(order.createdAt).toLocaleString()
+                    ? new Date(order.createdAt).toLocaleString(undefined, { hour12: true })
                     : 'N/A'}
               </span>
             </div>
@@ -490,7 +490,7 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
                 )}
                 {order.springWaterQty > 0 && (
                   <tr>
-                    <td className="p-2.5 border-b border-slate-100">🌊 Spring Water (Liter)</td>
+                    <td className="p-2.5 border-b border-slate-100">🌊 Spring Water (Gallon)</td>
                     <td className="p-2.5 border-b border-slate-100">×{order.springWaterQty}</td>
                     <td className="p-2.5 border-b border-slate-100">₱{parseFloat(springTotal).toFixed(2)}</td>
                   </tr>
@@ -651,7 +651,7 @@ const Dashboard = () => {
       if (pureCount >= springCount && pureCount >= mineralCount) {
         mostBought = `Pure Water (${pureCount} gallons)`;
       } else if (springCount >= pureCount && springCount >= mineralCount) {
-        mostBought = `Spring Water (${springCount} liters)`;
+        mostBought = `Spring Water (${springCount} gallons)`;
       } else {
         mostBought = `Mineral Water (${mineralCount} gallons)`;
       }
@@ -816,20 +816,26 @@ const Dashboard = () => {
 
   if (stationData && stationData.status === 'pending') {
     return (
-      <div className="min-h-screen bg-app-bg font-sans">
-        <header className="bg-white border-b border-slate-200 px-8 py-6 shadow-sm">
-          <div className="flex justify-between items-center max-w-[1200px] mx-auto">
-            <div className="header-info">
-              <h1 className="text-slate-800 m-0 mb-1 text-3xl">⏳ Pending Approval</h1>
-              <p className="text-slate-600 text-sm m-1 flex items-center gap-1">
-                {stationData.stationName || 'Your Station'}
-              </p>
+      <div className="min-h-screen bg-gradient-to-br from-primary to-primary-dark font-sans relative overflow-hidden">
+        <svg className="absolute inset-0 w-full h-full opacity-15" viewBox="0 0 1440 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill="#9EB3C2" d="M0,200L48,213.3C96,226.7,192,253.3,288,250.7C384,248,480,216,576,213.3C672,210.7,768,237.3,864,245.3C960,253.3,1056,242.7,1152,224C1248,205.3,1344,178.7,1392,165.3L1440,152L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
+          <path fill="#ffffff" d="M0,350L48,338.7C96,327.3,192,304.7,288,320C384,335.3,480,388.7,576,396C672,403.3,768,364.7,864,346.7C960,328.7,1056,331.3,1152,352C1248,372.7,1344,411.3,1392,430.7L1440,450L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
+          <path fill="#9EB3C2" d="M0,550L48,565.3C96,580.7,192,611.3,288,608C384,604.7,480,568,576,554.7C672,541.3,768,552,864,578.7C960,605.3,1056,648,1152,632C1248,616,1344,541.3,1392,504L1440,466.7L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
+        </svg>
+        <div className="relative z-10">
+          <header className="bg-white border-b border-slate-200 px-8 py-6 shadow-sm">
+            <div className="flex justify-between items-center max-w-[1200px] mx-auto">
+              <div className="header-info">
+                <h1 className="text-slate-800 m-0 mb-1 text-3xl">⏳ Pending Approval</h1>
+                <p className="text-slate-600 text-sm m-1 flex items-center gap-1">
+                  {stationData.stationName || 'Your Station'}
+                </p>
+              </div>
+              <button onClick={handleLogout} className="bg-red-500 text-white border-none px-4 py-2 rounded-md cursor-pointer font-medium ml-auto hover:bg-red-600">
+                Logout
+              </button>
             </div>
-            <button onClick={handleLogout} className="bg-red-500 text-white border-none px-4 py-2 rounded-md cursor-pointer font-medium ml-auto hover:bg-red-600">
-              Logout
-            </button>
-          </div>
-        </header>
+          </header>
 
         <div className="max-w-[800px] mx-auto my-8 p-12 bg-white rounded-xl shadow-sm text-center">
           <div className="text-6xl mb-6 opacity-70">⏳</div>
@@ -856,25 +862,32 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+      </div>
     );
   }
 
   if (stationData && stationData.status === 'rejected') {
     return (
-      <div className="min-h-screen bg-app-bg font-sans">
-        <header className="bg-white border-b border-slate-200 px-8 py-6 shadow-sm">
-          <div className="flex justify-between items-center max-w-[1200px] mx-auto">
-            <div className="header-info">
-              <h1 className="text-slate-800 m-0 mb-1 text-3xl">❌ Registration Rejected</h1>
-              <p className="text-slate-600 text-sm m-1 flex items-center gap-1">
-                {stationData.stationName || 'Your Station'}
-              </p>
+      <div className="min-h-screen bg-gradient-to-br from-primary to-primary-dark font-sans relative overflow-hidden">
+        <svg className="absolute inset-0 w-full h-full opacity-15" viewBox="0 0 1440 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill="#9EB3C2" d="M0,200L48,213.3C96,226.7,192,253.3,288,250.7C384,248,480,216,576,213.3C672,210.7,768,237.3,864,245.3C960,253.3,1056,242.7,1152,224C1248,205.3,1344,178.7,1392,165.3L1440,152L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
+          <path fill="#ffffff" d="M0,350L48,338.7C96,327.3,192,304.7,288,320C384,335.3,480,388.7,576,396C672,403.3,768,364.7,864,346.7C960,328.7,1056,331.3,1152,352C1248,372.7,1344,411.3,1392,430.7L1440,450L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
+          <path fill="#9EB3C2" d="M0,550L48,565.3C96,580.7,192,611.3,288,608C384,604.7,480,568,576,554.7C672,541.3,768,552,864,578.7C960,605.3,1056,648,1152,632C1248,616,1344,541.3,1392,504L1440,466.7L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
+        </svg>
+        <div className="relative z-10">
+          <header className="bg-white border-b border-slate-200 px-8 py-6 shadow-sm">
+            <div className="flex justify-between items-center max-w-[1200px] mx-auto">
+              <div className="header-info">
+                <h1 className="text-slate-800 m-0 mb-1 text-3xl">❌ Registration Rejected</h1>
+                <p className="text-slate-600 text-sm m-1 flex items-center gap-1">
+                  {stationData.stationName || 'Your Station'}
+                </p>
+              </div>
+              <button onClick={handleLogout} className="bg-red-500 text-white border-none px-4 py-2 rounded-md cursor-pointer font-medium ml-auto hover:bg-red-600">
+                Logout
+              </button>
             </div>
-            <button onClick={handleLogout} className="bg-red-500 text-white border-none px-4 py-2 rounded-md cursor-pointer font-medium ml-auto hover:bg-red-600">
-              Logout
-            </button>
-          </div>
-        </header>
+          </header>
 
         <div className="max-w-[800px] mx-auto my-8 p-12 bg-white rounded-xl shadow-sm text-center">
           <div className="text-6xl mb-6 text-red-600">❌</div>
@@ -903,21 +916,28 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+      </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-app-bg font-sans">
-      <header className="bg-white border-b border-slate-200 px-8 py-6 shadow-sm">
-        <div className="flex justify-between items-center max-w-[1200px] mx-auto">
-          <div className="header-info">
-            <h1 className="text-slate-800 m-0 mb-1 text-3xl">
-              {stationData && stationData.stationName 
-                ? `${stationData.stationName} Dashboard`
-                : "Station Dashboard"
-              }
-            </h1>
-            <p className="text-slate-500 m-0">Welcome back! Here's your business overview</p>
+    <div className="min-h-screen bg-gradient-to-br from-primary to-primary-dark font-sans relative overflow-hidden">
+      <svg className="absolute inset-0 w-full h-full opacity-15" viewBox="0 0 1440 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#9EB3C2" d="M0,200L48,213.3C96,226.7,192,253.3,288,250.7C384,248,480,216,576,213.3C672,210.7,768,237.3,864,245.3C960,253.3,1056,242.7,1152,224C1248,205.3,1344,178.7,1392,165.3L1440,152L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
+        <path fill="#ffffff" d="M0,350L48,338.7C96,327.3,192,304.7,288,320C384,335.3,480,388.7,576,396C672,403.3,768,364.7,864,346.7C960,328.7,1056,331.3,1152,352C1248,372.7,1344,411.3,1392,430.7L1440,450L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
+        <path fill="#9EB3C2" d="M0,550L48,565.3C96,580.7,192,611.3,288,608C384,604.7,480,568,576,554.7C672,541.3,768,552,864,578.7C960,605.3,1056,648,1152,632C1248,616,1344,541.3,1392,504L1440,466.7L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
+      </svg>
+      <div className="relative z-10">
+        <header className="bg-white border-b border-slate-200 px-8 py-6 shadow-sm">
+          <div className="flex justify-between items-center max-w-[1200px] mx-auto">
+            <div className="header-info">
+              <h1 className="text-slate-800 m-0 mb-1 text-3xl">
+                {stationData && stationData.stationName 
+                  ? `${stationData.stationName} Dashboard`
+                  : "Station Dashboard"
+                }
+              </h1>
+              <p className="text-slate-500 m-0">Welcome back! Here's your business overview</p>
             
             {stationData && (stationData.city || stationData.address) && (
               <p className="text-slate-600 text-sm m-1 flex items-center gap-1">
@@ -961,9 +981,9 @@ const Dashboard = () => {
 
       {activeSection === 'orders' && (
         <>
-          <section className="max-w-[1200px] mx-auto px-8 pb-8">
+          <section className="max-w-[1200px] mx-auto px-8 py-8">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-slate-800 m-0">📦 Order Management</h2>
+              <h2 className="text-white m-0">📦 Order Management</h2>
               <div className="relative">
                 <select 
                   className="appearance-none bg-white border-2 border-slate-200 rounded-xl px-4 py-3 pr-10 text-sm font-medium text-slate-800 cursor-pointer min-w-[200px] transition-all hover:border-primary focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.15)]"
@@ -998,6 +1018,7 @@ const Dashboard = () => {
       {activeSection === 'settings' && <Settings stationData={stationData} setStationData={setStationData} />}
 
       {alertProps && <AlertCard {...alertProps} onClose={closeAlert} />}
+      </div>
     </div>
   );
 };

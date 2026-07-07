@@ -343,6 +343,7 @@ const AnnualReports = ({ stationId }) => {
                 </button>
               </div>
 
+              {isExpanded && (<>
               <div className="p-6 bg-white">
                 <ResponsiveContainer width="100%" height={200}>
                   <BarChart
@@ -423,7 +424,6 @@ const AnnualReports = ({ stationId }) => {
                 </div>
               </div>
 
-              {isExpanded && (
                 <div className="p-6 bg-white border-t border-slate-200 animate-[slideDown_0.3s_ease]">
                   <h4 className="text-slate-800 text-lg m-0 mb-4 font-semibold">📅 Monthly Breakdown</h4>
                   <div className="bg-slate-50 rounded-xl p-2 mb-6">
@@ -485,7 +485,7 @@ const AnnualReports = ({ stationId }) => {
                     </div>
                   </div>
                 </div>
-              )}
+              </>)}
             </div>
           );
         })}

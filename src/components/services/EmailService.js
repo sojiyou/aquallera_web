@@ -101,7 +101,8 @@ export const sendRejectionEmail = async (stationData, rejectionReason) => {
         month: 'long',
         day: 'numeric',
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
+        hour12: true
       }),
 
       // Application Details

@@ -2,6 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { ref, update, onValue } from 'firebase/database';
 import { database, auth } from '../config/Firebase';
 
+const convertTo12Hour = (time24) => {
+  if (!time24) return '';
+  const [hours, minutes] = time24.split(':');
+  const h = parseInt(hours, 10);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const h12 = h % 12 || 12;
+  return `${h12}:${minutes} ${ampm}`;
+};
+
 const Settings = ({ stationData, setStationData }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(null);
@@ -43,7 +52,7 @@ const Settings = ({ stationData, setStationData }) => {
         deliveryRadius: 5,
         deliveryHours: [], // NEW: Initialize empty array
         pricing_gallon_pure: null,
-        pricing_liter_spring: null,
+        pricing_gallon_spring: null,
         pricing_gallon_mineral: null,
         pricing_delivery_fee: null,
         isOnline: false
@@ -320,7 +329,7 @@ const Settings = ({ stationData, setStationData }) => {
   return (
     <section className="p-8 max-w-[1200px] mx-auto">
       <div className="flex justify-between items-center mb-8 pb-4 border-b-2 border-slate-200">
-        <h2 className="text-slate-800 text-3xl font-bold m-0">Station Settings</h2>
+        <h2 className="text-white text-3xl font-bold m-0">Station Settings</h2>
         <div className="settings-actions">
           {!isEditing ? (
             <button 
@@ -566,7 +575,7 @@ const Settings = ({ stationData, setStationData }) => {
             </div>
             <div className="mt-4 p-4 bg-secondary/5 border border-secondary/20 rounded-lg text-center text-primary-dark font-medium">
               <span>Current Hours: </span>
-              <strong>{formData.businessHours?.open || '08:00'} - {formData.businessHours?.close || '18:00'}</strong>
+              <strong>{convertTo12Hour(formData.businessHours?.open || '08:00')} - {convertTo12Hour(formData.businessHours?.close || '18:00')}</strong>
             </div>
           </div>
         </div>
@@ -622,25 +631,25 @@ const Settings = ({ stationData, setStationData }) => {
                 </select>
               </div>
 
-              {/* NEW: Delivery Hours Section */}
+              {/* Delivery Hours Section */}
               <div className="mb-5">
                 <label className="block mb-2 text-gray-700 font-medium text-sm">Delivery Hours</label>
-                <p className="field-hint" style={{ marginBottom: '0.75rem', fontSize: '0.85rem', color: '#64748b' }}>
+                <p className="text-xs text-slate-400 italic mb-3">
                   Times when you deliver water to customers
                 </p>
 
                 {isEditing && (
-                  <div className="delivery-hours-add">
+                  <div className="flex gap-2 mb-4">
                     <input
                       type="time"
                       value={newDeliveryTime}
                       onChange={(e) => setNewDeliveryTime(e.target.value)}
-                      className="delivery-time-input"
+                      className="flex-1 px-4 py-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)]"
                     />
                     <button
                       type="button"
                       onClick={addDeliveryHour}
-                      className="btn-add-delivery"
+                      className="bg-secondary text-white border-none rounded-lg px-6 py-3 font-semibold cursor-pointer transition-all whitespace-nowrap text-sm hover:bg-primary-dark hover:-translate-y-0.5"
                     >
                       + Add Time
                     </button>
@@ -648,16 +657,16 @@ const Settings = ({ stationData, setStationData }) => {
                 )}
 
                 {(formData.deliveryHours || []).length > 0 ? (
-                  <div className="delivery-hours-list">
+                  <div className="flex flex-col gap-2 mt-3">
                     {formData.deliveryHours.map((time, index) => (
-                      <div key={index} className="delivery-hour-item">
-                        <span className="delivery-time-icon">🚚</span>
-                        <span className="delivery-time-value">{time}</span>
+                      <div key={index} className="flex items-center bg-surface border border-secondary/20 rounded-lg px-4 py-3 transition-all hover:bg-secondary/10">
+                        <span className="text-lg mr-3">🚚</span>
+                        <span className="flex-1 font-semibold text-slate-800 text-sm">{convertTo12Hour(time)}</span>
                         {isEditing && (
                           <button
                             type="button"
                             onClick={() => removeDeliveryHour(time)}
-                            className="btn-remove-delivery"
+                            className="bg-red-50 text-red-600 border border-red-200 rounded w-7 h-7 flex items-center justify-center cursor-pointer transition-all text-base font-semibold flex-shrink-0 hover:bg-red-600 hover:text-white"
                             title="Remove this delivery time"
                           >
                             ✕
@@ -667,7 +676,7 @@ const Settings = ({ stationData, setStationData }) => {
                     ))}
                   </div>
                 ) : (
-                  <div className="delivery-hours-empty">
+                  <div className="text-center py-6 text-slate-400 text-sm bg-slate-50 rounded-lg border border-dashed border-slate-300 mt-3">
                     No delivery times set
                   </div>
                 )}
@@ -699,19 +708,19 @@ const Settings = ({ stationData, setStationData }) => {
             </div>
 
             <div className="mb-5">
-              <label className="block mb-2 text-gray-700 font-medium text-sm">Liter Spring Water (₱)</label>
+              <label className="block mb-2 text-gray-700 font-medium text-sm">Gallon Spring Water (₱)</label>
               <input
                 type="number"
-                name="pricing_liter_spring"
-                value={formData.pricing_liter_spring || ''}
+                name="pricing_gallon_spring"
+                value={formData.pricing_gallon_spring || ''}
                 onChange={handleInputChange}
                 disabled={!isEditing}
                 min="0"
                 step="0.01"
-                placeholder="Enter price per liter"
+                placeholder="Enter price per gallon"
                 className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
               />
-              {formData.pricing_liter_spring === null && (
+              {formData.pricing_gallon_spring === null && (
                 <div className="text-xs text-slate-500 italic mt-1">Not yet set</div>
               )}
             </div>

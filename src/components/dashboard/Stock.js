@@ -525,7 +525,7 @@ const Stock = () => {
     const { name, value } = e.target;
     setTempStock((prev) => ({
       ...prev,
-      [name]: parseInt(value) || 0,
+      [name]: value === '' ? '' : parseInt(value, 10),
     }));
   };
 
@@ -536,14 +536,20 @@ const Stock = () => {
 
       const stationRef = ref(database, `waterStations/${user.uid}`);
 
+      const saveStock = {
+        pureWater: tempStock.pureWater === '' ? 0 : tempStock.pureWater,
+        springWater: tempStock.springWater === '' ? 0 : tempStock.springWater,
+        mineralWater: tempStock.mineralWater === '' ? 0 : tempStock.mineralWater,
+      };
+
       await update(stationRef, {
-        stock_pureWater: tempStock.pureWater,
-        stock_springWater: tempStock.springWater,
-        stock_mineralWater: tempStock.mineralWater,
+        stock_pureWater: saveStock.pureWater,
+        stock_springWater: saveStock.springWater,
+        stock_mineralWater: saveStock.mineralWater,
         stockUpdatedAt: new Date().toISOString(),
       });
 
-      setStock(tempStock);
+      setStock(saveStock);
       setEditingStock(false);
       showAlert({ type: 'success', message: 'Stock updated successfully!' });
     } catch (error) {
@@ -570,12 +576,12 @@ const Stock = () => {
 
   const formatLastRefreshed = (date) => {
     if (!date) return null;
-    return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
   };
 
   if (loading) {
     return (
-      <div className="p-8 bg-app-bg min-h-screen">
+      <div className="p-8 min-h-screen">
         <div className="flex flex-col items-center justify-center min-h-[50vh]">
           <div className="border-4 border-slate-200 border-t-primary rounded-full w-[50px] h-[50px] animate-spin mb-4"></div>
           <p>Loading stock data...</p>
@@ -585,7 +591,7 @@ const Stock = () => {
   }
 
   return (
-    <div className="p-8 bg-app-bg min-h-screen">
+    <div className="p-8 min-h-screen">
 
       {/* Analytics Section */}
       <section className="bg-white rounded-xl p-8 mb-8 shadow-sm">
@@ -753,22 +759,22 @@ const Stock = () => {
             <div className="grid grid-cols-4 gap-6 mb-8">
               <div className="bg-white/10 rounded-xl p-5 backdrop-blur border border-white/10">
                 <span className="block text-base uppercase tracking-wider mb-2">Revenue to Date</span>
-                <span className="block text-3xl font-bold mb-1 text-secondary">₱{revenueProjection.currentRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                <span className="block text-3xl font-bold mb-1 text-white">₱{revenueProjection.currentRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
                 <span className="block text-slate-400 text-xs">{revenueProjection.daysPassed} days</span>
               </div>
               <div className="bg-white/10 rounded-xl p-5 backdrop-blur border border-white/10">
                 <span className="block text-base uppercase tracking-wider mb-2">Projected End of Month</span>
-                <span className="block text-3xl font-bold mb-1 text-secondary">₱{revenueProjection.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                <span className="block text-3xl font-bold mb-1 text-white">₱{revenueProjection.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
                 <span className="block text-slate-400 text-xs">Target</span>
               </div>
               <div className="bg-white/10 rounded-xl p-5 backdrop-blur border border-white/10">
                 <span className="block text-base uppercase tracking-wider mb-2">Daily Average</span>
-                <span className="block text-3xl font-bold mb-1 text-amber-400">₱{revenueProjection.dailyAverage?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                <span className="block text-3xl font-bold mb-1 text-white">₱{revenueProjection.dailyAverage?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
                 <span className="block text-slate-400 text-xs">per day</span>
               </div>
               <div className="bg-white/10 rounded-xl p-5 backdrop-blur border border-white/10">
                 <span className="block text-base uppercase tracking-wider mb-2">Remaining Potential</span>
-                <span className="block text-3xl font-bold mb-1 text-secondary">₱{(revenueProjection.projectedRevenue - revenueProjection.currentRevenue)?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                <span className="block text-3xl font-bold mb-1 text-white">₱{(revenueProjection.projectedRevenue - revenueProjection.currentRevenue)?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
                 <span className="block text-slate-400 text-xs">{revenueProjection.daysRemaining} days left</span>
               </div>
             </div>
@@ -793,7 +799,7 @@ const Stock = () => {
               <div className="bg-white/5 rounded-xl p-6 mb-6">
                 <div className="flex justify-between items-center mb-6">
                   <h4 className="text-white m-0 text-lg">📅 {yearForecast.year} Year Forecast</h4>
-                  <span className="text-secondary font-bold text-2xl">Total Projected: ₱{yearForecast.totalYearProjection?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                  <span className="text-yellow-500 font-bold text-2xl">Total Projected: ₱{yearForecast.totalYearProjection?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                 </div>
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-4">
                   <div className="bg-primary/20 border border-primary rounded-lg p-4 text-center relative">
