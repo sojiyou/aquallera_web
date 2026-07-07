@@ -1,5 +1,6 @@
 // src/components/Auth/Login.js - WITH REJECTION RULES IN POPUP
 import React, { useState, useEffect } from 'react';
+import AlertCard, { useAlert } from '../admin/AlertCard';
 
 import { signInWithEmailAndPassword, deleteUser } from 'firebase/auth';
 import { ref, get, remove } from 'firebase/database';
@@ -22,6 +23,7 @@ const Login = () => {
     stationName: '',
     cleanupComplete: false
   });
+  const [alertProps, showAlert, closeAlert] = useAlert();
   const navigate = useNavigate();
 
   // Check for remembered email on component mount
@@ -188,6 +190,14 @@ const Login = () => {
       const stationSnapshot = await get(stationRef);
 
       if (!stationSnapshot.exists()) {
+        const userSnap = await get(ref(database, `users/${user.uid}`));
+        if (userSnap.exists()) {
+          await auth.signOut();
+          setErrors({ general: 'This email is registered as a customer. Only registered station owners can access this dashboard.' });
+          setIsLoading(false);
+          return;
+        }
+
         const rejectionSnap = await get(ref(database, `rejectionRecords/${user.uid}`));
         if (rejectionSnap.exists()) {
           const rec = rejectionSnap.val();
@@ -271,7 +281,7 @@ const Login = () => {
   };
 
   const handleForgotPassword = () => {
-    alert('Forgot password feature coming soon! For now, please contact support at support@aquallera.com');
+    showAlert({ type: 'warning', message: 'Forgot password feature coming soon! For now, please contact support at support@aquallera.com' });
   };
 
   const handleReapply = () => {
@@ -539,6 +549,8 @@ const Login = () => {
           </p>
         </div>
       </div>
+
+      {alertProps && <AlertCard {...alertProps} onClose={closeAlert} />}
     </div>
   );
 };

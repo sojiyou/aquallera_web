@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ref, onValue, update } from 'firebase/database';
 import { database, auth } from '../config/Firebase';
+import AlertCard, { useAlert } from '../admin/AlertCard';
 import { useNavigate } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import HistoricalPerformance from './HistoricalPerformance';
@@ -81,6 +82,7 @@ const convertCoordinatesToAddress = async (lat, lng) => {
 };
 
 const Stock = () => {
+  const [alertProps, showAlert, closeAlert] = useAlert();
   const [stationData, setStationData] = useState(null);
   const [orders, setOrders] = useState([]);
   const [stock, setStock] = useState({
@@ -543,10 +545,10 @@ const Stock = () => {
 
       setStock(tempStock);
       setEditingStock(false);
-      alert('✅ Stock updated successfully!');
+      showAlert({ type: 'success', message: 'Stock updated successfully!' });
     } catch (error) {
       console.error('Error updating stock:', error);
-      alert('❌ Failed to update stock. Please try again.');
+      showAlert({ type: 'error', message: 'Failed to update stock. Please try again.' });
     }
   };
 
@@ -880,6 +882,8 @@ const Stock = () => {
           </div>
         )}
       </div>
+
+      {alertProps && <AlertCard {...alertProps} onClose={closeAlert} />}
     </div>
   );
 };

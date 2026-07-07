@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { ref, onValue, update, set, onDisconnect } from 'firebase/database';
 import { database, auth } from '../config/Firebase';
+import AlertCard, { useAlert } from '../admin/AlertCard';
 import Settings from './Settings';
 import Stock from './Stock';
 import { useNavigate } from 'react-router-dom';
@@ -241,7 +242,7 @@ const OrdersTable = ({ orders, onOrderClick }) => {
 };
 
 // ===== ORDER DETAIL MODAL COMPONENT =====
-const OrderDetailModal = ({ order, onClose, onStatusUpdate }) => {
+const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
   const [address, setAddress] = useState('');
   const [addressLoading, setAddressLoading] = useState(true);
   const [showRawLocation, setShowRawLocation] = useState(false);
@@ -350,10 +351,10 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate }) => {
       if (onStatusUpdate) {
         onStatusUpdate(order.orderId || order.id, newStatus);
       }
-      alert(`✅ Order status updated to: ${getStatusText(newStatus)}`);
+      showAlert({ type: 'success', message: `Order status updated to: ${getStatusText(newStatus)}` });
     } catch (error) {
       console.error('Error updating order status:', error);
-      alert('❌ Failed to update order status. Please try again.');
+      showAlert({ type: 'error', message: 'Failed to update order status. Please try again.' });
     } finally {
       setIsUpdating(false);
     }
@@ -575,6 +576,7 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate }) => {
 };
 
 const Dashboard = () => {
+  const [alertProps, showAlert, closeAlert] = useAlert();
   const [activeSection, setActiveSection] = useState('orders');
   const [stationData, setStationData] = useState(null);
   const [orders, setOrders] = useState([]);
@@ -808,7 +810,7 @@ const Dashboard = () => {
 
     } catch (error) {
       console.error('Logout error:', error);
-      alert('Failed to logout. Please try again.');
+      showAlert({ type: 'error', message: 'Failed to logout. Please try again.' });
     }
   };
 
@@ -986,6 +988,7 @@ const Dashboard = () => {
               order={selectedOrder} 
               onClose={handleCloseModal}
               onStatusUpdate={handleStatusUpdate}
+              showAlert={showAlert}
             />
           )}
         </>
@@ -993,6 +996,8 @@ const Dashboard = () => {
 
       {activeSection === 'stock' && <Stock />}
       {activeSection === 'settings' && <Settings stationData={stationData} setStationData={setStationData} />}
+
+      {alertProps && <AlertCard {...alertProps} onClose={closeAlert} />}
     </div>
   );
 };

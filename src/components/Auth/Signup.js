@@ -1,13 +1,15 @@
 // src/components/Auth/Signup.js - WITH DELIVERY HOURS
 import React, { useState, useRef, useEffect } from 'react';
+import AlertCard, { useAlert } from '../admin/AlertCard';
 
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { ref, set } from 'firebase/database';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { ref, set, get, query, orderByChild, equalTo } from 'firebase/database';
 import { auth, database } from '../config/Firebase';
 import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
 
+  const [alertProps, showAlert, closeAlert] = useAlert();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -566,13 +568,26 @@ const Signup = () => {
     const progressInterval = simulateUploadProgress();
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        formData.email,
-        formData.password
-      );
+      const existingStationSnap = await get(query(ref(database, 'waterStations'), orderByChild('email'), equalTo(formData.email)));
+      if (existingStationSnap.exists()) {
+        showAlert({ type: 'warning', message: 'This email is already registered as a station owner. Please log in instead.' });
+        clearInterval(progressInterval);
+        setIsUploading(false);
+        return;
+      }
 
-      const user = userCredential.user;
+      let user;
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+        user = cred.user;
+      } catch (createErr) {
+        if (createErr.code === 'auth/email-already-in-use') {
+          const existingCred = await signInWithEmailAndPassword(auth, formData.email, formData.password);
+          user = existingCred.user;
+        } else {
+          throw createErr;
+        }
+      }
 
       let businessPermitBase64 = null;
       if (formData.permitFile) {
@@ -615,8 +630,8 @@ const Signup = () => {
       clearInterval(progressInterval);
       setUploadProgress(100);
 
-      alert('✅ Registration successful! Please wait for admin approval.');
-      window.location.href = '/login';
+      showAlert({ type: 'success', message: 'Registration successful! Please wait for admin approval.' });
+      setTimeout(() => { window.location.href = '/login'; }, 2000);
 
     } catch (error) {
       clearInterval(progressInterval);
@@ -625,7 +640,7 @@ const Signup = () => {
       let errorMessage = 'Registration failed: ';
       switch (error.code) {
         case 'auth/email-already-in-use':
-          errorMessage += 'Email already registered';
+          errorMessage += 'Email already registered. Check your password and try again.';
           break;
         case 'auth/invalid-email':
           errorMessage += 'Invalid email format';
@@ -637,7 +652,7 @@ const Signup = () => {
           errorMessage += error.message;
       }
 
-      alert(errorMessage);
+      showAlert({ type: 'error', message: errorMessage });
     } finally {
       setIsUploading(false);
     }
@@ -1362,6 +1377,8 @@ const Signup = () => {
           <p>Already have an account? <a href="/login" className="text-primary hover:underline font-medium">Login</a></p>
         </div>
       </div>
+
+      {alertProps && <AlertCard {...alertProps} onClose={() => { closeAlert(); if (alertProps.type === 'success') { window.location.href = '/login'; } }} />}
     </div>
   );
 };
