@@ -6,6 +6,7 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'fire
 import { ref, set, get, query, orderByChild, equalTo } from 'firebase/database';
 import { auth, database } from '../config/Firebase';
 import { useNavigate } from 'react-router-dom';
+import TimePickerWheel from '../dashboard/TimePickerWheel';
 
 const convertTo12Hour = (time24) => {
   if (!time24) return '';
@@ -675,7 +676,7 @@ const Signup = () => {
         <path fill="#9EB3C2" d="M0,550L48,565.3C96,580.7,192,611.3,288,608C384,604.7,480,568,576,554.7C672,541.3,768,552,864,578.7C960,605.3,1056,648,1152,632C1248,616,1344,541.3,1392,504L1440,466.7L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
       </svg>
       <div className="bg-white rounded-xl shadow-[0_20px_40px_rgba(0,0,0,0.1)] p-10 w-full max-w-md relative z-10">
-        {/* 🔙 BACK TO HOME BUTTON */}
+        {/* BACK TO HOME BUTTON */}
         <button
           type="button"
           className="bg-primary text-white p-2 rounded-md border-none text-base text-sm cursor-pointer mb-3 text-left hover:bg-dark cursor:pointer"
@@ -772,7 +773,7 @@ const Signup = () => {
             <div>
               <h3 className="text-slate-800 mb-6 text-xl border-b-2 border-slate-100 pb-2">Station Location</h3>
               <p className="bg-amber-50 border-l-4 border-l-amber-500 p-3 mb-6 rounded text-sm text-amber-800 leading-relaxed">
-                📍 Use the map below to pinpoint your exact station location.
+                Use the map below to pinpoint your exact station location.
                 You can search for an address or click/drag the marker on the map.
               </p>
 
@@ -790,14 +791,14 @@ const Signup = () => {
                     />
 
                     {mapboxSearch && (
-                      <button
-                        type="button"
-                        onClick={clearSearch}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 bg-slate-200 border-none rounded-full w-6 h-6 flex items-center justify-center cursor-pointer text-slate-500 text-sm transition-all z-10 hover:bg-slate-300 hover:text-slate-800 active:scale-95"
-                        title="Clear search"
-                      >
-                        ✕
-                      </button>
+                        <button
+                          type="button"
+                          onClick={clearSearch}
+                          className="absolute right-2.5 top-1/2 -translate-y-1/2 bg-slate-200 border-none rounded-full w-6 h-6 flex items-center justify-center cursor-pointer text-slate-500 text-sm transition-all z-10 hover:bg-slate-300 hover:text-slate-800 active:scale-95"
+                          title="Clear search"
+                        >
+                          &times;
+                        </button>
                     )}
                   </div>
 
@@ -809,7 +810,7 @@ const Signup = () => {
                           className="flex items-center px-4 py-3 cursor-pointer transition-colors border-b border-slate-100 last:border-b-0 hover:bg-slate-50"
                           onClick={() => handleSelectSearchResult(result)}
                         >
-                          <div className="text-xl mr-3 text-slate-500 flex-shrink-0">📍</div>
+                          <div className="text-xl mr-3 text-slate-500 flex-shrink-0"></div>
                           <div className="flex-1">
                             <div className="font-semibold text-slate-800 mb-1">{result.text}</div>
                             <div className="text-xs text-slate-500 leading-tight">{result.place_name}</div>
@@ -844,9 +845,9 @@ const Signup = () => {
                 <div className="bg-slate-50 border border-slate-200 rounded-md p-4 mb-4">
                   <p className="m-0 mb-2 font-semibold text-slate-800 text-sm"><strong>How to set your location:</strong></p>
                   <ul className="m-0 pl-6 list-none">
-                    <li className="mb-1.5 text-slate-500 text-xs relative pl-2">🔍 Search for your address in the box above</li>
-                    <li className="mb-1.5 text-slate-500 text-xs relative pl-2">🖱️ Click anywhere on the map to move the pin</li>
-                    <li className="mb-1.5 text-slate-500 text-xs relative pl-2">✋ Drag the blue pin to fine-tune your exact location</li>
+                    <li className="mb-1.5 text-slate-500 text-xs relative pl-2">Search for your address in the box above</li>
+                    <li className="mb-1.5 text-slate-500 text-xs relative pl-2">Click anywhere on the map to move the pin</li>
+                    <li className="mb-1.5 text-slate-500 text-xs relative pl-2">Drag the blue pin to fine-tune your exact location</li>
                   </ul>
                 </div>
 
@@ -945,20 +946,16 @@ const Signup = () => {
                 <div className="grid grid-cols-2 gap-4 mt-2">
                   <div>
                     <label className="text-xs text-slate-500 mb-1 block">Open</label>
-                    <input
-                      type="time"
+                    <TimePickerWheel
                       value={formData.businessHours.open}
-                      onChange={(e) => handleBusinessHoursChange('open', e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)]"
+                      onChange={(time) => handleBusinessHoursChange('open', time)}
                     />
                   </div>
                   <div>
                     <label className="text-xs text-slate-500 mb-1 block">Close</label>
-                    <input
-                      type="time"
+                    <TimePickerWheel
                       value={formData.businessHours.close}
-                      onChange={(e) => handleBusinessHoursChange('close', e.target.value)}
-                      className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)]"
+                      onChange={(time) => handleBusinessHoursChange('close', time)}
                     />
                   </div>
                 </div>
@@ -990,16 +987,16 @@ const Signup = () => {
 
                     {/* Add Delivery Time */}
                     <div className="flex gap-2 mb-4">
-                      <input
-                        type="time"
-                        value={newDeliveryTime}
-                        onChange={(e) => setNewDeliveryTime(e.target.value)}
-                        className="flex-1 px-4 py-3 border-2 border-slate-200 rounded-lg text-base transition-all font-sans focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)]"
-                      />
+                      <div className="flex-1 min-w-0">
+                        <TimePickerWheel
+                          value={newDeliveryTime}
+                          onChange={setNewDeliveryTime}
+                        />
+                      </div>
                       <button
                         type="button"
                         onClick={addDeliveryHour}
-                        className="bg-secondary text-white border-none rounded-lg px-6 py-3 font-semibold cursor-pointer transition-all whitespace-nowrap text-sm hover:bg-primary-dark hover:-translate-y-0.5"
+                        className="mt-2 bg-secondary text-white border-none rounded-lg px-6 py-3 font-semibold cursor-pointer transition-all whitespace-nowrap text-sm hover:bg-primary-dark hover:-translate-y-0.5 flex-shrink-0"
                       >
                         + Add Time
                       </button>
@@ -1014,7 +1011,9 @@ const Signup = () => {
                       <div className="flex flex-col gap-2 mt-3">
                         {formData.deliveryHours.map((time, index) => (
                           <div key={index} className="flex items-center bg-surface border border-secondary/20 rounded-md px-4 py-3 transition-all hover:bg-secondary/10">
-                            <span className="text-lg mr-3">🚚</span>
+                            <svg className="w-4 h-4 mr-3 text-secondary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
                             <span className="flex-1 font-semibold text-slate-800 text-base">{convertTo12Hour(time)}</span>
                             <button
                               type="button"
@@ -1022,7 +1021,7 @@ const Signup = () => {
                               className="bg-red-50 text-red-600 border border-red-200 rounded w-7 h-7 flex items-center justify-center cursor-pointer transition-all text-base font-semibold flex-shrink-0 hover:bg-red-600 hover:text-white"
                               title="Remove this delivery time"
                             >
-                              ✕
+                              &times;
                             </button>
                           </div>
                         ))}
@@ -1030,8 +1029,11 @@ const Signup = () => {
                     )}
 
                     {formData.deliveryHours.length === 0 && (
-                      <div className="text-center py-6 text-slate-400 text-sm bg-slate-50 rounded-md border border-dashed border-slate-300 mt-3">
-                        No delivery times added yet
+                      <div className="flex flex-col items-center py-8 text-slate-400 bg-slate-50 rounded-lg border border-dashed border-slate-300 mt-3">
+                        <svg className="w-10 h-10 mb-2 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span className="text-sm">No delivery times added yet</span>
                       </div>
                     )}
                   </div>
@@ -1180,7 +1182,7 @@ const Signup = () => {
 
                   {!formData.permitFile ? (
                     <div className="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center cursor-pointer transition-all bg-slate-50 hover:border-primary hover:bg-primary/5" onClick={triggerFileInput}>
-                      <div className="text-4xl mb-3 text-slate-500">📄</div>
+                      <div className="text-4xl mb-3 text-slate-500"></div>
                       <div>
                         <p className="font-semibold text-slate-800 mb-1">Click to upload business permit</p>
                         <p className="text-slate-500 text-sm">
@@ -1202,7 +1204,7 @@ const Signup = () => {
                         </div>
                       ) : (
                         <div className="flex items-center gap-4 mb-4">
-                          <div className="text-4xl text-primary">📄</div>
+                          <div className="text-4xl text-primary"></div>
                           <div className="flex-1">
                             <p className="font-semibold text-slate-800 mb-1 break-all">{formData.permitFile.name}</p>
                             <p className="text-slate-500 text-sm mb-1">
@@ -1305,13 +1307,13 @@ const Signup = () => {
 
                 {/* RIGHT SIDE: Rejection Rules */}
                 <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 text-xs mt-2">
-                  <h4 className="text-slate-800 text-sm font-bold m-0 mb-1.5">📋 Application Requirements</h4>
+                  <h4 className="text-slate-800 text-sm font-bold m-0 mb-1.5">Application Requirements</h4>
                   <p className="text-slate-500 m-0 mb-4 text-[0.82rem] leading-relaxed">
                     Please ensure you meet ALL requirements before submitting:
                   </p>
 
                   <div className="mb-3 p-3 rounded-md bg-green-50 border border-green-200">
-                    <h5 className="text-[0.82rem] font-bold m-0 mb-1.5">✅ Valid Documents Required:</h5>
+                    <h5 className="text-[0.82rem] font-bold m-0 mb-1.5">Valid Documents Required:</h5>
                     <ul className="list-none p-0 m-0">
                       <li className="text-[0.8rem] py-0.5 pl-5 relative leading-relaxed">Current Business Permit (Mayor's Permit)</li>
                       {/*<li>FDA License to Operate (LTO)</li>*/}
@@ -1322,7 +1324,7 @@ const Signup = () => {
                   </div>
 
                   <div className="mb-3 p-3 rounded-md bg-primary/5 border border-primary/20">
-                    <h5 className="text-[0.82rem] font-bold m-0 mb-1.5">📍 Location Requirements:</h5>
+                    <h5 className="text-[0.82rem] font-bold m-0 mb-1.5">Location Requirements:</h5>
                     <ul className="list-none p-0 m-0">
                       <li className="text-[0.8rem] py-0.5 pl-5 relative leading-relaxed">Valid commercial address</li>
                       <li className="text-[0.8rem] py-0.5 pl-5 relative leading-relaxed">Properly zoned for water station</li>
@@ -1332,7 +1334,7 @@ const Signup = () => {
                   </div>
 
                   <div className="mb-3 p-3 rounded-md bg-secondary/5 border border-secondary/20">
-                    <h5 className="text-[0.82rem] font-bold m-0 mb-1.5">📘 Legal Compliance:</h5>
+                    <h5 className="text-[0.82rem] font-bold m-0 mb-1.5">Legal Compliance:</h5>
                     <p className="text-slate-500 text-[0.8rem]">Your station must comply with:</p>
                     <ul className="list-none p-0 m-0 mt-1">
                       <li className="text-[0.8rem] py-0.5 pl-5 relative leading-relaxed">DOH Admin Order 2017-0010</li>
@@ -1343,7 +1345,7 @@ const Signup = () => {
                   </div>
 
                   <div className="bg-amber-50 border border-amber-200 border-l-4 border-l-amber-500 rounded-md p-2.5 text-amber-800 text-[0.78rem] leading-relaxed mt-2">
-                    <strong className="block mb-0.5">⚠️ Important:</strong> Providing false information or missing documents will result in immediate rejection. Please double-check everything before submitting.
+                    <strong className="block mb-0.5">Important:</strong> Providing false information or missing documents will result in immediate rejection. Please double-check everything before submitting.
                   </div>
 
                   <div className="mt-2 p-2.5 bg-slate-100 rounded-md text-[0.78rem] text-slate-600 leading-relaxed">

@@ -136,7 +136,7 @@ class RevenueCache {
         finalizedAt: new Date().toISOString(),
         year
       });
-      console.log(`✅ Yearly total for ${year} saved to Firebase: ₱${total}`);
+      console.log(`Yearly total for ${year} saved to Firebase: ₱${total}`);
     } catch (error) {
       console.error('Error saving yearly total to Firebase:', error);
     }
@@ -218,7 +218,7 @@ class RevenueCache {
       localStorage.removeItem(`${CACHE_KEYS.LAST_CALCULATION}_${this.stationId}`);
       this.memoryCache.delete('yearProjection');
       
-      console.log(`🧹 Cache archived: New year ${currentYear}, keeping ${lastYear} for comparison`);
+      console.log(`Cache archived: New year ${currentYear}, keeping ${lastYear} for comparison`);
     } catch (error) {
       console.error('Error archiving cache:', error);
     }

@@ -234,9 +234,9 @@ const HistoricalPerformance = ({ stationId }) => {
   }, [stationId]);
 
   const getAccuracyColor = (accuracy) => {
-    if (accuracy >= 95) return { color: '#10b981', label: 'Excellent', icon: '✅' };
-    if (accuracy >= 90) return { color: '#f59e0b', label: 'Good', icon: '⚠️' };
-    return { color: '#ef4444', label: 'Needs Improvement', icon: '❌' };
+    if (accuracy >= 95) return { color: '#03895d', label: 'Excellent' };
+    if (accuracy >= 90) return { color: '#f59e0b', label: 'Good' };
+    return { color: '#ef4444', label: 'Needs Improvement' };
   };
 
   const toggleMonth = (monthKey) => {
@@ -251,7 +251,7 @@ const HistoricalPerformance = ({ stationId }) => {
     return (
       <section className="bg-white rounded-xl p-8 mb-8 shadow-sm">
         <div className="mb-6 pb-4 border-b-2 border-slate-200">
-          <h2 className="text-slate-800 text-2xl m-0 mb-2">📚 Monthly Reports</h2>
+          <h2 className="text-slate-800 text-2xl m-0 mb-2">Monthly Reports</h2>
         </div>
         <div className="flex flex-col items-center justify-center py-12 text-slate-500">
           <div className="border-[3px] border-slate-200 border-t-primary rounded-full w-10 h-10 animate-spin mb-4"></div>
@@ -264,7 +264,7 @@ const HistoricalPerformance = ({ stationId }) => {
   return (
     <section className={`bg-white rounded-xl p-8 mb-8 shadow-sm ${showSkeleton ? 'skeleton-mode' : ''}`}>
       <div className="mb-6 pb-4 border-b-2 border-slate-200">
-        <h2 className="text-slate-800 text-2xl m-0 mb-2">📚Monthly Reports</h2>
+        <h2 className="text-slate-800 text-2xl m-0 mb-2">Monthly Reports</h2>
         <p className="text-slate-500 text-sm m-0">
           View past months' revenue and prediction accuracy
         </p>
@@ -273,7 +273,7 @@ const HistoricalPerformance = ({ stationId }) => {
       {/* Demo Mode Banner - Only shows when using sample data */}
       {showSkeleton && (
         <div className="bg-amber-50 border-l-4 border-l-amber-500 p-3 mb-6 rounded-lg text-sm text-amber-800 flex items-center gap-2">
-          <span className="text-lg">📊</span>
+          <span className="text-lg"></span>
           <span>Demo Mode: Showing sample data. Real data will appear once you have completed orders.</span>
         </div>
       )}
@@ -281,7 +281,7 @@ const HistoricalPerformance = ({ stationId }) => {
       {/* Live Data Indicator - Shows when using real orders */}
       {!showSkeleton && historicalData.some(m => m.fromOrders) && (
         <div className="bg-secondary/10 border-l-4 border-l-secondary p-3 mb-6 rounded-lg text-sm text-primary-dark flex items-center gap-2">
-          <span className="text-lg">✅</span>
+          <span className="text-lg"></span>
           <span>Showing real data from your orders. {historicalData.some(m => m.fromOrders) && '(Some months calculated directly from orders)'}</span>
         </div>
       )}
@@ -301,7 +301,7 @@ const HistoricalPerformance = ({ stationId }) => {
                 onClick={() => toggleMonth(month.monthKey)}
               >
                 <div className="flex items-center gap-4 flex-1">
-                  <div className="text-3xl">📅</div>
+                  <div className="text-3xl"></div>
                   <div>
                     <h3 className="text-slate-800 text-lg m-0 mb-1">
                       {formatMonthName(month.monthKey)} {month.year}
@@ -339,7 +339,7 @@ const HistoricalPerformance = ({ stationId }) => {
                   <div className="flex items-center justify-around bg-gradient-to-br from-surface to-surface rounded-xl p-6 mb-6 gap-4">
                     <div className="flex flex-col items-center gap-2">
                       <span className="text-slate-500 text-xs uppercase tracking-wider font-semibold">Projected</span>
-                      <span className="text-xl font-bold text-slate-400">
+                      <span className="text-xl font-bold text-gray-700">
                         ₱{month.projected?.toLocaleString(undefined, {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2
@@ -349,7 +349,7 @@ const HistoricalPerformance = ({ stationId }) => {
                     <div className="text-2xl text-slate-400">→</div>
                     <div className="flex flex-col items-center gap-2">
                       <span className="text-slate-500 text-xs uppercase tracking-wider font-semibold">Actual</span>
-                      <span className="text-xl font-bold text-primary">
+                      <span className="text-xl font-bold text-gray-700">
                         ₱{month.actual?.toLocaleString(undefined, {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2
@@ -401,14 +401,14 @@ const HistoricalPerformance = ({ stationId }) => {
 
                   <div className="grid grid-cols-3 gap-4">
                     <div className="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-lg p-4">
-                      <span className="text-2xl">📦</span>
+                      <span className="text-2xl"></span>
                       <div className="flex flex-col gap-1">
                         <span className="text-slate-500 text-xs font-medium">Total Orders</span>
                         <span className="text-slate-800 text-base font-bold">{month.orders}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-lg p-4">
-                      <span className="text-2xl">💰</span>
+                      <span className="text-2xl"></span>
                       <div className="flex flex-col gap-1">
                         <span className="text-slate-500 text-xs font-medium">Avg Order Value</span>
                         <span className="text-slate-800 text-base font-bold">
@@ -422,7 +422,7 @@ const HistoricalPerformance = ({ stationId }) => {
                       </div>
                     </div>
                     <div className="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-lg p-4">
-                      <span className="text-2xl">📈</span>
+                      <span className="text-2xl"></span>
                       <div className="flex flex-col gap-1">
                         <span className="text-slate-500 text-xs font-medium">Prediction Quality</span>
                         <span className="text-slate-800 text-base font-bold" style={{ color: accuracyInfo.color }}>

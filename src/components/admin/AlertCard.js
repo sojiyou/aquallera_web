@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 
 // ─── Icons per type ───────────────────────────────────────────────────────────
 const ICONS = {
-  success: '✅',
-  error:   '❌',
-  warning: '⚠️',
-  confirm: '❓',
-  prompt:  '✏️',
+  success: '',
+  error:   '',
+  warning: '',
+  confirm: '',
+  prompt:  '',
 };
 
 const TITLES = {

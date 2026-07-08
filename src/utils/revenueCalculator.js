@@ -11,7 +11,7 @@ import { database } from '../components/config/Firebase';
  */
 export const calculateMonthlyRevenue = async (stationId, year, month) => {
   try {
-    // ✅ FIX: Get ALL orders from root level (not nested under stationId)
+    // FIX: Get ALL orders from root level (not nested under stationId)
     const ordersRef = ref(database, 'orders');
     
     return new Promise((resolve) => {
@@ -22,7 +22,7 @@ export const calculateMonthlyRevenue = async (stationId, year, month) => {
           return;
         }
 
-        // ✅ FIX: Filter orders for this specific station AND month/year
+        // FIX: Filter orders for this specific station AND month/year
         const monthlyTotal = Object.values(orders)
           .filter(order => {
             // Match station ID
@@ -38,7 +38,7 @@ export const calculateMonthlyRevenue = async (stationId, year, month) => {
                     order.status === 'Delivered');
           })
           .reduce((sum, order) => {
-            // ✅ FIX: Calculate total from individual water type totals + delivery fee
+            // FIX: Calculate total from individual water type totals + delivery fee
             const pureTotal = parseFloat(order.pureWaterTotal) || 0;
             const springTotal = parseFloat(order.springWaterTotal) || 0;
             const mineralTotal = parseFloat(order.mineralWaterTotal) || 0;
@@ -46,7 +46,7 @@ export const calculateMonthlyRevenue = async (stationId, year, month) => {
             return sum + pureTotal + springTotal + mineralTotal + deliveryFee;
           }, 0);
 
-        console.log(`📊 Month ${month + 1}/${year}: ₱${monthlyTotal.toFixed(2)} (${Object.values(orders).filter(o => o.stationId === stationId).length} orders)`);
+        console.log(`Month ${month + 1}/${year}: ₱${monthlyTotal.toFixed(2)} (${Object.values(orders).filter(o => o.stationId === stationId).length} orders)`);
         resolve(monthlyTotal);
       }, { onlyOnce: true });
     });
@@ -65,7 +65,7 @@ export const calculateMonthlyRevenue = async (stationId, year, month) => {
  */
 export const getDailyRevenueForMonth = async (stationId, year, month) => {
   try {
-    // ✅ FIX: Get ALL orders from root level
+    // FIX: Get ALL orders from root level
     const ordersRef = ref(database, 'orders');
     
     return new Promise((resolve) => {
@@ -81,7 +81,7 @@ export const getDailyRevenueForMonth = async (stationId, year, month) => {
         
         Object.values(orders)
           .filter(order => {
-            // ✅ FIX: Match station ID first
+            // FIX: Match station ID first
             if (order.stationId !== stationId) return false;
             
             const orderDate = new Date(order.createdAt);
@@ -96,7 +96,7 @@ export const getDailyRevenueForMonth = async (stationId, year, month) => {
             const orderDate = new Date(order.createdAt);
             const day = orderDate.getDate();
             
-            // ✅ FIX: Calculate total properly
+            // FIX: Calculate total properly
             const orderTotal = (parseFloat(order.pureWaterTotal) || 0) +
                               (parseFloat(order.springWaterTotal) || 0) +
                               (parseFloat(order.mineralWaterTotal) || 0) +
@@ -118,7 +118,7 @@ export const getDailyRevenueForMonth = async (stationId, year, month) => {
 
         const total = Object.values(dailyRevenue).reduce((a, b) => a + b, 0);
         
-        console.log(`📅 Daily data for ${month + 1}/${year}: ${dailyData.filter(d => d.revenue > 0).length} days with revenue, Total: ₱${total.toFixed(2)}`);
+        console.log(`Daily data for ${month + 1}/${year}: ${dailyData.filter(d => d.revenue > 0).length} days with revenue, Total: ₱${total.toFixed(2)}`);
 
         resolve({
           dailyData,

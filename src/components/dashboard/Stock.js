@@ -253,7 +253,6 @@ const Stock = () => {
       if (stockData.pureWater < 20) {
         insights.push({
           type: 'warning',
-          icon: '💧',
           title: 'Increase Pure Water Stock',
           message: `Pure Water is your top seller (${pureCount} gallons sold) but stock is low (${stockData.pureWater} left). Consider ordering more to meet demand.`,
           action: 'Restock Pure Water',
@@ -261,7 +260,6 @@ const Stock = () => {
       } else {
         insights.push({
           type: 'success',
-          icon: '💧',
           title: 'Pure Water Performing Well',
           message: `Pure Water is your best seller with ${pureCount} gallons sold. Current stock (${stockData.pureWater}) looks good!`,
           action: 'Maintain Stock Level',
@@ -271,7 +269,6 @@ const Stock = () => {
       if (stockData.springWater < 20) {
         insights.push({
           type: 'warning',
-          icon: '🌊',
           title: 'Increase Spring Water Stock',
           message: `Spring Water is your top seller (${springCount} gallons sold) but stock is low (${stockData.springWater} left). Consider ordering more to meet demand.`,
           action: 'Restock Spring Water',
@@ -279,7 +276,6 @@ const Stock = () => {
       } else {
         insights.push({
           type: 'success',
-          icon: '🌊',
           title: 'Spring Water Performing Well',
           message: `Spring Water is your best seller with ${springCount} gallons sold. Current stock (${stockData.springWater}) looks good!`,
           action: 'Maintain Stock Level',
@@ -289,7 +285,6 @@ const Stock = () => {
       if (stockData.mineralWater < 20) {
         insights.push({
           type: 'warning',
-          icon: '⛰️',
           title: 'Increase Mineral Water Stock',
           message: `Mineral Water is your top seller (${mineralCount} gallons sold) but stock is low (${stockData.mineralWater} left). Consider ordering more to meet demand.`,
           action: 'Restock Mineral Water',
@@ -297,7 +292,6 @@ const Stock = () => {
       } else {
         insights.push({
           type: 'success',
-          icon: '⛰️',
           title: 'Mineral Water Performing Well',
           message: `Mineral Water is your best seller with ${mineralCount} gallons sold. Current stock (${stockData.mineralWater}) looks good!`,
           action: 'Maintain Stock Level',
@@ -568,10 +562,10 @@ const Stock = () => {
   };
 
   const getStockStatus = (quantity) => {
-    if (quantity === 0) return { label: 'Out of Stock', color: '#183229' };
-    if (quantity < 10) return { label: 'Low Stock', color: '#183229' };
-    if (quantity < 50) return { label: 'Normal', color: '#183229' };
-    return { label: 'Stock', color: '#183229' };
+    if (quantity === 0) return { label: 'Out of Stock', bg: '#dc2626' };
+    if (quantity < 10) return { label: 'Low Stock', bg: '#d97706' };
+    if (quantity < 50) return { label: 'Normal', bg: '#065A82' };
+    return { label: 'Stock', bg: '#059669' };
   };
 
   const formatLastRefreshed = (date) => {
@@ -596,12 +590,12 @@ const Stock = () => {
       {/* Analytics Section */}
       <section className="bg-white rounded-xl p-8 mb-8 shadow-sm">
         <div className="flex justify-between items-center mb-8 pb-4 border-b-2 border-slate-200">
-          <h2 className="text-slate-800 text-2xl m-0">📊 Business Analytics</h2>
+          <h2 className="text-slate-800 text-2xl m-0">Business Analytics</h2>
         </div>
 
         <div className="grid grid-cols-[repeat(auto-fit,minmax(400px,1fr))] gap-6">
           <div className="bg-gray-100 rounded-xl p-6 shadow-lg transition-transform flex items-center gap-4 hover:-translate-y-1">
-            <div className="text-4xl">📦</div>
+            <div className="text-4xl"></div>
             <div className="flex-1">
               <h3 className="text-3xl font-bold m-0 mb-1">{stats.totalOrders}</h3>
               <p className="text-sm m-0 opacity-90">Total Orders</p>
@@ -609,7 +603,7 @@ const Stock = () => {
           </div>
 
           <div className="bg-gray-100 rounded-xl p-6 shadow-lg transition-transform flex items-center gap-4 hover:-translate-y-1">
-            <div className="text-4xl">⏳</div>
+            <div className="text-4xl"></div>
             <div className="flex-1">
               <h3 className="text-3xl font-bold m-0 mb-1">{stats.pendingOrders}</h3>
               <p className="text-sm m-0 opacity-90">Pending Orders</p>
@@ -617,7 +611,7 @@ const Stock = () => {
           </div>
 
           <div className="bg-gray-100 rounded-xl p-6 shadow-lg transition-transform flex items-center gap-4 hover:-translate-y-1">
-            <div className="text-4xl">✅</div>
+            <div className="text-4xl"></div>
             <div className="flex-1">
               <h3 className="text-3xl font-bold m-0 mb-1">{stats.completedOrders}</h3>
               <p className="text-sm m-0 opacity-90">Completed Orders</p>
@@ -625,7 +619,7 @@ const Stock = () => {
           </div>
 
           <div className="bg-gray-100 rounded-xl p-6 shadow-lg transition-transform flex items-center gap-4 hover:-translate-y-1">
-            <div className="text-4xl">💰</div>
+            <div className="text-4xl"></div>
             <div className="flex-1">
               <h3 className="text-3xl font-bold m-0 mb-1">{formatCurrency(stats.todaysRevenue)}</h3>
               <p className="text-sm m-0 opacity-90">Total Revenue</p>
@@ -633,7 +627,7 @@ const Stock = () => {
           </div>
 
           <div className="bg-gray-100 rounded-xl p-6 shadow-lg transition-transform flex items-center gap-4 hover:-translate-y-1">
-            <div className="text-4xl">💧</div>
+            <div className="text-4xl"></div>
             <div className="flex-1">
               <h3 className="text-3xl font-bold m-0 mb-1">{stats.mostBoughtWater}</h3>
               <p className="text-sm m-0 opacity-90">Most Popular Water</p>
@@ -641,7 +635,7 @@ const Stock = () => {
           </div>
 
           <div className="bg-gray-100 rounded-xl p-6 shadow-lg transition-transform flex items-center gap-4 hover:-translate-y-1">
-            <div className="text-4xl">📍</div>
+            <div className="text-4xl"></div>
             <div className="flex-1">
               <h3 className="text-3xl font-bold m-0 mb-1">{stats.topLocation}</h3>
               <p className="text-sm m-0 opacity-90">Top Customer Location</p>
@@ -653,55 +647,55 @@ const Stock = () => {
       {/* Stock Inventory Section */}
       <section className="bg-white rounded-xl p-8 mb-8 shadow-sm">
         <div className="flex justify-between items-center mb-8 pb-4 border-b-2 border-slate-200">
-          <h2 className="text-slate-800 text-2xl m-0">💧 Water Stock Inventory</h2>
+          <h2 className="text-slate-800 text-2xl m-0">Water Stock Inventory</h2>
           {!editingStock ? (
             <button className="bg-primary text-white border-none px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all hover:bg-primary-dark hover:-translate-y-0.5" onClick={() => setEditingStock(true)}>
-              ✏️ Edit Stock
+              Edit Stock
             </button>
           ) : (
             <div className="flex gap-3">
-              <button className="bg-secondary text-white border-none px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all hover:bg-primary-dark hover:-translate-y-0.5" onClick={handleSaveStock}>✓ Save</button>
-              <button className="bg-red-500 text-white border-none px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all hover:bg-red-600 hover:-translate-y-0.5" onClick={handleCancelEdit}>✕ Cancel</button>
+              <button className="bg-secondary text-white border-none px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all hover:bg-primary-dark hover:-translate-y-0.5" onClick={handleSaveStock}>Save</button>
+              <button className="bg-red-500 text-white border-none px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all hover:bg-red-600 hover:-translate-y-0.5" onClick={handleCancelEdit}>Cancel</button>
             </div>
           )}
         </div>
 
         <div className="grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-6">
           <div className="rounded-xl p-8 text-center text-white shadow-md transition-transform hover:-translate-y-1.5 bg-gradient-to-br from-primary to-primary-dark">
-            <div className="text-5xl mb-4">💧</div>
+            <div className="text-5xl mb-4"></div>
             <h3 className="text-lg mb-4 font-semibold">Pure Water (Gallons)</h3>
             {editingStock ? (
               <input type="number" name="pureWater" value={tempStock.pureWater} onChange={handleStockChange} className="w-full p-3 text-3xl text-center border-2 border-white/30 rounded-lg bg-white/10 text-white font-bold mb-2 focus:outline-none focus:border-white/60 focus:bg-white/20" min="0" />
             ) : (
               <div className="text-5xl font-bold mb-2">{stock.pureWater}</div>
             )}
-            <div className="text-sm font-semibold px-4 py-2 bg-white/20 rounded-full inline-block" style={{ color: getStockStatus(stock.pureWater).color }}>
+            <div className="text-sm font-semibold px-4 py-2 rounded-full inline-block text-white" style={{ backgroundColor: getStockStatus(stock.pureWater).bg }}>
               {getStockStatus(stock.pureWater).label}
             </div>
           </div>
 
           <div className="rounded-xl p-8 text-center text-white shadow-md transition-transform hover:-translate-y-1.5 bg-gradient-to-br from-secondary to-primary">
-            <div className="text-5xl mb-4">🌊</div>
+            <div className="text-5xl mb-4"></div>
             <h3 className="text-lg mb-4 font-semibold">Spring Water (gallons)</h3>
             {editingStock ? (
               <input type="number" name="springWater" value={tempStock.springWater} onChange={handleStockChange} className="w-full p-3 text-3xl text-center border-2 border-white/30 rounded-lg bg-white/10 text-white font-bold mb-2 focus:outline-none focus:border-white/60 focus:bg-white/20" min="0" />
             ) : (
               <div className="text-5xl font-bold mb-2">{stock.springWater}</div>
             )}
-            <div className="text-sm font-semibold px-4 py-2 bg-white/20 rounded-full inline-block" style={{ color: getStockStatus(stock.springWater).color }}>
+            <div className="text-sm font-semibold px-4 py-2 rounded-full inline-block text-white" style={{ backgroundColor: getStockStatus(stock.springWater).bg }}>
               {getStockStatus(stock.springWater).label}
             </div>
           </div>
 
           <div className="rounded-xl p-8 text-center text-white shadow-md transition-transform hover:-translate-y-1.5 bg-gradient-to-br from-amber-500 to-red-500">
-            <div className="text-5xl mb-4">⛰️</div>
+            <div className="text-5xl mb-4"></div>
             <h3 className="text-lg mb-4 font-semibold">Mineral Water (Gallons)</h3>
             {editingStock ? (
               <input type="number" name="mineralWater" value={tempStock.mineralWater} onChange={handleStockChange} className="w-full p-3 text-3xl text-center border-2 border-white/30 rounded-lg bg-white/10 text-white font-bold mb-2 focus:outline-none focus:border-white/60 focus:bg-white/20" min="0" />
             ) : (
               <div className="text-5xl font-bold mb-2">{stock.mineralWater}</div>
             )}
-            <div className="text-sm font-semibold px-4 py-2 bg-white/20 rounded-full inline-block" style={{ color: getStockStatus(stock.mineralWater).color }}>
+            <div className="text-sm font-semibold px-4 py-2 rounded-full inline-block text-white" style={{ backgroundColor: getStockStatus(stock.mineralWater).bg }}>
               {getStockStatus(stock.mineralWater).label}
             </div>
           </div>
@@ -711,19 +705,19 @@ const Stock = () => {
       {/* Annual Performance Reports Section with Toggle */}
       <section className="bg-white rounded-xl p-8 mb-8 shadow-sm">
         <div className="flex justify-between items-center mb-8 pb-4 border-b-2 border-slate-200">
-          <h2 className="text-slate-800 text-2xl m-0">📊 Performance Reports</h2>
+          <h2 className="text-slate-800 text-2xl m-0">Performance Reports</h2>
           <div className="flex gap-2 bg-slate-100 p-1 rounded-full">
             <button 
               className={`px-5 py-2 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${dataViewMode === 'monthly' ? 'bg-white text-primary shadow-sm' : ''}`}
               onClick={() => setDataViewMode('monthly')}
             >
-              📅 Monthly View
+              Monthly View
             </button>
             <button 
               className={`px-5 py-2 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${dataViewMode === 'annual' ? 'bg-white text-primary shadow-sm' : ''}`}
               onClick={() => setDataViewMode('annual')}
             >
-              📈 Annual View
+              Annual View
             </button>
           </div>
         </div>
@@ -733,7 +727,7 @@ const Stock = () => {
           <div className="bg-gradient-to-br from-primary-dark to-primary-dark rounded-2xl p-8 mb-8 text-white shadow-lg border border-white/10">
             <div className="flex justify-between items-start mb-8">
               <div className="flex items-center gap-4">
-                <span className="text-4xl">📈</span>
+                <span className="text-4xl"></span>
                 <div>
                   <h3 className="text-2xl m-0 mb-1 text-white">{revenueProjection.monthName} {revenueProjection.year} Revenue Projection</h3>
                   <p className="text-white m-0 text-sm">Based on {revenueProjection.daysPassed} days of actual data • {revenueProjection.daysRemaining} days remaining</p>
@@ -748,7 +742,7 @@ const Stock = () => {
                 )}
                 <div className="flex flex-col items-end gap-1">
                   <button className={`flex items-center gap-2 bg-white/10 text-white border border-white/20 px-4 py-2 rounded-full text-sm font-semibold cursor-pointer transition-all backdrop-blur hover:bg-blue-500/30 hover:border-blue-500 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed ${isRefreshing ? 'refreshing' : ''}`} onClick={handleRefreshProjections} disabled={isRefreshing}>
-                    <span className={`text-lg inline-block leading-none ${isRefreshing ? 'spin' : ''}`}>↻</span>
+                    <span className={`text-lg inline-block leading-none ${isRefreshing ? 'spin' : ''}`}></span>
                     {isRefreshing ? 'Refreshing...' : 'Refresh'}
                   </button>
                   {lastRefreshed && !isRefreshing && <span className="text-slate-500 text-[0.75rem] text-right">Updated {formatLastRefreshed(lastRefreshed)}</span>}
@@ -798,7 +792,7 @@ const Stock = () => {
             {yearForecast?.futureMonths?.length > 0 && (
               <div className="bg-white/5 rounded-xl p-6 mb-6">
                 <div className="flex justify-between items-center mb-6">
-                  <h4 className="text-white m-0 text-lg">📅 {yearForecast.year} Year Forecast</h4>
+                  <h4 className="text-white m-0 text-lg">{yearForecast.year} Year Forecast</h4>
                   <span className="text-yellow-500 font-bold text-2xl">Total Projected: ₱{yearForecast.totalYearProjection?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                 </div>
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-4">
@@ -820,7 +814,7 @@ const Stock = () => {
             {yearComparison && yearComparison.hasPreviousYearData && (
               <div className="bg-white/5 rounded-xl p-6">
                 <div>
-                  <h4 className="text-white m-0 mb-6 text-lg">📊 {yearComparison.previousYear} vs {yearComparison.currentYear}</h4>
+                  <h4 className="text-white m-0 mb-6 text-lg">{yearComparison.previousYear} vs {yearComparison.currentYear}</h4>
                 </div>
                 <div>
                   <div className="flex items-center gap-4 mb-4">
@@ -839,7 +833,7 @@ const Stock = () => {
                   </div>
                   {yearComparison.growthPercentage !== null && (
                     <div className="mt-4 pt-4 border-t border-white/10 text-slate-400 flex items-center gap-2">
-                      {yearComparison.growthPercentage > 0 ? '📈' : '📉'} {Math.abs(yearComparison.growthPercentage).toFixed(1)}% {yearComparison.growthPercentage > 0 ? 'growth' : 'decline'} from last year
+                      {Math.abs(yearComparison.growthPercentage).toFixed(1)}% {yearComparison.growthPercentage > 0 ? 'growth' : 'decline'} from last year
                     </div>
                   )}
                 </div>
@@ -848,7 +842,7 @@ const Stock = () => {
           </div>
         ) : (
           <div className="bg-gradient-to-br from-primary-dark to-primary-dark rounded-2xl p-12 text-center text-white mb-8">
-            <div className="text-6xl mb-4 opacity-50">📊</div>
+            <div className="text-6xl mb-4 opacity-50"></div>
             <h3 className="text-white mb-2">Monthly Revenue Prediction</h3>
             <p className="text-slate-400 mb-6">{projectionLoading ? 'Loading revenue projections...' : `Predictions will be available on ${new Date(new Date().getFullYear(), new Date().getMonth(), 4).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}.`}</p>
             {!projectionLoading && (
@@ -876,11 +870,11 @@ const Stock = () => {
       <div className="bg-white rounded-xl mb-6 shadow-sm overflow-hidden transition-all">
         <div className={`flex justify-between items-center px-6 py-5 cursor-pointer transition-all bg-gradient-to-r from-slate-50 to-slate-100 border-l-4 border-l-blue-500 hover:bg-gradient-to-r hover:from-slate-100 hover:to-slate-200 hover:translate-x-1`} onClick={toggleConsumptionAnalytics}>
           <div className="flex items-center gap-4 flex-wrap">
-            <span className="text-2xl">💧</span>
+            <span className="text-2xl"></span>
             <h3 className="text-slate-800 text-xl m-0 font-semibold">Water Consumption</h3>
             <span className="bg-slate-200 text-slate-600 px-3 py-1 rounded-full text-[0.7rem] font-semibold tracking-wider">Volume tracking</span>
           </div>
-          <div className={`text-sm text-slate-500 transition-transform bg-white w-7 h-7 flex items-center justify-center rounded-full shadow-sm ${showConsumptionAnalytics ? 'rotate-90 text-blue-500 bg-blue-500/10' : ''}`}>▶</div>
+          <div className={`text-sm text-slate-500 transition-transform bg-white w-7 h-7 flex items-center justify-center rounded-full shadow-sm ${showConsumptionAnalytics ? 'rotate-90 text-blue-500 bg-blue-500/10' : ''}`}>&rsaquo;</div>
         </div>
         {showConsumptionAnalytics && (
           <div className="p-6 border-t border-slate-200 animate-[toggleSlideDown_0.3s_ease-out]">

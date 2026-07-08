@@ -2,7 +2,7 @@ import { calculateMonthlyRevenue, getDailyRevenueForMonth, getCurrentDateInfo } 
 
 /**
  * Calculate projected revenue for current month based on velocity
- * ✅ FIX: Shows predictions after Day 3 of month (regardless of order count)
+ * FIX: Shows predictions after Day 3 of month (regardless of order count)
  */
 export const getCurrentMonthProjection = async (stationId) => {
   const { year, month, day, daysInMonth, daysRemaining } = getCurrentDateInfo();
@@ -11,7 +11,7 @@ export const getCurrentMonthProjection = async (stationId) => {
   const monthlyData = await getDailyRevenueForMonth(stationId, year, month);
   const currentRevenue = monthlyData.total;
   
-  // ✅ NEW FIX: Check if we're past Day 3 of the month (not order count)
+  // NEW FIX: Check if we're past Day 3 of the month (not order count)
   const hasMinimumData = day > 3;
   
   // Calculate daily average so far (even if zero)
@@ -43,7 +43,7 @@ export const getCurrentMonthProjection = async (stationId) => {
 export const getFutureMonthProjection = async (stationId, targetYear, targetMonth) => {
   const { year: currentYear, month: currentMonth, day } = getCurrentDateInfo();
   
-  // ✅ NEW FIX: Check if we're past Day 3 of the month
+  // NEW FIX: Check if we're past Day 3 of the month
   const hasMinimumData = day > 3;
   
   const currentMonthData = await getDailyRevenueForMonth(stationId, currentYear, currentMonth);
@@ -71,7 +71,7 @@ export const getFutureMonthProjection = async (stationId, targetYear, targetMont
 export const getYearProjections = async (stationId) => {
   const { year, month, day } = getCurrentDateInfo();
   
-  // ✅ NEW FIX: Check if we're past Day 3 of the month
+  // NEW FIX: Check if we're past Day 3 of the month
   const hasMinimumData = day > 3;
   
   const currentMonth = await getCurrentMonthProjection(stationId);
@@ -104,25 +104,22 @@ export const getConfidenceLevel = (daysPassed) => {
   if (daysPassed <= 6) return { 
     level: 'Low', 
     color: '#f59e0b', 
-    message: 'Early in the month - predictions will improve',
-    icon: '📊'
+    message: 'Early in the month - predictions will improve'
   };
   if (daysPassed < 15) return { 
     level: 'Medium', 
     color: '#065A82', 
-    message: 'Growing confidence in predictions',
-    icon: '📈'
+    message: 'Growing confidence in predictions'
   };
   if (daysPassed < 25) return { 
     level: 'High', 
     color: '#1C7293', 
-    message: 'Strong prediction accuracy',
-    icon: '🔮'
+    message: 'Strong prediction accuracy'
   };
   return { 
     level: 'Very High', 
     color: '#1B3B6F', 
     message: 'Month almost complete - highly accurate',
-    icon: '✅'
+    icon: ''
   };
 };

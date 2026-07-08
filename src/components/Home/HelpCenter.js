@@ -24,18 +24,18 @@ const HelpCenter = () => {
 
         <div className="space-y-8">
           <div className="bg-white rounded-xl p-6 shadow-sm border-l-4 border-l-primary">
-            <h2 className="text-xl text-slate-800 mb-3">📝 Registration & Approval</h2>
+            <h2 className="text-xl text-slate-800 mb-3">Registration & Approval</h2>
             <p className="text-slate-600 mb-2">After registering, your station will be reviewed by an admin. This typically takes 24-48 hours. You'll receive an email once approved.</p>
             <p className="text-slate-600">If your application is rejected, you'll receive a reason and can reapply with corrected information.</p>
           </div>
 
           <div className="bg-white rounded-xl p-6 shadow-sm border-l-4 border-l-secondary">
-            <h2 className="text-xl text-slate-800 mb-3">🔑 Forgot Password</h2>
+            <h2 className="text-xl text-slate-800 mb-3">Forgot Password</h2>
             <p className="text-slate-600 mb-2">If you forgot your password, please contact the admin at <a href="mailto:sojodecaran200@gmail.com" className="text-primary">sojodecaran200@gmail.com</a> to retrieve your account credentials.</p>
           </div>
 
           <div className="bg-white rounded-xl p-6 shadow-sm border-l-4 border-l-secondary">
-            <h2 className="text-xl text-slate-800 mb-3">📞 Contact Support</h2>
+            <h2 className="text-xl text-slate-800 mb-3">Contact Support</h2>
             <p className="text-slate-600 mb-2">Need further assistance? Reach out to us:</p>
             <p className="text-slate-600">Email: <a href="mailto:sojodecaran200@gmail.com" className="text-primary">sojodecaran200@gmail.com</a></p>
           </div>

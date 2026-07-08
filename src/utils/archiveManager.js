@@ -18,7 +18,7 @@ class ArchiveManager {
    * Checks every hour if archiving is needed
    */
   start() {
-    console.log(`🤖 Archive Manager started for station ${this.stationId}`);
+    console.log(`Archive Manager started for station ${this.stationId}`);
     
     // Check immediately
     this.checkAndArchive();
@@ -35,7 +35,7 @@ class ArchiveManager {
   stop() {
     if (this.checkInterval) {
       clearInterval(this.checkInterval);
-      console.log('🛑 Archive Manager stopped');
+      console.log('Archive Manager stopped');
     }
   }
 
@@ -51,17 +51,17 @@ class ArchiveManager {
       return;
     }
     
-    console.log('🔍 Checking if archiving is needed...');
+    console.log('Checking if archiving is needed...');
     
     // Check if it's the 1st of the month (archive last month)
     if (now.getDate() === 1 && now.getHours() === 0) {
-      console.log('📅 It\'s the 1st of the month! Archiving last month...');
+      console.log('It\'s the 1st of the month! Archiving last month...');
       await this.runMonthlyArchive();
     }
     
     // Check if it's Dec 31 (generate annual report)
     if (now.getMonth() === 11 && now.getDate() === 31 && now.getHours() === 23) {
-      console.log('🎆 It\'s December 31! Generating annual report...');
+      console.log('It\'s December 31! Generating annual report...');
       await this.runAnnualReport();
     }
     
@@ -78,7 +78,7 @@ class ArchiveManager {
       const result = await archiveLastMonth(this.stationId);
       
       if (result.success) {
-        console.log(`✅ Monthly archive completed for ${result.month} ${result.year}`);
+        console.log(`Monthly archive completed for ${result.month} ${result.year}`);
         
         // Show notification to user (optional)
         this.notifyUser(
@@ -86,12 +86,12 @@ class ArchiveManager {
           `${result.month} ${result.year} data has been archived successfully.`
         );
       } else {
-        console.error('❌ Monthly archive failed:', result.error);
+        console.error('Monthly archive failed:', result.error);
       }
       
       return result;
     } catch (error) {
-      console.error('❌ Error running monthly archive:', error);
+      console.error('Error running monthly archive:', error);
       return { success: false, error: error.message };
     }
   }
@@ -105,7 +105,7 @@ class ArchiveManager {
       const result = await generateAnnualReport(this.stationId, year);
       
       if (result.success) {
-        console.log(`✅ Annual report generated for ${year}`);
+        console.log(`Annual report generated for ${year}`);
         
         // Show notification to user (optional)
         this.notifyUser(
@@ -113,12 +113,12 @@ class ArchiveManager {
           `Your ${year} annual report is now available!`
         );
       } else {
-        console.error('❌ Annual report generation failed:', result.error);
+        console.error('Annual report generation failed:', result.error);
       }
       
       return result;
     } catch (error) {
-      console.error('❌ Error generating annual report:', error);
+      console.error('Error generating annual report:', error);
       return { success: false, error: error.message };
     }
   }
@@ -129,7 +129,7 @@ class ArchiveManager {
   notifyUser(title, message) {
     // You can implement custom notifications here
     // For now, just log to console
-    console.log(`📢 ${title}: ${message}`);
+    console.log(`${title}: ${message}`);
     
     // Example: Could show a toast notification
     // toast.success(`${title}: ${message}`);
@@ -139,7 +139,7 @@ class ArchiveManager {
    * Manual trigger for month archive (for testing or manual use)
    */
   async manualArchiveMonth() {
-    console.log('🔧 Manual archive triggered...');
+    console.log('Manual archive triggered...');
     return await this.runMonthlyArchive();
   }
 
@@ -147,7 +147,7 @@ class ArchiveManager {
    * Manual trigger for annual report (for testing or manual use)
    */
   async manualGenerateReport(year) {
-    console.log(`🔧 Manual report generation triggered for ${year}...`);
+    console.log(`Manual report generation triggered for ${year}...`);
     const reportYear = year || new Date().getFullYear();
     return await generateAnnualReport(this.stationId, reportYear);
   }

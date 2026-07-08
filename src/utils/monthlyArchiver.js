@@ -19,7 +19,7 @@ export const archiveLastMonth = async (stationId) => {
     ];
     const monthKey = monthNames[lastMonth];
     
-    console.log(`📦 Archiving ${monthKey} ${year} for station ${stationId}...`);
+    console.log(`Archiving ${monthKey} ${year} for station ${stationId}...`);
     
     // Get actual revenue for the month
     const actualRevenue = await calculateMonthlyRevenue(stationId, year, lastMonth);
@@ -87,7 +87,7 @@ export const archiveLastMonth = async (stationId) => {
     );
     await set(archiveRef, archiveData);
     
-    console.log(`✅ Successfully archived ${monthKey} ${year}:`);
+    console.log(`Successfully archived ${monthKey} ${year}:`);
     console.log(`   Projected: ₱${projectedRevenue.toFixed(2)}`);
     console.log(`   Actual: ₱${actualRevenue.toFixed(2)}`);
     console.log(`   Accuracy: ${accuracy.toFixed(2)}%`);
@@ -101,7 +101,7 @@ export const archiveLastMonth = async (stationId) => {
     };
     
   } catch (error) {
-    console.error('❌ Error archiving last month:', error);
+    console.error('Error archiving last month:', error);
     return {
       success: false,
       error: error.message

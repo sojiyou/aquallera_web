@@ -272,7 +272,7 @@ const AnnualReports = ({ stationId }) => {
     return (
       <section className="bg-white rounded-xl p-8 mb-8 shadow-sm">
         <div className="mb-6 pb-4 border-b-2 border-slate-200">
-          <h2 className="text-slate-800 text-2xl m-0 mb-2">📊 Annual Performance Reports</h2>
+          <h2 className="text-slate-800 text-2xl m-0 mb-2">Annual Performance Reports</h2>
         </div>
         <div className="flex flex-col items-center justify-center py-12 text-slate-500">
           <div className="border-[3px] border-slate-200 border-t-primary rounded-full w-10 h-10 animate-spin mb-4"></div>
@@ -288,7 +288,7 @@ const AnnualReports = ({ stationId }) => {
   return (
     <section className={`bg-white rounded-xl p-8 mb-8 shadow-sm ${showSkeleton ? 'skeleton-mode' : ''}`}>
       <div className="mb-6 pb-4 border-b-2 border-slate-200">
-        <h2 className="text-slate-800 text-2xl m-0 mb-2">📊 Annual Reports</h2>
+        <h2 className="text-slate-800 text-2xl m-0 mb-2">Annual Reports</h2>
         <p className="text-slate-500 text-sm m-0">
           Yearly summaries and 12-month revenue breakdowns
         </p>
@@ -297,7 +297,7 @@ const AnnualReports = ({ stationId }) => {
       {/* Demo Mode Banner - Only shows when using sample data */}
       {showSkeleton && (
         <div className="bg-amber-50 border-l-4 border-l-amber-500 p-3 mb-6 rounded-lg text-sm text-amber-800 flex items-center gap-2">
-          <span className="text-lg">📊</span>
+          <span className="text-lg"></span>
           <span>Demo Mode: Showing sample data. Real annual reports will appear once you have completed orders.</span>
         </div>
       )}
@@ -305,7 +305,7 @@ const AnnualReports = ({ stationId }) => {
       {/* Live Data Indicator - Shows when using real orders */}
       {!showSkeleton && reports.some(r => r.fromOrders) && (
         <div className="bg-secondary/10 border-l-4 border-l-secondary p-3 mb-6 rounded-lg text-sm text-primary-dark flex items-center gap-2">
-          <span className="text-lg">✅</span>
+          <span className="text-lg"></span>
           <span>Showing real data from your orders. {reports.some(r => r.fromOrders) && '(Some years calculated directly from orders)'}</span>
         </div>
       )}
@@ -339,7 +339,7 @@ const AnnualReports = ({ stationId }) => {
                   className="bg-primary/10 border border-primary/30 text-primary px-6 py-3 rounded-lg cursor-pointer font-semibold text-sm transition-all hover:bg-primary/20 hover:border-primary hover:-translate-y-0.5"
                   onClick={() => toggleYear(report.year)}
                 >
-                  {isExpanded ? '▲ Hide Details' : '▼ View Details'}
+                  {isExpanded ? 'Hide Details' : 'View Details'}
                 </button>
               </div>
 
@@ -387,7 +387,7 @@ const AnnualReports = ({ stationId }) => {
 
               <div className="grid grid-cols-3 gap-4 p-6 bg-white border-t border-slate-200">
                 <div className="flex items-center gap-4 bg-gradient-to-br from-secondary/5 to-secondary/10 border border-secondary/30 rounded-xl p-5 transition-all hover:border-primary hover:shadow-[0_4px_12px_rgba(2,128,144,0.1)]">
-                  <span className="text-3xl">🏆</span>
+                  <span className="text-3xl"></span>
                   <div className="flex flex-col gap-1">
                     <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Best Month</span>
                     <span className="text-slate-800 text-lg font-bold">
@@ -399,7 +399,7 @@ const AnnualReports = ({ stationId }) => {
                   </div>
                 </div>
                 <div className="flex items-center gap-4 bg-gradient-to-br from-red-50 to-red-100 border border-red-300 rounded-xl p-5 transition-all hover:border-primary hover:shadow-[0_4px_12px_rgba(2,128,144,0.1)]">
-                  <span className="text-3xl">📉</span>
+                  <span className="text-3xl"></span>
                   <div className="flex flex-col gap-1">
                     <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Lowest Month</span>
                     <span className="text-slate-800 text-lg font-bold">
@@ -411,7 +411,7 @@ const AnnualReports = ({ stationId }) => {
                   </div>
                 </div>
                 <div className="flex items-center gap-4 bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/30 rounded-xl p-5 transition-all hover:border-primary hover:shadow-[0_4px_12px_rgba(2,128,144,0.1)]">
-                  <span className="text-3xl">📊</span>
+                  <span className="text-3xl"></span>
                   <div className="flex flex-col gap-1">
                     <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Monthly Average</span>
                     <span className="text-slate-800 text-lg font-bold">
@@ -425,7 +425,7 @@ const AnnualReports = ({ stationId }) => {
               </div>
 
                 <div className="p-6 bg-white border-t border-slate-200 animate-[slideDown_0.3s_ease]">
-                  <h4 className="text-slate-800 text-lg m-0 mb-4 font-semibold">📅 Monthly Breakdown</h4>
+                  <h4 className="text-slate-800 text-lg m-0 mb-4 font-semibold">Monthly Breakdown</h4>
                   <div className="bg-slate-50 rounded-xl p-2 mb-6">
                     {report.monthlyBreakdown.map((month, index) => {
                       const isBest = month.month === report.bestMonth.name;
@@ -438,8 +438,8 @@ const AnnualReports = ({ stationId }) => {
                         >
                           <div className="flex items-center gap-3">
                             <span className="text-slate-800 font-semibold text-sm min-w-[100px]">{month.month}</span>
-                            {isBest && <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">🏆 Best</span>}
-                            {isWorst && <span className="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">📉 Lowest</span>}
+                            {isBest && <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">Best</span>}
+                            {isWorst && <span className="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">Lowest</span>}
                           </div>
                           <div className="flex gap-8 items-center">
                             <span className="text-slate-800 font-bold text-base min-w-[120px] text-right">
@@ -460,7 +460,7 @@ const AnnualReports = ({ stationId }) => {
                   </div>
 
                   <div className="bg-gradient-to-br from-primary-dark to-primary-dark rounded-xl p-6 text-white">
-                    <h4 className="text-white m-0 mb-4 text-lg">📈 Year Summary</h4>
+                    <h4 className="text-white m-0 mb-4 text-lg">Year Summary</h4>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="flex flex-col gap-2 bg-white/10 p-4 rounded-lg backdrop-blur">
                         <span className="text-slate-400 text-xs uppercase tracking-wider">Total Revenue</span>
@@ -494,7 +494,7 @@ const AnnualReports = ({ stationId }) => {
       {hasMoreReports && (
         <div className="flex justify-center mt-8">
           <button className="bg-gradient-to-br from-primary to-primary-dark text-white border-none px-8 py-4 rounded-xl font-semibold text-base cursor-pointer transition-all shadow-lg hover:-translate-y-0.5 hover:shadow-xl" onClick={loadMoreYears}>
-            ⬇️ Load More Years ({reports.length - visibleYears} older)
+            Load More Years ({reports.length - visibleYears} older)
           </button>
         </div>
       )}

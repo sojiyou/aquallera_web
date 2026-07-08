@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ref, update, onValue } from 'firebase/database';
 import { database, auth } from '../config/Firebase';
+import TimePickerWheel from './TimePickerWheel';
 
 const convertTo12Hour = (time24) => {
   if (!time24) return '';
@@ -336,7 +337,7 @@ const Settings = ({ stationData, setStationData }) => {
               className="bg-primary text-white px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all flex items-center gap-2 hover:bg-primary-dark hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed"
               onClick={() => setIsEditing(true)}
             >
-              ✏️ Edit Settings
+              Edit Settings
             </button>
           ) : (
             <div className="flex gap-4 items-center">
@@ -364,7 +365,7 @@ const Settings = ({ stationData, setStationData }) => {
                     Saving...
                   </>
                 ) : (
-                  '💾 Save Changes'
+                  'Save Changes'
                 )}
               </button>
             </div>
@@ -381,7 +382,7 @@ const Settings = ({ stationData, setStationData }) => {
       <div className="grid grid-cols-[repeat(auto-fit,minmax(400px,1fr))] gap-6">
         {/* Basic Information */}
         <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
-          <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">📋 Basic Information</h3>
+          <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">Basic Information</h3>
           <div className="mb-5">
             <label className="block mb-2 text-gray-700 font-medium text-sm">Station Name</label>
             <input
@@ -434,7 +435,7 @@ const Settings = ({ stationData, setStationData }) => {
 
         {/* Location Information */}
         <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
-          <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">📍 Location</h3>
+          <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">Location</h3>
           <div className="mb-5">
             <label className="block mb-2 text-gray-700 font-medium text-sm">Address</label>
             <input
@@ -491,7 +492,7 @@ const Settings = ({ stationData, setStationData }) => {
             <label className="block mb-4 text-gray-700 font-medium text-sm">Station Coordinates</label>
             <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
               <div className="flex justify-between items-center py-2 border-b border-slate-200 last:border-b-0">
-                <span className="text-slate-500 text-xs font-medium">📍 Latitude</span>
+                <span className="text-slate-500 text-xs font-medium">Latitude</span>
                 <span className="text-slate-800 text-xs font-semibold font-mono">
                   {formData.latitude ? 
                     typeof formData.latitude === 'number' ? 
@@ -501,7 +502,7 @@ const Settings = ({ stationData, setStationData }) => {
                 </span>
               </div>
               <div className="flex justify-between items-center py-2 border-b border-slate-200 last:border-b-0">
-                <span className="text-slate-500 text-xs font-medium">📍 Longitude</span>
+                <span className="text-slate-500 text-xs font-medium">Longitude</span>
                 <span className="text-slate-800 text-xs font-semibold font-mono">
                   {formData.longitude ? 
                     typeof formData.longitude === 'number' ? 
@@ -513,7 +514,7 @@ const Settings = ({ stationData, setStationData }) => {
               
               {(formData.latitude && formData.longitude) && (
                 <div className="flex flex-col gap-2 p-4 bg-surface rounded-md border border-secondary/20 mt-3">
-                  <span className="text-primary-dark text-sm font-semibold flex items-center gap-2">🏠 Actual Location:</span>
+                  <span className="text-primary-dark text-sm font-semibold flex items-center gap-2">Actual Location:</span>
                   <span className="text-slate-800 text-xs leading-relaxed italic">{actualLocation || 'Loading location details...'}</span>
                 </div>
               )}
@@ -531,7 +532,7 @@ const Settings = ({ stationData, setStationData }) => {
                       Getting Location...
                     </>
                   ) : (
-                    '📍 Get Current Location'
+                    'Get Current Location'
                   )}
                 </button>
                 
@@ -547,29 +548,33 @@ const Settings = ({ stationData, setStationData }) => {
 
         {/* Business Hours */}
         <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
-          <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">🕒 Business Hours</h3>
+          <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">Business Hours</h3>
           <div className="mt-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="mb-5">
                 <label className="block mb-2 text-gray-700 font-medium text-sm">Opening Time</label>
-                <input
-                  type="time"
-                  name="businessHours.open"
+                <TimePickerWheel
                   value={formData.businessHours?.open || '08:00'}
-                  onChange={handleInputChange}
+                  onChange={(time) => {
+                    setFormData(prev => ({
+                      ...prev,
+                      businessHours: { ...prev.businessHours, open: time }
+                    }));
+                  }}
                   disabled={!isEditing}
-                  className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
                 />
               </div>
               <div className="mb-5">
                 <label className="block mb-2 text-gray-700 font-medium text-sm">Closing Time</label>
-                <input
-                  type="time"
-                  name="businessHours.close"
+                <TimePickerWheel
                   value={formData.businessHours?.close || '18:00'}
-                  onChange={handleInputChange}
+                  onChange={(time) => {
+                    setFormData(prev => ({
+                      ...prev,
+                      businessHours: { ...prev.businessHours, close: time }
+                    }));
+                  }}
                   disabled={!isEditing}
-                  className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
@@ -582,7 +587,7 @@ const Settings = ({ stationData, setStationData }) => {
 
         {/* Services */}
         <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
-          <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">🚚 Services</h3>
+          <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">Services</h3>
           <div className="mb-6">
             <label>Available Services</label>
             <div className="flex flex-col gap-4 mt-3">
@@ -596,7 +601,7 @@ const Settings = ({ stationData, setStationData }) => {
                   disabled={!isEditing}
                   className="w-[18px] h-[18px] cursor-pointer disabled:cursor-not-allowed"
                 />
-                <span className="font-medium text-gray-700">🚚 Delivery Service</span>
+                <span className="font-medium text-gray-700">Delivery Service</span>
               </label>
               <label className="flex items-center gap-3 cursor-pointer p-3 border-2 border-slate-200 rounded-lg transition-all hover:border-primary hover:bg-primary/5">
                 <input
@@ -608,7 +613,7 @@ const Settings = ({ stationData, setStationData }) => {
                   disabled={!isEditing}
                   className="w-[18px] h-[18px] cursor-pointer disabled:cursor-not-allowed"
                 />
-                <span className="font-medium text-gray-700">🏪 Pickup Service</span>
+                <span className="font-medium text-gray-700">Pickup Service</span>
               </label>
             </div>
           </div>
@@ -633,23 +638,28 @@ const Settings = ({ stationData, setStationData }) => {
 
               {/* Delivery Hours Section */}
               <div className="mb-5">
-                <label className="block mb-2 text-gray-700 font-medium text-sm">Delivery Hours</label>
+                <label className="block mb-2 text-gray-700 font-medium text-sm">
+                  <svg className="w-4 h-4 inline mr-1.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Delivery Hours
+                </label>
                 <p className="text-xs text-slate-400 italic mb-3">
                   Times when you deliver water to customers
                 </p>
 
                 {isEditing && (
-                  <div className="flex gap-2 mb-4">
-                    <input
-                      type="time"
-                      value={newDeliveryTime}
-                      onChange={(e) => setNewDeliveryTime(e.target.value)}
-                      className="flex-1 px-4 py-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)]"
-                    />
+                  <div className="flex gap-3 mb-4 items-start">
+                    <div className="flex-1 min-w-0">
+                      <TimePickerWheel
+                        value={newDeliveryTime}
+                        onChange={setNewDeliveryTime}
+                      />
+                    </div>
                     <button
                       type="button"
                       onClick={addDeliveryHour}
-                      className="bg-secondary text-white border-none rounded-lg px-6 py-3 font-semibold cursor-pointer transition-all whitespace-nowrap text-sm hover:bg-primary-dark hover:-translate-y-0.5"
+                      className="mt-2 bg-secondary text-white border-none rounded-lg px-6 py-3 font-semibold cursor-pointer transition-all whitespace-nowrap text-sm hover:bg-primary-dark hover:-translate-y-0.5 flex-shrink-0"
                     >
                       + Add Time
                     </button>
@@ -660,7 +670,9 @@ const Settings = ({ stationData, setStationData }) => {
                   <div className="flex flex-col gap-2 mt-3">
                     {formData.deliveryHours.map((time, index) => (
                       <div key={index} className="flex items-center bg-surface border border-secondary/20 rounded-lg px-4 py-3 transition-all hover:bg-secondary/10">
-                        <span className="text-lg mr-3">🚚</span>
+                        <svg className="w-4 h-4 mr-3 text-secondary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
                         <span className="flex-1 font-semibold text-slate-800 text-sm">{convertTo12Hour(time)}</span>
                         {isEditing && (
                           <button
@@ -669,15 +681,19 @@ const Settings = ({ stationData, setStationData }) => {
                             className="bg-red-50 text-red-600 border border-red-200 rounded w-7 h-7 flex items-center justify-center cursor-pointer transition-all text-base font-semibold flex-shrink-0 hover:bg-red-600 hover:text-white"
                             title="Remove this delivery time"
                           >
-                            ✕
+                            &times;
                           </button>
                         )}
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-6 text-slate-400 text-sm bg-slate-50 rounded-lg border border-dashed border-slate-300 mt-3">
-                    No delivery times set
+                  <div className="flex flex-col items-center py-8 text-slate-400 bg-slate-50 rounded-lg border border-dashed border-slate-300 mt-3">
+                    <svg className="w-10 h-10 mb-2 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="text-sm">No delivery times set</span>
+                    {isEditing && <span className="text-xs mt-1">Click the time above and press "Add Time"</span>}
                   </div>
                 )}
               </div>
@@ -687,7 +703,7 @@ const Settings = ({ stationData, setStationData }) => {
 
         {/* Pricing */}
         <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
-          <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">💰 Pricing</h3>
+          <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">Pricing</h3>
           <div className="mt-4">
             <div className="mb-5">
               <label className="block mb-2 text-gray-700 font-medium text-sm">Gallon Pure Water (₱)</label>

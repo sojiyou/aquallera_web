@@ -9,7 +9,7 @@ import { calculateMonthlyRevenue } from './revenueCalculator';
  */
 export const generateAnnualReport = async (stationId, year) => {
   try {
-    console.log(`📊 Generating annual report for ${year}...`);
+    console.log(`Generating annual report for ${year}...`);
     
     const monthNames = [
       'January', 'February', 'March', 'April', 'May', 'June',
@@ -92,7 +92,7 @@ export const generateAnnualReport = async (stationId, year) => {
     );
     await set(reportRef, reportData);
     
-    console.log(`✅ Annual report for ${year} generated successfully:`);
+    console.log(`Annual report for ${year} generated successfully:`);
     console.log(`   Total Revenue: ₱${totalRevenue.toFixed(2)}`);
     console.log(`   Total Orders: ${totalOrders}`);
     console.log(`   Avg Monthly: ₱${avgMonthly.toFixed(2)}`);
@@ -106,7 +106,7 @@ export const generateAnnualReport = async (stationId, year) => {
     };
     
   } catch (error) {
-    console.error(`❌ Error generating annual report for ${year}:`, error);
+    console.error(`Error generating annual report for ${year}:`, error);
     return {
       success: false,
       error: error.message

@@ -81,22 +81,22 @@ const OrdersTable = ({ orders, onOrderClick }) => {
 
   const getStatusBadge = (status) => {
     const statusConfig = {
-      pending: { bg: '#fef3c7', color: '#92400e', icon: '⏳', label: 'Pending' },
-      Pending: { bg: '#fef3c7', color: '#92400e', icon: '⏳', label: 'Pending' },
-      confirmed: { bg: '#dbeafe', color: '#1e40af', icon: '✓', label: 'Confirmed' },
-      Confirmed: { bg: '#dbeafe', color: '#1e40af', icon: '✓', label: 'Confirmed' },
-      preparing: { bg: '#ede9fe', color: '#5b21b6', icon: '🔨', label: 'Preparing' },
-      Preparing: { bg: '#ede9fe', color: '#5b21b6', icon: '🔨', label: 'Preparing' },
-      on_delivery: { bg: '#dbeafe', color: '#1e40af', icon: '🚚', label: 'On Delivery' },
-      ready: { bg: '#d1fae5', color: '#065f46', icon: '✅', label: 'Ready' },
-      completed: { bg: '#e2e8f0', color: '#475569', icon: '✅', label: 'Completed' },
-      Completed: { bg: '#e2e8f0', color: '#475569', icon: '✅', label: 'Completed' },
-      delivered: { bg: '#e2e8f0', color: '#475569', icon: '✅', label: 'Delivered' },
-      Delivered: { bg: '#e2e8f0', color: '#475569', icon: '✅', label: 'Delivered' },
-      cancelled: { bg: '#fee2e2', color: '#991b1b', icon: '✕', label: 'Cancelled' },
-      Cancelled: { bg: '#fee2e2', color: '#991b1b', icon: '✕', label: 'Cancelled' },
+      pending: { bg: '#fef3c7', color: '#92400e', label: 'Pending' },
+      Pending: { bg: '#fef3c7', color: '#92400e', label: 'Pending' },
+      confirmed: { bg: '#dbeafe', color: '#1e40af', label: 'Confirmed' },
+      Confirmed: { bg: '#dbeafe', color: '#1e40af', label: 'Confirmed' },
+      preparing: { bg: '#ede9fe', color: '#5b21b6', label: 'Preparing' },
+      Preparing: { bg: '#ede9fe', color: '#5b21b6', label: 'Preparing' },
+      on_delivery: { bg: '#dbeafe', color: '#1e40af', label: 'On Delivery' },
+      ready: { bg: '#d1fae5', color: '#065f46', label: 'Ready' },
+      completed: { bg: '#e2e8f0', color: '#475569', label: 'Completed' },
+      Completed: { bg: '#e2e8f0', color: '#475569', label: 'Completed' },
+      delivered: { bg: '#e2e8f0', color: '#475569', label: 'Delivered' },
+      Delivered: { bg: '#e2e8f0', color: '#475569', label: 'Delivered' },
+      cancelled: { bg: '#fee2e2', color: '#991b1b', label: 'Cancelled' },
+      Cancelled: { bg: '#fee2e2', color: '#991b1b', label: 'Cancelled' },
     };
-    return statusConfig[status] || { bg: '#f1f5f9', color: '#475569', icon: '📋', label: status };
+    return statusConfig[status] || { bg: '#f1f5f9', color: '#475569', label: status };
   };
 
   const formatCurrency = (amount) => {
@@ -106,7 +106,7 @@ const OrdersTable = ({ orders, onOrderClick }) => {
   if (orders.length === 0) {
     return (
       <div className="text-center py-16 bg-white rounded-xl shadow-sm">
-        <div className="text-5xl mb-4">📭</div>
+        <div className="text-5xl mb-4"></div>
         <h3 className="text-slate-800 m-0 mb-2">No orders found</h3>
         <p className="text-slate-500 m-0">There are no orders matching your current filter.</p>
       </div>
@@ -114,20 +114,20 @@ const OrdersTable = ({ orders, onOrderClick }) => {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+    <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-200">
       <table className="w-full border-collapse text-sm">
         <thead>
-          <tr>
-            <th className="w-[120px]">Order #</th>
-            <th className="min-w-[180px]">Customer</th>
-            <th className="w-[110px]">Type</th>
-            <th className="w-[120px]">Amount</th>
-            <th className="w-[140px]">Status</th>
-            <th className="w-[80px] text-center">Action</th>
+          <tr className="bg-slate-100">
+            <th className="w-[120px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Order #</th>
+            <th className="min-w-[180px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Customer</th>
+            <th className="w-[110px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Type</th>
+            <th className="w-[120px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Amount</th>
+            <th className="w-[140px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Status</th>
+            <th className="w-[80px] text-center px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Action</th>
           </tr>
         </thead>
         <tbody>
-          {currentOrders.map((order) => {
+          {currentOrders.map((order, index) => {
             const statusInfo = getStatusBadge(order.status);
             const orderId = order.orderId || order.id || 'N/A';
             const customerName = order.customerName || 'N/A';
@@ -137,37 +137,37 @@ const OrdersTable = ({ orders, onOrderClick }) => {
             return (
               <tr 
                 key={orderId} 
-                className="border-b border-slate-100 cursor-pointer transition-colors hover:bg-slate-50 last:border-b-0"
+                className={`border-b border-slate-200 cursor-pointer transition-all hover:bg-primary/5 last:border-b-0 ${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}`}
                 onClick={() => onOrderClick(order)}
               >
-                <td className="w-[120px]" data-label="Order #">
+                <td className="w-[120px] px-4 py-3" data-label="Order #">
                   <span className="font-semibold text-primary font-mono text-xs">#{orderId}</span>
                 </td>
-                <td className="min-w-[180px]" data-label="Customer">
+                <td className="min-w-[180px] px-4 py-3" data-label="Customer">
                   <div className="flex flex-col gap-0.5">
                     <span className="font-semibold text-slate-800 text-base">{customerName}</span>
-                    <span className="text-slate-500 text-base">{order.customerPhone || ''}</span>
+                    <span className="text-slate-500 text-sm">{order.customerPhone || ''}</span>
                   </div>
                 </td>
-                <td className="w-[110px]" data-label="Type">
-                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${orderType === 'Delivery' ? 'bg-primary/10 text-primary-dark' : 'bg-emerald-100 text-emerald-800'}`}>
-                    {orderType === 'Delivery' ? '🚚' : '🏪'} {orderType}
+                <td className="w-[110px] px-4 py-3" data-label="Type">
+                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${orderType === 'Delivery' ? 'bg-primary/15 text-primary-dark' : 'bg-emerald-100 text-emerald-800'}`}>
+                    {orderType}
                   </span>
                 </td>
-                <td className="w-[120px]" data-label="Amount">
+                <td className="w-[120px] px-4 py-3" data-label="Amount">
                   <span className="font-bold text-slate-800 text-sm">{formatCurrency(grandTotal)}</span>
                 </td>
-                <td className="w-[140px]" data-label="Status">
+                <td className="w-[140px] px-4 py-3" data-label="Status">
                   <span 
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap"
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap shadow-sm"
                     style={{ backgroundColor: statusInfo.bg, color: statusInfo.color }}
                   >
-                    {statusInfo.icon} {statusInfo.label}
+                    {statusInfo.label}
                   </span>
                 </td>
-                <td className="w-[80px] text-center" data-label="Action">
-                  <button className="bg-primary text-white border-none px-3 py-1.5 rounded-md cursor-pointer text-xs font-medium transition-all hover:bg-primary-dark hover:-translate-y-0.5" onClick={(e) => { e.stopPropagation(); onOrderClick(order); }}>
-                    👁️ View
+                <td className="w-[80px] text-center px-4 py-3" data-label="Action">
+                  <button className="bg-primary text-white border-none px-4 py-2 rounded-md cursor-pointer text-xs font-semibold transition-all hover:bg-primary-dark hover:-translate-y-0.5 hover:shadow-md active:translate-y-0" onClick={(e) => { e.stopPropagation(); onOrderClick(order); }}>
+                    View
                   </button>
                 </td>
               </tr>
@@ -176,18 +176,18 @@ const OrdersTable = ({ orders, onOrderClick }) => {
         </tbody>
       </table>
 
-      <div className="flex justify-between items-center px-5 py-4 bg-slate-50 border-t border-slate-200 flex-wrap gap-4">
-        <div className="text-slate-500 text-xs">
+      <div className="flex justify-between items-center px-5 py-4 bg-slate-100 border-t border-slate-200 flex-wrap gap-4">
+        <div className="text-slate-600 text-sm font-medium">
           Showing {startIndex + 1}-{Math.min(endIndex, orders.length)} of {orders.length} orders
         </div>
         
         <div className="flex items-center gap-6 flex-wrap">
-          <div className="flex items-center gap-2 text-xs text-slate-500">
-            <span>Rows per page:</span>
+          <div className="flex items-center gap-2 text-sm text-slate-600">
+            <span className="font-medium">Rows per page:</span>
             <select 
               value={rowsPerPage} 
               onChange={(e) => setRowsPerPage(Number(e.target.value))}
-              className="px-2 py-1.5 border border-slate-300 rounded-md text-xs bg-white cursor-pointer"
+              className="px-3 py-1.5 border border-slate-300 rounded-md text-sm bg-white cursor-pointer font-medium"
             >
               <option value={5}>5</option>
               <option value={10}>10</option>
@@ -198,33 +198,33 @@ const OrdersTable = ({ orders, onOrderClick }) => {
           
           <div className="flex items-center gap-2">
             <button 
-              className="w-8 h-8 border border-slate-200 bg-white rounded-md cursor-pointer flex items-center justify-center text-xs transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-8 h-8 border border-slate-300 bg-white rounded-md cursor-pointer flex items-center justify-center text-sm transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
               onClick={() => handlePageChange(1)}
               disabled={currentPage === 1}
               title="First page"
             >
-              ⏮
+              &laquo;
             </button>
             <button 
-              className="w-8 h-8 border border-slate-200 bg-white rounded-md cursor-pointer flex items-center justify-center text-xs transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-8 h-8 border border-slate-300 bg-white rounded-md cursor-pointer flex items-center justify-center text-sm transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
               title="Previous page"
             >
-              ◀
+              &lsaquo;
             </button>
             
-            <span className="text-xs text-slate-600 font-medium px-2 whitespace-nowrap">
+            <span className="text-sm text-slate-700 font-semibold px-3 whitespace-nowrap">
               Page {currentPage} of {totalPages}
             </span>
             
             <button 
-              className="w-8 h-8 border border-slate-200 bg-white rounded-md cursor-pointer flex items-center justify-center text-xs transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-8 h-8 border border-slate-300 bg-white rounded-md cursor-pointer flex items-center justify-center text-sm transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
               title="Next page"
             >
-              ▶
+              &rsaquo;
             </button>
             <button 
               className="w-8 h-8 border border-slate-200 bg-white rounded-md cursor-pointer flex items-center justify-center text-xs transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed"
@@ -232,7 +232,7 @@ const OrdersTable = ({ orders, onOrderClick }) => {
               disabled={currentPage === totalPages}
               title="Last page"
             >
-              ⏭
+              &raquo;
             </button>
           </div>
         </div>
@@ -373,10 +373,10 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
       <div className="bg-white rounded-2xl w-full max-w-[650px] max-h-[90vh] overflow-y-auto shadow-2xl animate-[slideUp_0.3s_ease]" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-between items-center px-6 py-5 border-b border-slate-200 sticky top-0 bg-white z-10 rounded-t-2xl">
           <div className="flex items-center gap-3">
-            <h2>📋 Order Details</h2>
+            <h2>Order Details</h2>
             <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-semibold text-xs font-mono">#{order.orderId || order.id || 'N/A'}</span>
           </div>
-          <button className="w-9 h-9 border-none bg-slate-100 rounded-full cursor-pointer text-lg text-slate-500 flex items-center justify-center transition-all hover:bg-slate-200 hover:text-slate-800" onClick={onClose}>✕</button>
+          <button className="w-9 h-9 border-none bg-slate-100 rounded-full cursor-pointer text-lg text-slate-500 flex items-center justify-center transition-all hover:bg-slate-200 hover:text-slate-800" onClick={onClose}>&times;</button>
         </div>
 
         <div className="p-6">
@@ -391,19 +391,19 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
 
           <div className="grid grid-cols-2 gap-4 mb-6">
             <div className="flex flex-col gap-1">
-              <span className="text-xs text-slate-500 font-medium">👤 Customer</span>
+              <span className="text-xs text-slate-500 font-medium">Customer</span>
               <span className="text-sm text-slate-800 font-medium">{order.customerName || 'N/A'}</span>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="text-xs text-slate-500 font-medium">📞 Phone</span>
+              <span className="text-xs text-slate-500 font-medium">Phone</span>
               <span className="text-sm text-slate-800 font-medium">{order.customerPhone || 'Not provided'}</span>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="text-xs text-slate-500 font-medium">📦 Type</span>
+              <span className="text-xs text-slate-500 font-medium">Type</span>
               <span className="text-sm text-slate-800 font-medium">{order.orderType || 'N/A'}</span>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="text-xs text-slate-500 font-medium">📅 Date</span>
+              <span className="text-xs text-slate-500 font-medium">Date</span>
               <span className="text-sm text-slate-800 font-medium">
                 {order.date && order.time 
                   ? `${order.date} at ${order.time}`
@@ -413,14 +413,14 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
               </span>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="text-xs text-slate-500 font-medium">🔢 Reference</span>
+              <span className="text-xs text-slate-500 font-medium">Reference</span>
               <span className="text-sm text-slate-800 font-medium">{order.referenceNumber || 'N/A'}</span>
             </div>
           </div>
 
           {order.orderType === 'Delivery' && (
             <div className="bg-surface p-4 rounded-xl mb-6 border border-secondary/20">
-              <h4 className="m-0 mb-2 text-primary-dark text-sm">📍 Delivery Address</h4>
+              <h4 className="m-0 mb-2 text-primary-dark text-sm">Delivery Address</h4>
               {addressLoading ? (
                 <p className="text-slate-400 italic">Loading address...</p>
               ) : (
@@ -428,7 +428,7 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
                   <p className="m-0 mb-2 text-slate-800 font-medium">{address}</p>
                   {order.additionalDetails && (
                     <div className="my-2 p-3 bg-amber-50 rounded-md border-l-3 border-l-amber-500">
-                      <span className="font-semibold text-amber-800 text-xs">📝 Additional Instructions:</span>
+                      <span className="font-semibold text-amber-800 text-xs">Additional Instructions:</span>
                       <p className="m-1 text-amber-700 text-sm">{order.additionalDetails}</p>
                     </div>
                   )}
@@ -438,7 +438,7 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
                         className="bg-none border-none text-primary cursor-pointer text-xs p-0 underline"
                         onClick={() => setShowRawLocation(!showRawLocation)}
                       >
-                        {showRawLocation ? '📍 Hide Map' : '🗺️ Show on Map'}
+                        {showRawLocation ? 'Hide Map' : 'Show on Map'}
                       </button>
                       {showRawLocation && (
                         <div className="mt-2 rounded-lg overflow-hidden border border-slate-200">
@@ -471,7 +471,7 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
           )}
 
           <div className="mb-6">
-            <h4 className="m-0 mb-3 text-slate-800 text-base">🛒 Order Items</h4>
+            <h4 className="m-0 mb-3 text-slate-800 text-base">Order Items</h4>
             <table className="w-full border-collapse text-sm">
               <thead>
                 <tr>
@@ -483,34 +483,34 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
               <tbody>
                 {order.pureWaterQty > 0 && (
                   <tr>
-                    <td className="p-2.5 border-b border-slate-100">💧 Pure Water (Gallon)</td>
+                    <td className="p-2.5 border-b border-slate-100">Pure Water (Gallon)</td>
                     <td className="p-2.5 border-b border-slate-100">×{order.pureWaterQty}</td>
                     <td className="p-2.5 border-b border-slate-100">₱{parseFloat(pureTotal).toFixed(2)}</td>
                   </tr>
                 )}
                 {order.springWaterQty > 0 && (
                   <tr>
-                    <td className="p-2.5 border-b border-slate-100">🌊 Spring Water (Gallon)</td>
+                    <td className="p-2.5 border-b border-slate-100">Spring Water (Gallon)</td>
                     <td className="p-2.5 border-b border-slate-100">×{order.springWaterQty}</td>
                     <td className="p-2.5 border-b border-slate-100">₱{parseFloat(springTotal).toFixed(2)}</td>
                   </tr>
                 )}
                 {order.mineralWaterQty > 0 && (
                   <tr>
-                    <td className="p-2.5 border-b border-slate-100">⛰️ Mineral Water (Gallon)</td>
+                    <td className="p-2.5 border-b border-slate-100">Mineral Water (Gallon)</td>
                     <td className="p-2.5 border-b border-slate-100">×{order.mineralWaterQty}</td>
                     <td className="p-2.5 border-b border-slate-100">₱{parseFloat(mineralTotal).toFixed(2)}</td>
                   </tr>
                 )}
                 {order.orderType === 'Delivery' && deliveryFee > 0 && (
                   <tr>
-                    <td className="p-2.5 border-b border-slate-100">🚚 Delivery Fee</td>
+                    <td className="p-2.5 border-b border-slate-100">Delivery Fee</td>
                     <td className="p-2.5 border-b border-slate-100"></td>
                     <td className="p-2.5 border-b border-slate-100">₱{parseFloat(deliveryFee).toFixed(2)}</td>
                   </tr>
                 )}
                 <tr>
-                    <td className="p-2.5 border-b border-slate-100">💳 Transaction Fee</td>
+                    <td className="p-2.5 border-b border-slate-100">Transaction Fee</td>
                     <td className="p-2.5 border-b border-slate-100"></td>
                     <td className="p-2.5 border-b border-slate-100">₱{parseFloat(transactionFee).toFixed(2)}</td>
                 </tr>
@@ -525,39 +525,39 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
           </div>
 
           <div className="modal-status-actions">
-            <h4 className="m-0 mb-3 text-slate-800 text-base">📝 Update Status</h4>
+            <h4 className="m-0 mb-3 text-slate-800 text-base">Update Status</h4>
             <div className="flex gap-3 flex-wrap">
               {(order.status === 'pending' || order.status === 'Pending') && (
                 <>
                   <button onClick={() => handleStatusUpdate('confirmed')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-secondary hover:bg-primary-dark">
-                    ✓ Confirm Order
+                    Confirm Order
                   </button>
                   <button onClick={() => handleStatusUpdate('cancelled')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-red-500 hover:bg-red-600">
-                    ✕ Cancel Order
+                    Cancel Order
                   </button>
                 </>
               )}
               {(order.status === 'confirmed' || order.status === 'Confirmed') && (
                 <button onClick={() => handleStatusUpdate('preparing')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-primary hover:bg-primary-dark">
-                  🔨 Start Preparing
+                  Start Preparing
                 </button>
               )}
               {(order.status === 'preparing' || order.status === 'Preparing') && (
                 <>
                   {order.orderType === 'Delivery' ? (
                     <button onClick={() => handleStatusUpdate('on_delivery')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-primary hover:bg-primary-dark">
-                      🚚 Out for Delivery
+                      Out for Delivery
                     </button>
                   ) : (
                     <button onClick={() => handleStatusUpdate('ready')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-amber-500 hover:bg-amber-600">
-                      ✓ Ready for Pickup
+                      Ready for Pickup
                     </button>
                   )}
                 </>
               )}
               {(order.status === 'on_delivery' || order.status === 'ready') && (
                 <button onClick={() => handleStatusUpdate('completed')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-secondary hover:bg-primary-dark">
-                  ✅ Mark as Completed
+                  Mark as Completed
                 </button>
               )}
               {(order.status === 'completed' || order.status === 'Completed' || 
@@ -771,12 +771,12 @@ const Dashboard = () => {
           const stationOrders = ordersArray.filter(order => {
             const matches = order.stationId === user.uid;
             if (matches) {
-              console.log("✅ DASHBOARD - Matched order:", order.id || order.orderId, "StationId:", order.stationId);
+              console.log("DASHBOARD - Matched order:", order.id || order.orderId, "StationId:", order.stationId);
             }
             return matches;
           });
 
-          console.log("📊 DASHBOARD - Station orders filtered:", stationOrders.length);
+          console.log("DASHBOARD - Station orders filtered:", stationOrders.length);
 
           setOrders(stationOrders);
           await calculateStats(stationOrders);
@@ -826,7 +826,7 @@ const Dashboard = () => {
           <header className="bg-white border-b border-slate-200 px-8 py-6 shadow-sm">
             <div className="flex justify-between items-center max-w-[1200px] mx-auto">
               <div className="header-info">
-                <h1 className="text-slate-800 m-0 mb-1 text-3xl">⏳ Pending Approval</h1>
+                <h1 className="text-slate-800 m-0 mb-1 text-3xl">Pending Approval</h1>
                 <p className="text-slate-600 text-sm m-1 flex items-center gap-1">
                   {stationData.stationName || 'Your Station'}
                 </p>
@@ -838,7 +838,7 @@ const Dashboard = () => {
           </header>
 
         <div className="max-w-[800px] mx-auto my-8 p-12 bg-white rounded-xl shadow-sm text-center">
-          <div className="text-6xl mb-6 opacity-70">⏳</div>
+          <div className="text-6xl mb-6 opacity-70"></div>
           <h2 className="text-slate-800 mb-4">Your station is pending admin approval</h2>
           <p className="text-slate-500 mb-8 leading-relaxed">Thank you for registering! An administrator will review your application soon.</p>
           <p className="text-slate-500 mb-8 leading-relaxed">You will receive an email notification once your station is approved.</p>
@@ -878,7 +878,7 @@ const Dashboard = () => {
           <header className="bg-white border-b border-slate-200 px-8 py-6 shadow-sm">
             <div className="flex justify-between items-center max-w-[1200px] mx-auto">
               <div className="header-info">
-                <h1 className="text-slate-800 m-0 mb-1 text-3xl">❌ Registration Rejected</h1>
+                <h1 className="text-slate-800 m-0 mb-1 text-3xl">Registration Rejected</h1>
                 <p className="text-slate-600 text-sm m-1 flex items-center gap-1">
                   {stationData.stationName || 'Your Station'}
                 </p>
@@ -890,7 +890,7 @@ const Dashboard = () => {
           </header>
 
         <div className="max-w-[800px] mx-auto my-8 p-12 bg-white rounded-xl shadow-sm text-center">
-          <div className="text-6xl mb-6 text-red-600">❌</div>
+          <div className="text-6xl mb-6 text-red-600"></div>
           <h2 className="text-slate-800 mb-4">Station Registration Rejected</h2>
           
           {stationData.rejectionReason && (
@@ -941,7 +941,7 @@ const Dashboard = () => {
             
             {stationData && (stationData.city || stationData.address) && (
               <p className="text-slate-600 text-sm m-1 flex items-center gap-1">
-                📍 {stationData.address || ''} 
+                {stationData.address || ''} 
                 {stationData.address && stationData.city ? ', ' : ''}
                 {stationData.city || ''}
               </p>
@@ -953,19 +953,19 @@ const Dashboard = () => {
                 className={`px-6 py-3 border-2 rounded-lg cursor-pointer transition-all font-medium flex items-center gap-2 text-sm ${activeSection === 'orders' ? 'border-primary bg-primary text-white' : 'border-slate-200 bg-white text-gray-700 hover:border-primary hover:bg-slate-50'}`}
                 onClick={() => setActiveSection('orders')}
               >
-                📦 Orders
+                Orders
               </button>
               <button 
                 className={`px-6 py-3 border-2 rounded-lg cursor-pointer transition-all font-medium flex items-center gap-2 text-sm ${activeSection === 'stock' ? 'border-primary bg-primary text-white' : 'border-slate-200 bg-white text-gray-700 hover:border-primary hover:bg-slate-50'}`}
                 onClick={() => setActiveSection('stock')}
               >
-                💧 Stock & Analytics
+                Stock & Analytics
               </button>
               <button 
                 className={`px-6 py-3 border-2 rounded-lg cursor-pointer transition-all font-medium flex items-center gap-2 text-sm ${activeSection === 'settings' ? 'border-primary bg-primary text-white' : 'border-slate-200 bg-white text-gray-700 hover:border-primary hover:bg-slate-50'}`}
                 onClick={() => setActiveSection('settings')}
               >
-                ⚙️ Settings
+                Settings
               </button>
             </div>
             <div className="flex items-center gap-2 bg-secondary/5 px-4 py-2 rounded-full border border-secondary/20 text-sm text-primary-dark">
@@ -983,7 +983,7 @@ const Dashboard = () => {
         <>
           <section className="max-w-[1200px] mx-auto px-8 py-8">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-white m-0">📦 Order Management</h2>
+              <h2 className="text-white m-0">Order Management</h2>
               <div className="relative">
                 <select 
                   className="appearance-none bg-white border-2 border-slate-200 rounded-xl px-4 py-3 pr-10 text-sm font-medium text-slate-800 cursor-pointer min-w-[200px] transition-all hover:border-primary focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.15)]"

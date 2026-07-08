@@ -105,7 +105,7 @@ const Login = () => {
       const user = userCredential.user;
 
       await deleteUser(user);
-      console.log('✅ Firebase Auth account deleted for:', email);
+      console.log('Firebase Auth account deleted for:', email);
 
       await auth.signOut();
 
@@ -121,7 +121,7 @@ const Login = () => {
     try {
       const stationRef = ref(database, `waterStations/${stationId}`);
       await remove(stationRef);
-      console.log('✅ Station deleted from database:', stationId);
+      console.log('Station deleted from database:', stationId);
       return true;
     } catch (error) {
       console.error('Error deleting station from database:', error);
@@ -139,11 +139,11 @@ const Login = () => {
     setShowRejectionMessage(false);
 
     try {
-      console.log('🔍 Checking station status for:', formData.email);
+      console.log('Checking station status for:', formData.email);
       const stationData = await findStationByEmail(formData.email);
 
       if (stationData && stationData.status === 'deletion_pending') {
-        console.log('⚠️ Station is marked for deletion:', stationData.id);
+        console.log('Station is marked for deletion:', stationData.id);
 
         setRejectionData({
           reason: stationData.rejectionReason || 'No specific reason provided.',
@@ -174,9 +174,9 @@ const Login = () => {
         }));
 
         if (authDeleted && dbDeleted) {
-          console.log('✅ Complete cleanup successful');
+          console.log('Complete cleanup successful');
         } else if (dbDeleted) {
-          console.log('⚠️ Database cleaned but auth may need manual cleanup');
+          console.log('Database cleaned but auth may need manual cleanup');
         }
 
         setIsLoading(false);
@@ -308,7 +308,7 @@ const Login = () => {
       </svg>
       <div className="bg-white rounded-xl shadow-[0_20px_40px_rgba(0,0,0,0.1)] p-10 w-full max-w-md relative z-10">
 
-        {/* 🔙 BACK TO HOME BUTTON */}
+        {/* BACK TO HOME BUTTON */}
         <button
           type="button"
           className="bg-primary text-white p-2 rounded-md border-none text-base text-sm cursor-pointer mb-3 text-left hover:bg-dark cursor:pointer"
@@ -326,7 +326,6 @@ const Login = () => {
           <div className="bg-red-100 border-2 border-red-600 rounded-xl p-6 mb-6 animate-[fadeIn_0.3s_ease-in]">
             <div className="flex items-start mb-4">
               <div className="bg-red-600 text-white w-9 h-9 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
-                ⚠️
               </div>
               <div className="flex-1">
                 <h3 className="text-red-900 m-0 mb-2 text-lg font-semibold">Application Rejected</h3>
@@ -343,7 +342,7 @@ const Login = () => {
 
             {rejectionData.cleanupComplete && (
               <div className="bg-emerald-100 border border-emerald-500 rounded-md p-3 mb-4 flex items-center gap-2">
-                <span className="text-emerald-700">✅</span>
+                <span className="text-emerald-700"></span>
                 <span className="text-emerald-800 text-sm">
                   Your station data has been removed from our system.
                 </span>
@@ -356,69 +355,69 @@ const Login = () => {
                 onClick={() => setShowRejectionRules(!showRejectionRules)}
                 className="bg-slate-100 border border-slate-300 rounded-md px-4 py-2 text-sm text-slate-700 cursor-pointer w-full text-left hover:bg-slate-200 transition-colors"
               >
-                {showRejectionRules ? '▼ Hide' : '▶ View'} Common Rejection Reasons & Requirements
+                {showRejectionRules ? 'Hide' : 'View'} Common Rejection Reasons & Requirements
               </button>
             </div>
 
             {/* NEW: Collapsible rejection rules */}
             {showRejectionRules && (
               <div className="mt-4 p-4 bg-white rounded-lg border border-slate-200">
-                <h4 className="text-slate-800 text-base font-semibold mb-3">📋 Common Rejection Reasons</h4>
+                <h4 className="text-slate-800 text-base font-semibold mb-3">Common Rejection Reasons</h4>
 
                 <div className="mb-4 p-3 bg-slate-50 rounded-md border border-slate-100">
                   <h5 className="text-red-700 text-sm font-bold mb-2">Business Permit Issues:</h5>
                   <ul className="list-none p-0 m-0">
-                    <li className="text-slate-600 text-sm py-1">❌ Expired business permit (must be current year)</li>
-                    <li className="text-slate-600 text-sm py-1">❌ Permit issued to different business name</li>
-                    <li className="text-slate-600 text-sm py-1">❌ Illegible or unclear permit image</li>
-                    <li className="text-slate-600 text-sm py-1">❌ Permit number doesn't match document</li>
-                    <li className="text-slate-600 text-sm py-1">❌ Not specifically for water refilling business</li>
+                    <li className="text-slate-600 text-sm py-1">Expired business permit (must be current year)</li>
+                    <li className="text-slate-600 text-sm py-1">Permit issued to different business name</li>
+                    <li className="text-slate-600 text-sm py-1">Illegible or unclear permit image</li>
+                    <li className="text-slate-600 text-sm py-1">Permit number doesn't match document</li>
+                    <li className="text-slate-600 text-sm py-1">Not specifically for water refilling business</li>
                   </ul>
                 </div>
 
                 <div className="mb-4 p-3 bg-slate-50 rounded-md border border-slate-100">
                   <h5 className="text-red-700 text-sm font-bold mb-2">Missing Requirements:</h5>
                   <ul className="list-none p-0 m-0">
-                    <li className="text-slate-600 text-sm py-1">❌ No FDA License to Operate (LTO) for water products</li>
-                    <li className="text-slate-600 text-sm py-1">❌ Missing sanitation permit from local health office</li>
-                    <li className="text-slate-600 text-sm py-1">❌ No proof of water quality testing</li>
-                    <li className="text-slate-600 text-sm py-1">❌ Incomplete or poor quality document scans</li>
+                    <li className="text-slate-600 text-sm py-1">No FDA License to Operate (LTO) for water products</li>
+                    <li className="text-slate-600 text-sm py-1">Missing sanitation permit from local health office</li>
+                    <li className="text-slate-600 text-sm py-1">No proof of water quality testing</li>
+                    <li className="text-slate-600 text-sm py-1">Incomplete or poor quality document scans</li>
                   </ul>
                 </div>
 
                 <div className="mb-4 p-3 bg-slate-50 rounded-md border border-slate-100">
                   <h5 className="text-red-700 text-sm font-bold mb-2">Location Problems:</h5>
                   <ul className="list-none p-0 m-0">
-                    <li className="text-slate-600 text-sm py-1">❌ Coordinates point to residential area</li>
-                    <li className="text-slate-600 text-sm py-1">❌ Address doesn't match coordinates</li>
-                    <li className="text-slate-600 text-sm py-1">❌ Location not properly zoned for commercial use</li>
-                    <li className="text-slate-600 text-sm py-1">❌ Duplicate station at same address</li>
+                    <li className="text-slate-600 text-sm py-1">Coordinates point to residential area</li>
+                    <li className="text-slate-600 text-sm py-1">Address doesn't match coordinates</li>
+                    <li className="text-slate-600 text-sm py-1">Location not properly zoned for commercial use</li>
+                    <li className="text-slate-600 text-sm py-1">Duplicate station at same address</li>
                   </ul>
                 </div>
 
                 <div className="mb-4 p-3 bg-slate-50 rounded-md border border-slate-100">
                   <h5 className="text-red-700 text-sm font-bold mb-2">Data Privacy Violations:</h5>
                   <ul className="list-none p-0 m-0">
-                    <li className="text-slate-600 text-sm py-1">❌ Terms and conditions not accepted</li>
-                    <li className="text-slate-600 text-sm py-1">❌ Non-compliance with Data Privacy Act (RA 10173)</li>
-                    <li className="text-slate-600 text-sm py-1">❌ Inadequate data protection measures</li>
+                    <li className="text-slate-600 text-sm py-1">Terms and conditions not accepted</li>
+                    <li className="text-slate-600 text-sm py-1">Non-compliance with Data Privacy Act (RA 10173)</li>
+                    <li className="text-slate-600 text-sm py-1">Inadequate data protection measures</li>
                   </ul>
                 </div>
 
                 <div className="mb-4 p-3 bg-emerald-50 rounded-md border border-emerald-200">
-                  <h4 className="text-emerald-800 text-sm font-bold mb-2">✅ Required Documents Before Reapplying:</h4>
+                  <h4 className="text-emerald-800 text-sm font-bold mb-2">Required Documents Before Reapplying:</h4>
                   <ul className="list-none p-0 m-0">
-                    <li className="text-slate-600 text-sm py-1">☑ Valid Business Permit (Mayor's Permit) - Current year</li>
-                    <li className="text-slate-600 text-sm py-1">☑ Sanitation Permit from Local Health Office</li>
-                    <li className="text-slate-600 text-sm py-1">☑ FDA License to Operate (LTO) for water products</li>
-                    <li className="text-slate-600 text-sm py-1">☑ Latest water quality testing results</li>
-                    <li className="text-slate-600 text-sm py-1">☑ Clear, high-quality scans/photos of all documents</li>
-                    <li className="text-slate-600 text-sm py-1">☑ Accurate business information and location</li>
+                    <li className="text-slate-600 text-sm py-1">Valid Business Permit (Mayor's Permit) - Current year</li>
+                    <li className="text-slate-600 text-sm py-1">Sanitation Permit from Local Health Office</li>
+                    <li className="text-slate-600 text-sm py-1">FDA License to Operate (LTO) for water products</li>
+                    <li className="text-slate-600 text-sm py-1">Latest water quality testing results</li>
+                    <li className="text-slate-600 text-sm py-1">Clear, high-quality scans/photos of all documents</li>
+                    <li className="text-slate-600 text-sm py-1">Accurate business information and location</li>
                   </ul>
                 </div>
 
                 <div className="bg-purple-50 border border-purple-200 rounded-md p-3 mb-2">
-                  <strong className="block mb-1 text-purple-900">📘 Important:</strong> All water stations must comply with:
+                  <strong className="block mb-1 text-purple-900">Important:</strong> All water stations must comply with:
                   <ul className="list-none p-0 m-0 mt-2">
                     <li className="text-slate-600 text-sm py-1">• DOH Administrative Order 2017-0010 (Water Refilling Standards)</li>
                     <li className="text-slate-600 text-sm py-1">• Philippine National Standards (PNS) for drinking water</li>
@@ -434,13 +433,13 @@ const Login = () => {
                 onClick={handleReapply}
                 className="border-none px-6 py-3 rounded-md cursor-pointer font-medium flex-1 min-w-[140px] transition-all text-sm bg-primary text-white hover:bg-primary-dark hover:-translate-y-0.5"
               >
-                ↻ Reapply Now
+                Reapply Now
               </button>
               <button
                 onClick={handleClearRejection}
                 className="border-none px-6 py-3 rounded-md cursor-pointer font-medium flex-1 min-w-[140px] transition-all text-sm bg-gray-500 text-white hover:bg-gray-600 hover:-translate-y-0.5"
               >
-                ✕ Clear & Try Again
+                Clear & Try Again
               </button>
             </div>
           </div>

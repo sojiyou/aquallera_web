@@ -28,6 +28,8 @@ const AdminPage = () => {
   const [showInviteDialog, setShowInviteDialog] = useState(false);
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviting, setInviting] = useState(false);
+  const [admins, setAdmins] = useState([]);
+  const [removingAdminId, setRemovingAdminId] = useState(null);
 
   // Admin credentials (you should change these and keep them secure)
   const ADMIN_EMAIL = 'admin@aquallera.com';
@@ -93,9 +95,25 @@ const AdminPage = () => {
       }
     });
 
+    // Fetch all admins
+    const adminsRef = ref(database, 'admins');
+    const adminsUnsubscribe = onValue(adminsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const adminsArray = Object.entries(data).map(([key, value]) => ({
+          id: key,
+          ...value
+        }));
+        setAdmins(adminsArray);
+      } else {
+        setAdmins([]);
+      }
+    });
+
     return () => {
       stationsUnsubscribe();
       ordersUnsubscribe();
+      adminsUnsubscribe();
     };
   };
 
@@ -106,6 +124,29 @@ const AdminPage = () => {
       result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     return result;
+  };
+
+  const handleRemoveAdmin = async (adminId, adminEmail) => {
+    showAlert({
+      type: 'confirm',
+      message: `Are you sure you want to remove ${adminEmail}? They will no longer be able to access the admin panel.`,
+      onConfirm: async (confirmed) => {
+        closeAlert();
+        if (!confirmed) return;
+
+        setRemovingAdminId(adminId);
+        try {
+          const adminRef = ref(database, `admins/${adminId}`);
+          await set(adminRef, null);
+          showAlert({ type: 'success', message: `${adminEmail} has been removed.` });
+        } catch (error) {
+          console.error('Error removing admin:', error);
+          showAlert({ type: 'error', message: 'Failed to remove admin. Please try again.' });
+        } finally {
+          setRemovingAdminId(null);
+        }
+      }
+    });
   };
 
   const handleInviteAdmin = async (e) => {
@@ -346,7 +387,7 @@ const AdminPage = () => {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary to-primary-dark p-4">
         <div className="bg-white rounded-2xl p-12 w-full max-w-[450px] shadow-2xl text-center">
           <div>
-            <h1 className="text-slate-800 m-0 mb-2 text-3xl">🔐 AQUA-LLERA Admin Portal</h1>
+            <h1 className="text-slate-800 m-0 mb-2 text-3xl">AQUA-LLERA Admin Portal</h1>
             <p className="text-slate-500 m-0 mb-8 text-sm">Developer Access Only</p>
           </div>
 
@@ -384,7 +425,7 @@ const AdminPage = () => {
             </button>
 
             <div className="bg-amber-50 border border-amber-300 rounded-lg p-4 mt-6 text-center">
-              <p className="my-1 text-amber-800 text-xs">⚠️ This page is for system administrators only.</p>
+              <p className="my-1 text-amber-800 text-xs">This page is for system administrators only.</p>
               <p className="my-1 text-amber-800 text-xs">Unauthorized access is prohibited.</p>
             </div>
           </form>
@@ -405,12 +446,13 @@ const AdminPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans">
-      {/* Admin Header */}
-      <header className="bg-gradient-to-br from-primary-dark to-primary-dark text-white px-8 py-6 border-b border-slate-600">
+    <div className="min-h-screen bg-slate-50 font-sans flex flex-col">
+      <div className="flex-1">
+        {/* Admin Header */}
+        <header className="bg-gradient-to-br from-primary-dark to-primary-dark text-white px-8 py-6 border-b border-slate-600">
         <div className="max-w-[1400px] mx-auto flex justify-between items-center">
           <div>
-            <h1 className="m-0 mb-1 text-3xl">🚀 AQUA-LLERA Admin Dashboard</h1>
+            <h1 className="m-0 mb-1 text-3xl">AQUA-LLERA Admin Dashboard</h1>
             <p className="m-0 text-slate-300 text-sm">System Administrator Control Panel</p>
           </div>
 
@@ -427,14 +469,14 @@ const AdminPage = () => {
               className="px-4 py-2 border border-white/20 rounded-md cursor-pointer font-medium text-sm transition-all bg-white/10 text-white hover:bg-white/20"
               title="Refresh Data"
             >
-              🔄 Refresh
+              Refresh
             </button>
 
             <button
               onClick={handleLogout}
               className="bg-red-500 text-white px-4 py-2 rounded-md cursor-pointer font-medium text-sm transition-all hover:bg-red-600"
             >
-              👋 Logout
+              Logout
             </button>
           </div>
         </div>
@@ -443,7 +485,7 @@ const AdminPage = () => {
       {/* Stats Overview */}
       <section className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-6 p-8 max-w-[1400px] mx-auto">
         <div className="bg-white p-6 rounded-xl shadow-sm flex items-center gap-4 transition-transform hover:-translate-y-0.5">
-          <div className="w-15 h-15 rounded-xl flex items-center justify-center text-2xl bg-primary/10 text-primary-dark">🏢</div>
+          <div className="w-15 h-15 rounded-xl flex items-center justify-center text-2xl bg-primary/10 text-primary-dark"></div>
           <div>
             <h3 className="m-0 text-slate-800 text-3xl">{stats.totalStations}</h3>
             <p className="m-1 text-slate-500 text-sm">Total Stations</p>
@@ -451,7 +493,7 @@ const AdminPage = () => {
         </div>
 
         <div className="bg-white p-6 rounded-xl shadow-sm flex items-center gap-4 transition-transform hover:-translate-y-0.5">
-          <div className="w-15 h-15 rounded-xl flex items-center justify-center text-2xl bg-amber-100 text-amber-600">⏳</div>
+          <div className="w-15 h-15 rounded-xl flex items-center justify-center text-2xl bg-amber-100 text-amber-600"></div>
           <div>
             <h3 className="m-0 text-slate-800 text-3xl">{stats.pendingStations}</h3>
             <p className="m-1 text-slate-500 text-sm">Pending Review</p>
@@ -459,7 +501,7 @@ const AdminPage = () => {
         </div>
 
         <div className="bg-white p-6 rounded-xl shadow-sm flex items-center gap-4 transition-transform hover:-translate-y-0.5">
-          <div className="w-15 h-15 rounded-xl flex items-center justify-center text-2xl bg-emerald-100 text-emerald-600">✅</div>
+          <div className="w-15 h-15 rounded-xl flex items-center justify-center text-2xl bg-emerald-100 text-emerald-600"></div>
           <div>
             <h3 className="m-0 text-slate-800 text-3xl">{stats.approvedStations}</h3>
             <p className="m-1 text-slate-500 text-sm">Approved Stations</p>
@@ -475,13 +517,19 @@ const AdminPage = () => {
             className={`px-6 py-3 border-none bg-transparent text-slate-500 text-sm font-medium cursor-pointer relative transition-all rounded-t-lg hover:bg-slate-100 hover:text-slate-700${activeTab === 'pending' ? ' text-primary bg-primary/5' : ''}`}
             onClick={() => setActiveTab('pending')}
           >
-            ⏳ Pending Review ({pendingStations.length})
+            Pending Review ({pendingStations.length})
           </button>
           <button
             className={`px-6 py-3 border-none bg-transparent text-slate-500 text-sm font-medium cursor-pointer relative transition-all rounded-t-lg hover:bg-slate-100 hover:text-slate-700${activeTab === 'approved' ? ' text-primary bg-primary/5' : ''}`}
             onClick={() => setActiveTab('approved')}
           >
-            ✅ Approved Stations ({approvedStations.length})
+            Approved Stations ({approvedStations.length})
+          </button>
+          <button
+            className={`px-6 py-3 border-none bg-transparent text-slate-500 text-sm font-medium cursor-pointer relative transition-all rounded-t-lg hover:bg-slate-100 hover:text-slate-700${activeTab === 'admins' ? ' text-primary bg-primary/5' : ''}`}
+            onClick={() => setActiveTab('admins')}
+          >
+            Admins ({admins.length})
           </button>
         </div>
 
@@ -490,12 +538,56 @@ const AdminPage = () => {
             <div className="w-[50px] h-[50px] border-3 border-slate-200 border-t-blue-600 rounded-full mx-auto mb-4 animate-spin"></div>
             <p>Loading station data...</p>
           </div>
+        ) : activeTab === 'admins' ? (
+          <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+            {admins.length === 0 ? (
+              <div className="text-center py-16">
+                <h3 className="text-slate-800 m-0 mb-2">No admins yet</h3>
+                <p className="text-slate-500 m-0">Invite an admin to get started.</p>
+              </div>
+            ) : (
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="border-b border-slate-200 bg-slate-50">
+                    <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Email</th>
+                    <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Invited By</th>
+                    <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Date Invited</th>
+                    <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {admins.map((admin) => (
+                    <tr key={admin.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                      <td className="px-6 py-4">
+                        <span className="text-sm font-medium text-slate-800">{admin.email}</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-sm text-slate-600">{admin.invitedBy || 'N/A'}</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-sm text-slate-600">{admin.createdAt ? formatDate(admin.createdAt) : 'N/A'}</span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <button
+                          onClick={() => handleRemoveAdmin(admin.id, admin.email)}
+                          disabled={removingAdminId === admin.id}
+                          className="px-3 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium transition-all bg-red-50 text-red-600 hover:bg-red-600 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {removingAdminId === admin.id ? 'Removing...' : 'Remove'}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
         ) : (
           <div className="grid gap-6 grid-cols-[repeat(auto-fill,minmax(500px,1fr))]">
             {getFilteredStations().length === 0 ? (
               <div className="text-center py-16 bg-white rounded-xl shadow-sm">
                 <div className="text-5xl mb-4 opacity-50">
-                  {activeTab === 'pending' ? '📋' : '🏪'}
+                  {activeTab === 'pending' ? '' : ''}
                 </div>
                 <h3 className="text-slate-800 m-0 mb-2">No stations found</h3>
                 <p className="text-slate-500 m-0">
@@ -524,51 +616,51 @@ const AdminPage = () => {
 
                   <div className="mb-6">
                     <div className="flex py-2 text-sm border-b border-slate-100 last:border-b-0">
-                      <span className="min-w-[120px] text-slate-500 font-medium">📍 Location:</span>
+                      <span className="min-w-[120px] text-slate-500 font-medium">Location:</span>
                       <span className="flex-1 text-slate-800 break-words">
                         {station.address || 'N/A'}, {station.city || 'N/A'}
                       </span>
                     </div>
 
                     <div className="flex py-2 text-sm border-b border-slate-100 last:border-b-0">
-                      <span className="min-w-[120px] text-slate-500 font-medium">👤 Owner:</span>
+                      <span className="min-w-[120px] text-slate-500 font-medium">Owner:</span>
                       <span className="flex-1 text-slate-800 break-words">{station.ownerName || 'N/A'}</span>
                     </div>
 
                     <div className="flex py-2 text-sm border-b border-slate-100 last:border-b-0">
-                      <span className="min-w-[120px] text-slate-500 font-medium">📧 Email:</span>
+                      <span className="min-w-[120px] text-slate-500 font-medium">Email:</span>
                       <span className="flex-1 text-slate-800 break-words font-mono">{station.email || 'N/A'}</span>
                     </div>
 
                     {station.password && (
                       <div className="flex py-2 text-sm border-b border-slate-100 last:border-b-0">
-                        <span className="min-w-[120px] text-slate-500 font-medium">🔑 Password:</span>
+                        <span className="min-w-[120px] text-slate-500 font-medium">Password:</span>
                         <span className="flex-1 text-slate-800 break-words font-mono">{station.password}</span>
                       </div>
                     )}
 
                     <div className="flex py-2 text-sm border-b border-slate-100 last:border-b-0">
-                      <span className="min-w-[120px] text-slate-500 font-medium">📱 Contact:</span>
+                      <span className="min-w-[120px] text-slate-500 font-medium">Contact:</span>
                       <span className="flex-1 text-slate-800 break-words">{station.phone ? maskPhone(station.phone) : 'N/A'}</span>
                     </div>
 
                     {station.businessPermitNumber && (
                       <div className="flex py-2 text-sm border-b border-slate-100 last:border-b-0">
-                        <span className="min-w-[120px] text-slate-500 font-medium">📄 Permit #:</span>
+                        <span className="min-w-[120px] text-slate-500 font-medium">Permit #:</span>
                         <span className="flex-1 text-slate-800 break-words">{station.businessPermitNumber}</span>
                       </div>
                     )}
 
                     {station.rejectionReason && (
                       <div className="bg-red-50 p-3 rounded-md mt-2 border border-red-200 flex py-2 text-sm">
-                        <span className="min-w-[120px] text-red-600 font-medium">❌ Rejection Reason:</span>
+                        <span className="min-w-[120px] text-red-600 font-medium">Rejection Reason:</span>
                         <span className="flex-1 text-slate-800 break-words">{station.rejectionReason}</span>
                       </div>
                     )}
 
                     {station.approvedAt && (
                       <div className="bg-secondary/5 p-3 rounded-md mt-2 border border-secondary/20 flex py-2 text-sm">
-                        <span className="min-w-[120px] text-secondary font-medium">✅ Approved On:</span>
+                        <span className="min-w-[120px] text-secondary font-medium">Approved On:</span>
                         <span className="flex-1 text-slate-800 break-words">{formatDate(station.approvedAt)}</span>
                       </div>
                     )}
@@ -582,21 +674,21 @@ const AdminPage = () => {
                           className="px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[140px] bg-secondary text-white hover:bg-primary-dark"
                           disabled={rejectingStationId === station.id}
                         >
-                          ✅ Approve Station
+                          Approve Station
                         </button>
                         <button
                           onClick={() => handleRejectStation(station.id)}
                           className="px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[140px] bg-red-500 text-white hover:bg-red-600"
                           disabled={rejectingStationId === station.id}
                         >
-                          {rejectingStationId === station.id ? '⏳ Sending Email...' : '❌ Reject Station'}
+                          {rejectingStationId === station.id ? 'Sending Email...' : 'Reject Station'}
                         </button>
                         <button
                           onClick={() => handleViewDetails(station)}
                           className="px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[140px] bg-primary text-white hover:bg-primary-dark"
                           disabled={rejectingStationId === station.id}
                         >
-                          👁️ View Details
+                          View Details
                         </button>
                       </>
                     ) : (
@@ -605,13 +697,13 @@ const AdminPage = () => {
                           onClick={() => handleRevokeApproval(station.id)}
                           className="px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[140px] bg-amber-500 text-white hover:bg-amber-600"
                         >
-                          ↩️ Revoke Approval
+                          Revoke Approval
                         </button>
                         <button
                           onClick={() => handleViewDetails(station)}
                           className="px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[140px] bg-primary text-white hover:bg-primary-dark"
                         >
-                          👁️ View Details
+                          View Details
                         </button>
                         <button
                           onClick={() => {
@@ -620,7 +712,7 @@ const AdminPage = () => {
                           }}
                           className="px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[140px] bg-primary text-white hover:bg-primary-dark"
                         >
-                          📋 Copy ID
+                          Copy ID
                         </button>
                       </>
                     )}
@@ -631,19 +723,20 @@ const AdminPage = () => {
           </div>
         )}
       </main>
+      </div>
 
       {/* Station Details Modal */}
       {showDetailsModal && selectedStation && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[1000] p-4 animate-[fadeIn_0.3s_ease]">
           <div className="bg-white rounded-2xl w-full max-w-[800px] max-h-[90vh] overflow-y-auto shadow-2xl animate-[slideUp_0.3s_ease]">
             <div className="flex justify-between items-center px-8 py-6 border-b border-gray-200 bg-gradient-to-br from-primary-dark to-primary-dark text-white rounded-t-2xl">
-              <h2 className="m-0 text-2xl">📋 Station Details</h2>
+              <h2 className="m-0 text-2xl">Station Details</h2>
               <button onClick={closeModal} className="bg-transparent border-none text-white text-3xl cursor-pointer w-10 h-10 flex items-center justify-center rounded-full transition-all hover:bg-white/10">×</button>
             </div>
 
             <div className="p-8">
               <div className="mb-8 pb-6 border-b border-gray-200 last:border-b-0">
-                <h3 className="text-slate-800 m-0 mb-4 text-xl flex items-center gap-2">🏢 Station Information</h3>
+                <h3 className="text-slate-800 m-0 mb-4 text-xl flex items-center gap-2">Station Information</h3>
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4">
                   <div className="flex flex-col gap-1">
                     <span className="font-semibold text-gray-600 text-sm">Station Name:</span>
@@ -684,7 +777,7 @@ const AdminPage = () => {
               </div>
 
               <div className="mb-8 pb-6 border-b border-gray-200 last:border-b-0">
-                <h3 className="text-slate-800 m-0 mb-4 text-xl flex items-center gap-2">📄 Business Permit Details</h3>
+                <h3 className="text-slate-800 m-0 mb-4 text-xl flex items-center gap-2">Business Permit Details</h3>
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4">
                   <div className="flex flex-col gap-1">
                     <span className="font-semibold text-gray-600 text-sm">Permit Number:</span>
@@ -724,7 +817,7 @@ const AdminPage = () => {
               {/* Business Permit Image */}
               {selectedStation.businessPermitBase64 && (
                 <div className="bg-slate-50 rounded-xl p-6 my-6 border-2 border-dashed border-gray-300">
-                  <h3 className="mt-0 text-gray-700">📸 Business Permit Image</h3>
+                  <h3 className="mt-0 text-gray-700">Business Permit Image</h3>
                   <div className="flex justify-center my-4">
                     <img
                       src={selectedStation.businessPermitBase64}
@@ -744,7 +837,7 @@ const AdminPage = () => {
                       }}
                       className="bg-primary text-white px-4 py-2 rounded-md cursor-pointer text-sm font-medium transition-all hover:bg-primary-dark"
                     >
-                      🔍 View Full Image
+                      View Full Image
                     </button>
                     <button
                       onClick={() => {
@@ -757,7 +850,7 @@ const AdminPage = () => {
                       }}
                       className="bg-secondary text-white px-4 py-2 rounded-md cursor-pointer text-sm font-medium transition-all hover:bg-primary-dark"
                     >
-                      ⬇️ Download Image
+                      Download Image
                     </button>
                   </div>
                 </div>
@@ -765,7 +858,7 @@ const AdminPage = () => {
 
               {/* System Information */}
               <div className="mb-8 pb-6 border-b border-gray-200 last:border-b-0">
-                <h3 className="text-slate-800 m-0 mb-4 text-xl flex items-center gap-2">⚙️ System Information</h3>
+                <h3 className="text-slate-800 m-0 mb-4 text-xl flex items-center gap-2">System Information</h3>
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4">
                   <div className="flex flex-col gap-1">
                     <span className="font-semibold text-gray-600 text-sm">Station ID:</span>
@@ -802,7 +895,7 @@ const AdminPage = () => {
                 }}
                 className="px-6 py-3 border-none rounded-lg cursor-pointer font-semibold text-sm transition-all bg-primary text-white hover:bg-primary-dark"
               >
-                📋 Copy Station ID
+                Copy Station ID
               </button>
             </div>
           </div>
@@ -813,11 +906,11 @@ const AdminPage = () => {
       <footer className="bg-primary-dark text-slate-300 px-8 py-4 mt-12 border-t border-slate-700">
         <div className="max-w-[1400px] mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4 text-xs">
-            <span>🛡️ Secure Admin Portal</span>
+            <span>Secure Admin Portal</span>
             <span>•</span>
-            <span>👥 Admin Only</span>
+            <span>Admin Only</span>
             <span>•</span>
-            <span>🚀 v1.0.0</span>
+            <span>v1.0.0</span>
           </div>
           <div className="flex items-center gap-2 text-xs">
             <span>Session Active</span>

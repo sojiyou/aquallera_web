@@ -14,10 +14,10 @@ const EMAILJS_PUBLIC_KEY = 'fpu4u65UlHZOE96yR'; // Replace with your EmailJS pub
 export const initializeEmailJS = () => {
   try {
     emailjs.init(EMAILJS_PUBLIC_KEY);
-    console.log('✅ EmailJS initialized successfully');
+    console.log('EmailJS initialized successfully');
     return true;
   } catch (error) {
-    console.error('❌ EmailJS initialization failed:', error);
+    console.error('EmailJS initialization failed:', error);
     return false;
   }
 };
@@ -41,10 +41,10 @@ export const testEmailJSConnection = async () => {
     // Note: You'll need to create a simple test template in EmailJS first
     // await emailjs.send(EMAILJS_SERVICE_ID, 'test_template_id', testParams);
 
-    console.log('✅ EmailJS connection test passed');
+    console.log('EmailJS connection test passed');
     return true;
   } catch (error) {
-    console.error('❌ EmailJS connection test failed:', error);
+    console.error('EmailJS connection test failed:', error);
     return false;
   }
 };
@@ -56,7 +56,7 @@ export const testEmailJSConnection = async () => {
  */
 export const sendRejectionEmail = async (stationData, rejectionReason) => {
   try {
-    console.log('📧 Preparing rejection email for:', stationData.email);
+    console.log('Preparing rejection email for:', stationData.email);
 
     // Validate required data
     if (!stationData || !stationData.email) {
@@ -123,7 +123,7 @@ export const sendRejectionEmail = async (stationData, rejectionReason) => {
       reapply_link: 'https://your-app-url.com/signup'
     };
 
-    console.log('📧 Email parameters prepared:', {
+    console.log('Email parameters prepared:', {
       to: emailParams.to_email,
       station: emailParams.station_name,
       reason: emailParams.rejection_reason.substring(0, 50) + '...'
@@ -136,7 +136,7 @@ export const sendRejectionEmail = async (stationData, rejectionReason) => {
       emailParams
     );
 
-    console.log('✅ Rejection email sent successfully:', response);
+    console.log('Rejection email sent successfully:', response);
     return {
       success: true,
       response: response,
@@ -144,7 +144,7 @@ export const sendRejectionEmail = async (stationData, rejectionReason) => {
     };
 
   } catch (error) {
-    console.error('❌ Failed to send rejection email:', error);
+    console.error('Failed to send rejection email:', error);
 
     // Throw a more descriptive error
     if (error.text) {
@@ -165,7 +165,7 @@ export const sendRejectionEmail = async (stationData, rejectionReason) => {
  */
 export const sendAdminInvitation = async (toEmail, generatedPassword, invitedBy) => {
   try {
-    console.log('📧 Sending admin invitation to:', toEmail);
+    console.log('Sending admin invitation to:', toEmail);
 
     const emailParams = {
       to_email: toEmail,
@@ -185,11 +185,11 @@ export const sendAdminInvitation = async (toEmail, generatedPassword, invitedBy)
       emailParams
     );
 
-    console.log('✅ Admin invitation sent successfully:', response);
+    console.log('Admin invitation sent successfully:', response);
     return { success: true, response, sentTo: toEmail };
 
   } catch (error) {
-    console.error('❌ Failed to send admin invitation:', error);
+    console.error('Failed to send admin invitation:', error);
     if (error.text) throw new Error(`Email sending failed: ${error.text}`);
     else if (error.message) throw new Error(`Email sending failed: ${error.message}`);
     else throw new Error('Email sending failed: Unknown error');
@@ -201,7 +201,7 @@ export const sendAdminInvitation = async (toEmail, generatedPassword, invitedBy)
  */
 export const sendApprovalEmail = async (stationData) => {
   try {
-    console.log('📧 Preparing approval email for:', stationData.email);
+    console.log('Preparing approval email for:', stationData.email);
 
     const emailParams = {
       to_email: stationData.email,
@@ -219,11 +219,11 @@ export const sendApprovalEmail = async (stationData) => {
       emailParams
     );
 
-    console.log('✅ Approval email sent successfully');
+    console.log('Approval email sent successfully');
     return { success: true, response };
 
   } catch (error) {
-    console.error('❌ Failed to send approval email:', error);
+    console.error('Failed to send approval email:', error);
     throw error;
   }
 };
