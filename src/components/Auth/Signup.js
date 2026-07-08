@@ -291,6 +291,7 @@ const Signup = () => {
         setMarker(null);
       }
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep, map]);
 
   // ========== INITIALIZE THE MAPBOX MAP ==========

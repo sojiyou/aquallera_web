@@ -114,69 +114,109 @@ const OrdersTable = ({ orders, onOrderClick }) => {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-200">
-      <table className="w-full border-collapse text-sm">
-        <thead>
-          <tr className="bg-slate-100">
-            <th className="w-[120px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Order #</th>
-            <th className="min-w-[180px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Customer</th>
-            <th className="w-[110px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Type</th>
-            <th className="w-[120px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Amount</th>
-            <th className="w-[140px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Status</th>
-            <th className="w-[80px] text-center px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentOrders.map((order, index) => {
-            const statusInfo = getStatusBadge(order.status);
-            const orderId = order.orderId || order.id || 'N/A';
-            const customerName = order.customerName || 'N/A';
-            const orderType = order.orderType || 'N/A';
-            const grandTotal = order.grandTotal || (order.waterSubtotal || 0) + (order.transactionFee || 0);
+    <div className="bg-white rounded-xl shadow-sm border border-slate-200">
+      {/* Desktop Table - hidden below md */}
+      <div className="hidden md:block overflow-x-auto">
+        <table className="w-full border-collapse text-sm min-w-[700px]">
+          <thead>
+            <tr className="bg-slate-100">
+              <th className="w-[120px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Order #</th>
+              <th className="min-w-[180px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Customer</th>
+              <th className="w-[110px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Type</th>
+              <th className="w-[120px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Amount</th>
+              <th className="w-[140px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Status</th>
+              <th className="w-[80px] text-center px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentOrders.map((order, index) => {
+              const statusInfo = getStatusBadge(order.status);
+              const orderId = order.orderId || order.id || 'N/A';
+              const customerName = order.customerName || 'N/A';
+              const orderType = order.orderType || 'N/A';
+              const grandTotal = order.grandTotal || (order.waterSubtotal || 0) + (order.transactionFee || 0);
 
-            return (
-              <tr 
-                key={orderId} 
-                className={`border-b border-slate-200 cursor-pointer transition-all hover:bg-primary/5 last:border-b-0 ${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}`}
-                onClick={() => onOrderClick(order)}
-              >
-                <td className="w-[120px] px-4 py-3" data-label="Order #">
-                  <span className="font-semibold text-primary font-mono text-xs">#{orderId}</span>
-                </td>
-                <td className="min-w-[180px] px-4 py-3" data-label="Customer">
-                  <div className="flex flex-col gap-0.5">
-                    <span className="font-semibold text-slate-800 text-base">{customerName}</span>
-                    <span className="text-slate-500 text-sm">{order.customerPhone || ''}</span>
-                  </div>
-                </td>
-                <td className="w-[110px] px-4 py-3" data-label="Type">
-                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${orderType === 'Delivery' ? 'bg-primary/15 text-primary-dark' : 'bg-emerald-100 text-emerald-800'}`}>
-                    {orderType}
-                  </span>
-                </td>
-                <td className="w-[120px] px-4 py-3" data-label="Amount">
-                  <span className="font-bold text-slate-800 text-sm">{formatCurrency(grandTotal)}</span>
-                </td>
-                <td className="w-[140px] px-4 py-3" data-label="Status">
-                  <span 
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap shadow-sm"
-                    style={{ backgroundColor: statusInfo.bg, color: statusInfo.color }}
-                  >
-                    {statusInfo.label}
-                  </span>
-                </td>
-                <td className="w-[80px] text-center px-4 py-3" data-label="Action">
-                  <button className="bg-primary text-white border-none px-4 py-2 rounded-md cursor-pointer text-xs font-semibold transition-all hover:bg-primary-dark hover:-translate-y-0.5 hover:shadow-md active:translate-y-0" onClick={(e) => { e.stopPropagation(); onOrderClick(order); }}>
-                    View
-                  </button>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+              return (
+                <tr 
+                  key={orderId} 
+                  className={`border-b border-slate-200 cursor-pointer transition-all hover:bg-primary/5 last:border-b-0 ${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}`}
+                  onClick={() => onOrderClick(order)}
+                >
+                  <td className="w-[120px] px-4 py-3">
+                    <span className="font-semibold text-primary font-mono text-xs">#{orderId}</span>
+                  </td>
+                  <td className="min-w-[180px] px-4 py-3">
+                    <div className="flex flex-col gap-0.5">
+                      <span className="font-semibold text-slate-800 text-base">{customerName}</span>
+                      <span className="text-slate-500 text-sm">{order.customerPhone || ''}</span>
+                    </div>
+                  </td>
+                  <td className="w-[110px] px-4 py-3">
+                    <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${orderType === 'Delivery' ? 'bg-primary/15 text-primary-dark' : 'bg-emerald-100 text-emerald-800'}`}>
+                      {orderType}
+                    </span>
+                  </td>
+                  <td className="w-[120px] px-4 py-3">
+                    <span className="font-bold text-slate-800 text-sm">{formatCurrency(grandTotal)}</span>
+                  </td>
+                  <td className="w-[140px] px-4 py-3">
+                    <span 
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap shadow-sm"
+                      style={{ backgroundColor: statusInfo.bg, color: statusInfo.color }}
+                    >
+                      {statusInfo.label}
+                    </span>
+                  </td>
+                  <td className="w-[80px] text-center px-4 py-3">
+                    <button className="bg-primary text-white border-none px-4 py-2 rounded-md cursor-pointer text-xs font-semibold transition-all hover:bg-primary-dark hover:-translate-y-0.5 hover:shadow-md active:translate-y-0" onClick={(e) => { e.stopPropagation(); onOrderClick(order); }}>
+                      View
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
 
-      <div className="flex justify-between items-center px-5 py-4 bg-slate-100 border-t border-slate-200 flex-wrap gap-4">
+      {/* Mobile Cards - hidden on md+ */}
+      <div className="md:hidden divide-y divide-slate-200">
+        {currentOrders.map((order, index) => {
+          const orderId = order.orderId || order.id || 'N/A';
+          const customerName = order.customerName || 'N/A';
+          const grandTotal = order.grandTotal || (order.waterSubtotal || 0) + (order.transactionFee || 0);
+
+          return (
+            <div 
+              key={orderId}
+              className="px-4 py-4 cursor-pointer transition-all hover:bg-primary/5 active:bg-primary/10"
+              onClick={() => onOrderClick(order)}
+            >
+              <div className="flex items-start justify-between mb-2">
+                <div className="flex-1 min-w-0 mr-3">
+                  <div className="font-semibold text-slate-800 text-[15px] leading-tight truncate">{customerName}</div>
+                  {order.customerPhone && (
+                    <div className="text-slate-400 text-xs mt-0.5">{order.customerPhone}</div>
+                  )}
+                </div>
+                <button 
+                  className="flex-shrink-0 bg-primary text-white border-none px-4 py-[7px] rounded-md cursor-pointer text-xs font-semibold transition-all hover:bg-primary-dark active:scale-95"
+                  onClick={(e) => { e.stopPropagation(); onOrderClick(order); }}
+                >
+                  View
+                </button>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-primary font-mono text-[11px]">#{orderId}</span>
+                <span className="font-bold text-slate-700 text-xs ml-auto">{formatCurrency(grandTotal)}</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Pagination Footer */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center px-4 sm:px-5 py-4 bg-slate-100 border-t border-slate-200 gap-3">
         <div className="text-slate-600 text-sm font-medium">
           Showing {startIndex + 1}-{Math.min(endIndex, orders.length)} of {orders.length} orders
         </div>
@@ -371,7 +411,7 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[1000] p-4 animate-[fadeIn_0.2s_ease]" onClick={onClose}>
       <div className="bg-white rounded-2xl w-full max-w-[650px] max-h-[90vh] overflow-y-auto shadow-2xl animate-[slideUp_0.3s_ease]" onClick={(e) => e.stopPropagation()}>
-        <div className="flex justify-between items-center px-6 py-5 border-b border-slate-200 sticky top-0 bg-white z-10 rounded-t-2xl">
+        <div className="flex justify-between items-center px-4 sm:px-6 py-4 sm:py-5 border-b border-slate-200 sticky top-0 bg-white z-10 rounded-t-2xl">
           <div className="flex items-center gap-3">
             <h2>Order Details</h2>
             <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-semibold text-xs font-mono">#{order.orderId || order.id || 'N/A'}</span>
@@ -379,7 +419,7 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
           <button className="w-9 h-9 border-none bg-slate-100 rounded-full cursor-pointer text-lg text-slate-500 flex items-center justify-center transition-all hover:bg-slate-200 hover:text-slate-800" onClick={onClose}>&times;</button>
         </div>
 
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <div className="mb-5">
             <div 
               className="inline-block px-4 py-1.5 rounded-full font-semibold text-xs"
@@ -389,7 +429,7 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-6">
+             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
             <div className="flex flex-col gap-1">
               <span className="text-xs text-slate-500 font-medium">Customer</span>
               <span className="text-sm text-slate-800 font-medium">{order.customerName || 'N/A'}</span>
@@ -580,7 +620,7 @@ const Dashboard = () => {
   const [activeSection, setActiveSection] = useState('orders');
   const [stationData, setStationData] = useState(null);
   const [orders, setOrders] = useState([]);
-  const [stats, setStats] = useState({
+  const [, setStats] = useState({
     totalOrders: 0,
     pendingOrders: 0,
     completedOrders: 0,
@@ -589,7 +629,7 @@ const Dashboard = () => {
     topLocation: 'N/A'
   });
   const [activeTab, setActiveTab] = useState('all');
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
@@ -693,10 +733,6 @@ const Dashboard = () => {
     });
   };
 
-  const formatCurrency = (amount) => {
-    return `₱${parseFloat(amount || 0).toFixed(2)}`;
-  };
-
   const getFilteredOrders = () => {
     if (activeTab === 'all') return orders;
     
@@ -794,6 +830,7 @@ const Dashboard = () => {
     });
 
     return () => unsubscribeAuth();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleLogout = async () => {
@@ -823,10 +860,10 @@ const Dashboard = () => {
           <path fill="#9EB3C2" d="M0,550L48,565.3C96,580.7,192,611.3,288,608C384,604.7,480,568,576,554.7C672,541.3,768,552,864,578.7C960,605.3,1056,648,1152,632C1248,616,1344,541.3,1392,504L1440,466.7L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
         </svg>
         <div className="relative z-10">
-          <header className="bg-white border-b border-slate-200 px-8 py-6 shadow-sm">
-            <div className="flex justify-between items-center max-w-[1200px] mx-auto">
+          <header className="bg-white border-b border-slate-200 px-4 sm:px-8 py-6 shadow-sm">
+            <div className="flex justify-between items-center max-w-[1200px] mx-auto flex-wrap gap-4">
               <div className="header-info">
-                <h1 className="text-slate-800 m-0 mb-1 text-3xl">Pending Approval</h1>
+                <h1 className="text-slate-800 m-0 mb-1 text-2xl md:text-3xl">Pending Approval</h1>
                 <p className="text-slate-600 text-sm m-1 flex items-center gap-1">
                   {stationData.stationName || 'Your Station'}
                 </p>
@@ -837,8 +874,8 @@ const Dashboard = () => {
             </div>
           </header>
 
-        <div className="max-w-[800px] mx-auto my-8 p-12 bg-white rounded-xl shadow-sm text-center">
-          <div className="text-6xl mb-6 opacity-70"></div>
+        <div className="max-w-[800px] mx-auto my-8 p-6 sm:p-12 bg-white rounded-xl shadow-sm text-center">
+          <div className="text-4xl md:text-6xl mb-6 opacity-70"></div>
           <h2 className="text-slate-800 mb-4">Your station is pending admin approval</h2>
           <p className="text-slate-500 mb-8 leading-relaxed">Thank you for registering! An administrator will review your application soon.</p>
           <p className="text-slate-500 mb-8 leading-relaxed">You will receive an email notification once your station is approved.</p>
@@ -875,10 +912,10 @@ const Dashboard = () => {
           <path fill="#9EB3C2" d="M0,550L48,565.3C96,580.7,192,611.3,288,608C384,604.7,480,568,576,554.7C672,541.3,768,552,864,578.7C960,605.3,1056,648,1152,632C1248,616,1344,541.3,1392,504L1440,466.7L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
         </svg>
         <div className="relative z-10">
-          <header className="bg-white border-b border-slate-200 px-8 py-6 shadow-sm">
-            <div className="flex justify-between items-center max-w-[1200px] mx-auto">
+          <header className="bg-white border-b border-slate-200 px-4 sm:px-8 py-6 shadow-sm">
+            <div className="flex justify-between items-center max-w-[1200px] mx-auto flex-wrap gap-4">
               <div className="header-info">
-                <h1 className="text-slate-800 m-0 mb-1 text-3xl">Registration Rejected</h1>
+                <h1 className="text-slate-800 m-0 mb-1 text-2xl md:text-3xl">Registration Rejected</h1>
                 <p className="text-slate-600 text-sm m-1 flex items-center gap-1">
                   {stationData.stationName || 'Your Station'}
                 </p>
@@ -889,8 +926,8 @@ const Dashboard = () => {
             </div>
           </header>
 
-        <div className="max-w-[800px] mx-auto my-8 p-12 bg-white rounded-xl shadow-sm text-center">
-          <div className="text-6xl mb-6 text-red-600"></div>
+        <div className="max-w-[800px] mx-auto my-8 p-6 sm:p-12 bg-white rounded-xl shadow-sm text-center">
+          <div className="text-4xl md:text-6xl mb-6 text-red-600"></div>
           <h2 className="text-slate-800 mb-4">Station Registration Rejected</h2>
           
           {stationData.rejectionReason && (
@@ -928,16 +965,15 @@ const Dashboard = () => {
         <path fill="#9EB3C2" d="M0,550L48,565.3C96,580.7,192,611.3,288,608C384,604.7,480,568,576,554.7C672,541.3,768,552,864,578.7C960,605.3,1056,648,1152,632C1248,616,1344,541.3,1392,504L1440,466.7L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
       </svg>
       <div className="relative z-10">
-        <header className="bg-white border-b border-slate-200 px-8 py-6 shadow-sm">
-          <div className="flex justify-between items-center max-w-[1200px] mx-auto">
+        <header className="bg-white border-b border-slate-200 px-4 sm:px-8 py-4 sm:py-6 shadow-sm">
+          <div className="flex justify-between items-start sm:items-center max-w-[1200px] mx-auto flex-col sm:flex-row gap-4">
             <div className="header-info">
-              <h1 className="text-slate-800 m-0 mb-1 text-3xl">
+              <h1 className="text-slate-800 m-0 mb-1 text-2xl md:text-3xl">
                 {stationData && stationData.stationName 
                   ? `${stationData.stationName} Dashboard`
                   : "Station Dashboard"
                 }
               </h1>
-              <p className="text-slate-500 m-0">Welcome back! Here's your business overview</p>
             
             {stationData && (stationData.city || stationData.address) && (
               <p className="text-slate-600 text-sm m-1 flex items-center gap-1">
@@ -947,32 +983,32 @@ const Dashboard = () => {
               </p>
             )}
           </div>
-          <div className="flex items-center gap-4">
-            <div className="flex gap-2 mr-4">
+          <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
+            <div className="flex gap-1 sm:gap-2">
               <button 
-                className={`px-6 py-3 border-2 rounded-lg cursor-pointer transition-all font-medium flex items-center gap-2 text-sm ${activeSection === 'orders' ? 'border-primary bg-primary text-white' : 'border-slate-200 bg-white text-gray-700 hover:border-primary hover:bg-slate-50'}`}
+                className={`px-2 sm:px-6 py-1.5 sm:py-3 border-2 rounded-lg cursor-pointer transition-all font-medium flex items-center gap-2 text-[11px] sm:text-sm ${activeSection === 'orders' ? 'border-primary bg-primary text-white' : 'border-slate-200 bg-white text-gray-700 hover:border-primary hover:bg-slate-50'}`}
                 onClick={() => setActiveSection('orders')}
               >
                 Orders
               </button>
               <button 
-                className={`px-6 py-3 border-2 rounded-lg cursor-pointer transition-all font-medium flex items-center gap-2 text-sm ${activeSection === 'stock' ? 'border-primary bg-primary text-white' : 'border-slate-200 bg-white text-gray-700 hover:border-primary hover:bg-slate-50'}`}
+                className={`px-2 sm:px-6 py-1.5 sm:py-3 border-2 rounded-lg cursor-pointer transition-all font-medium flex items-center gap-2 text-[11px] sm:text-sm ${activeSection === 'stock' ? 'border-primary bg-primary text-white' : 'border-slate-200 bg-white text-gray-700 hover:border-primary hover:bg-slate-50'}`}
                 onClick={() => setActiveSection('stock')}
               >
                 Stock & Analytics
               </button>
               <button 
-                className={`px-6 py-3 border-2 rounded-lg cursor-pointer transition-all font-medium flex items-center gap-2 text-sm ${activeSection === 'settings' ? 'border-primary bg-primary text-white' : 'border-slate-200 bg-white text-gray-700 hover:border-primary hover:bg-slate-50'}`}
+                className={`px-2 sm:px-6 py-1.5 sm:py-3 border-2 rounded-lg cursor-pointer transition-all font-medium flex items-center gap-2 text-[11px] sm:text-sm ${activeSection === 'settings' ? 'border-primary bg-primary text-white' : 'border-slate-200 bg-white text-gray-700 hover:border-primary hover:bg-slate-50'}`}
                 onClick={() => setActiveSection('settings')}
               >
                 Settings
               </button>
             </div>
-            <div className="flex items-center gap-2 bg-secondary/5 px-4 py-2 rounded-full border border-secondary/20 text-sm text-primary-dark">
+            <div className="flex items-center gap-2 bg-secondary/5 px-2 sm:px-4 py-1 sm:py-2 rounded-full border border-secondary/20 text-[10px] sm:text-sm text-primary-dark">
               <div className="w-2 h-2 rounded-full bg-secondary animate-[pulse_2s_infinite]"></div>
               <span>Online</span>
             </div>
-            <button onClick={handleLogout} className="bg-slate-500 text-white border-none px-3 py-1 rounded cursor-pointer text-sm ml-4 hover:bg-slate-600">
+            <button onClick={handleLogout} className="bg-slate-500 text-white border-none px-3 py-1 rounded cursor-pointer text-xs sm:text-sm hover:bg-slate-600">
               Logout
             </button>
           </div>
@@ -981,9 +1017,9 @@ const Dashboard = () => {
 
       {activeSection === 'orders' && (
         <>
-          <section className="max-w-[1200px] mx-auto px-8 py-8">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-white m-0">Order Management</h2>
+          <section className="max-w-[1200px] mx-auto px-4 sm:px-8 py-4 sm:py-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+              <h2 className="text-white m-0 text-xl md:text-2xl">Order Management</h2>
               <div className="relative">
                 <select 
                   className="appearance-none bg-white border-2 border-slate-200 rounded-xl px-4 py-3 pr-10 text-sm font-medium text-slate-800 cursor-pointer min-w-[200px] transition-all hover:border-primary focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.15)]"

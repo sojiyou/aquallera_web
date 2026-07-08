@@ -1,4 +1,4 @@
-import { calculateMonthlyRevenue, getDailyRevenueForMonth, getCurrentDateInfo } from './revenueCalculator';
+import { getDailyRevenueForMonth, getCurrentDateInfo } from './revenueCalculator';
 
 /**
  * Calculate projected revenue for current month based on velocity

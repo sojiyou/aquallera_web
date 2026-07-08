@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ref, onValue, update } from 'firebase/database';
 import { database, auth } from '../config/Firebase';
 import AlertCard, { useAlert } from '../admin/AlertCard';
-import { useNavigate } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import HistoricalPerformance from './HistoricalPerformance';
 import AnnualReports from './AnnualReports';
@@ -21,15 +20,13 @@ import {
 } from 'recharts';
 import { getCurrentDateInfo } from '../../utils/revenueCalculator';
 import {
-  getCurrentMonthProjection,
   getYearProjections,
   getConfidenceLevel,
 } from '../../utils/revenueProjection';
 import {
   getRechartsMonthlyData,
-  getChartConfig,
 } from '../../utils/chartDataFormatter';
-import { getRevenueCache, useYearComparison } from '../../utils/revenueCache';
+import { getRevenueCache } from '../../utils/revenueCache';
 
 // Mapbox Geocoding Function (same as Dashboard.js)
 const convertCoordinatesToAddress = async (lat, lng) => {
@@ -83,7 +80,7 @@ const convertCoordinatesToAddress = async (lat, lng) => {
 
 const Stock = () => {
   const [alertProps, showAlert, closeAlert] = useAlert();
-  const [stationData, setStationData] = useState(null);
+  const [, setStationData] = useState(null);
   const [orders, setOrders] = useState([]);
   const [stock, setStock] = useState({
     pureWater: 0,
@@ -98,7 +95,7 @@ const Stock = () => {
     mostBoughtWater: 'N/A',
     topLocation: 'N/A',
   });
-  const [insights, setInsights] = useState([]);
+  const [, setInsights] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingStock, setEditingStock] = useState(false);
   const [tempStock, setTempStock] = useState({
@@ -106,8 +103,6 @@ const Stock = () => {
     springWater: 0,
     mineralWater: 0,
   });
-  const navigate = useNavigate();
-
   // ===== View Mode State =====
   const [dataViewMode, setDataViewMode] = useState('monthly'); // 'monthly' or 'annual'
 
@@ -334,7 +329,7 @@ const Stock = () => {
       }
 
       if (projections?.currentMonth) {
-        const { year, month, projectedRevenue, dailyAverage } = projections.currentMonth;
+        const { year, month, dailyAverage } = projections.currentMonth;
 
         const chart = await getRechartsMonthlyData(
           stationId,
@@ -505,6 +500,7 @@ const Stock = () => {
     });
 
     return () => unsubscribeAuth();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Update insights when stock changes
@@ -585,59 +581,59 @@ const Stock = () => {
   }
 
   return (
-    <div className="p-8 min-h-screen">
+    <div className="p-4 sm:p-8 min-h-screen">
 
       {/* Analytics Section */}
-      <section className="bg-white rounded-xl p-8 mb-8 shadow-sm">
-        <div className="flex justify-between items-center mb-8 pb-4 border-b-2 border-slate-200">
-          <h2 className="text-slate-800 text-2xl m-0">Business Analytics</h2>
+      <section className="bg-white rounded-xl p-4 sm:p-8 mb-8 shadow-sm">
+        <div className="flex justify-between items-center mb-8 pb-4 border-b-2 border-slate-200 flex-wrap gap-3">
+          <h2 className="text-slate-800 text-xl sm:text-2xl m-0">Business Analytics</h2>
         </div>
 
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(400px,1fr))] gap-6">
-          <div className="bg-gray-100 rounded-xl p-6 shadow-lg transition-transform flex items-center gap-4 hover:-translate-y-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className="bg-gray-100 rounded-xl p-4 sm:p-6 shadow-lg transition-transform flex items-center gap-4 hover:-translate-y-1">
             <div className="text-4xl"></div>
             <div className="flex-1">
-              <h3 className="text-3xl font-bold m-0 mb-1">{stats.totalOrders}</h3>
+              <h3 className="text-2xl sm:text-3xl font-bold m-0 mb-1">{stats.totalOrders}</h3>
               <p className="text-sm m-0 opacity-90">Total Orders</p>
             </div>
           </div>
 
-          <div className="bg-gray-100 rounded-xl p-6 shadow-lg transition-transform flex items-center gap-4 hover:-translate-y-1">
+          <div className="bg-gray-100 rounded-xl p-4 sm:p-6 shadow-lg transition-transform flex items-center gap-4 hover:-translate-y-1">
             <div className="text-4xl"></div>
             <div className="flex-1">
-              <h3 className="text-3xl font-bold m-0 mb-1">{stats.pendingOrders}</h3>
+              <h3 className="text-2xl sm:text-3xl font-bold m-0 mb-1">{stats.pendingOrders}</h3>
               <p className="text-sm m-0 opacity-90">Pending Orders</p>
             </div>
           </div>
 
-          <div className="bg-gray-100 rounded-xl p-6 shadow-lg transition-transform flex items-center gap-4 hover:-translate-y-1">
+          <div className="bg-gray-100 rounded-xl p-4 sm:p-6 shadow-lg transition-transform flex items-center gap-4 hover:-translate-y-1">
             <div className="text-4xl"></div>
             <div className="flex-1">
-              <h3 className="text-3xl font-bold m-0 mb-1">{stats.completedOrders}</h3>
+              <h3 className="text-2xl sm:text-3xl font-bold m-0 mb-1">{stats.completedOrders}</h3>
               <p className="text-sm m-0 opacity-90">Completed Orders</p>
             </div>
           </div>
 
-          <div className="bg-gray-100 rounded-xl p-6 shadow-lg transition-transform flex items-center gap-4 hover:-translate-y-1">
+          <div className="bg-gray-100 rounded-xl p-4 sm:p-6 shadow-lg transition-transform flex items-center gap-4 hover:-translate-y-1">
             <div className="text-4xl"></div>
             <div className="flex-1">
-              <h3 className="text-3xl font-bold m-0 mb-1">{formatCurrency(stats.todaysRevenue)}</h3>
+              <h3 className="text-2xl sm:text-3xl font-bold m-0 mb-1">{formatCurrency(stats.todaysRevenue)}</h3>
               <p className="text-sm m-0 opacity-90">Total Revenue</p>
             </div>
           </div>
 
-          <div className="bg-gray-100 rounded-xl p-6 shadow-lg transition-transform flex items-center gap-4 hover:-translate-y-1">
+          <div className="bg-gray-100 rounded-xl p-4 sm:p-6 shadow-lg transition-transform flex items-center gap-4 hover:-translate-y-1">
             <div className="text-4xl"></div>
             <div className="flex-1">
-              <h3 className="text-3xl font-bold m-0 mb-1">{stats.mostBoughtWater}</h3>
+              <h3 className="text-2xl sm:text-3xl font-bold m-0 mb-1">{stats.mostBoughtWater}</h3>
               <p className="text-sm m-0 opacity-90">Most Popular Water</p>
             </div>
           </div>
 
-          <div className="bg-gray-100 rounded-xl p-6 shadow-lg transition-transform flex items-center gap-4 hover:-translate-y-1">
+          <div className="bg-gray-100 rounded-xl p-4 sm:p-6 shadow-lg transition-transform flex items-center gap-4 hover:-translate-y-1">
             <div className="text-4xl"></div>
             <div className="flex-1">
-              <h3 className="text-3xl font-bold m-0 mb-1">{stats.topLocation}</h3>
+              <h3 className="text-2xl sm:text-3xl font-bold m-0 mb-1">{stats.topLocation}</h3>
               <p className="text-sm m-0 opacity-90">Top Customer Location</p>
             </div>
           </div>
@@ -645,55 +641,55 @@ const Stock = () => {
       </section>
 
       {/* Stock Inventory Section */}
-      <section className="bg-white rounded-xl p-8 mb-8 shadow-sm">
-        <div className="flex justify-between items-center mb-8 pb-4 border-b-2 border-slate-200">
-          <h2 className="text-slate-800 text-2xl m-0">Water Stock Inventory</h2>
+      <section className="bg-white rounded-xl p-4 sm:p-8 mb-8 shadow-sm">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 pb-4 border-b-2 border-slate-200 gap-3">
+          <h2 className="text-slate-800 text-xl sm:text-2xl m-0">Water Stock Inventory</h2>
           {!editingStock ? (
-            <button className="bg-primary text-white border-none px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all hover:bg-primary-dark hover:-translate-y-0.5" onClick={() => setEditingStock(true)}>
+            <button className="bg-primary text-white border-none px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold cursor-pointer transition-all text-sm hover:bg-primary-dark hover:-translate-y-0.5" onClick={() => setEditingStock(true)}>
               Edit Stock
             </button>
           ) : (
             <div className="flex gap-3">
-              <button className="bg-secondary text-white border-none px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all hover:bg-primary-dark hover:-translate-y-0.5" onClick={handleSaveStock}>Save</button>
-              <button className="bg-red-500 text-white border-none px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all hover:bg-red-600 hover:-translate-y-0.5" onClick={handleCancelEdit}>Cancel</button>
+              <button className="bg-secondary text-white border-none px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold cursor-pointer transition-all text-sm hover:bg-primary-dark hover:-translate-y-0.5" onClick={handleSaveStock}>Save</button>
+              <button className="bg-red-500 text-white border-none px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold cursor-pointer transition-all text-sm hover:bg-red-600 hover:-translate-y-0.5" onClick={handleCancelEdit}>Cancel</button>
             </div>
           )}
         </div>
 
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-6">
-          <div className="rounded-xl p-8 text-center text-white shadow-md transition-transform hover:-translate-y-1.5 bg-gradient-to-br from-primary to-primary-dark">
-            <div className="text-5xl mb-4"></div>
-            <h3 className="text-lg mb-4 font-semibold">Pure Water (Gallons)</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="rounded-xl p-4 sm:p-8 text-center text-white shadow-md transition-transform hover:-translate-y-1.5 bg-gradient-to-br from-primary to-primary-dark">
+            <div className="text-4xl sm:text-5xl mb-4"></div>
+            <h3 className="text-sm sm:text-lg mb-4 font-semibold">Pure Water (Gallons)</h3>
             {editingStock ? (
               <input type="number" name="pureWater" value={tempStock.pureWater} onChange={handleStockChange} className="w-full p-3 text-3xl text-center border-2 border-white/30 rounded-lg bg-white/10 text-white font-bold mb-2 focus:outline-none focus:border-white/60 focus:bg-white/20" min="0" />
             ) : (
-              <div className="text-5xl font-bold mb-2">{stock.pureWater}</div>
+              <div className="text-3xl sm:text-5xl font-bold mb-2">{stock.pureWater}</div>
             )}
             <div className="text-sm font-semibold px-4 py-2 rounded-full inline-block text-white" style={{ backgroundColor: getStockStatus(stock.pureWater).bg }}>
               {getStockStatus(stock.pureWater).label}
             </div>
           </div>
 
-          <div className="rounded-xl p-8 text-center text-white shadow-md transition-transform hover:-translate-y-1.5 bg-gradient-to-br from-secondary to-primary">
-            <div className="text-5xl mb-4"></div>
-            <h3 className="text-lg mb-4 font-semibold">Spring Water (gallons)</h3>
+          <div className="rounded-xl p-4 sm:p-8 text-center text-white shadow-md transition-transform hover:-translate-y-1.5 bg-gradient-to-br from-secondary to-primary">
+            <div className="text-4xl sm:text-5xl mb-4"></div>
+            <h3 className="text-sm sm:text-lg mb-4 font-semibold">Spring Water (gallons)</h3>
             {editingStock ? (
               <input type="number" name="springWater" value={tempStock.springWater} onChange={handleStockChange} className="w-full p-3 text-3xl text-center border-2 border-white/30 rounded-lg bg-white/10 text-white font-bold mb-2 focus:outline-none focus:border-white/60 focus:bg-white/20" min="0" />
             ) : (
-              <div className="text-5xl font-bold mb-2">{stock.springWater}</div>
+              <div className="text-3xl sm:text-5xl font-bold mb-2">{stock.springWater}</div>
             )}
             <div className="text-sm font-semibold px-4 py-2 rounded-full inline-block text-white" style={{ backgroundColor: getStockStatus(stock.springWater).bg }}>
               {getStockStatus(stock.springWater).label}
             </div>
           </div>
 
-          <div className="rounded-xl p-8 text-center text-white shadow-md transition-transform hover:-translate-y-1.5 bg-gradient-to-br from-amber-500 to-red-500">
-            <div className="text-5xl mb-4"></div>
-            <h3 className="text-lg mb-4 font-semibold">Mineral Water (Gallons)</h3>
+          <div className="rounded-xl p-4 sm:p-8 text-center text-white shadow-md transition-transform hover:-translate-y-1.5 bg-gradient-to-br from-amber-500 to-red-500">
+            <div className="text-4xl sm:text-5xl mb-4"></div>
+            <h3 className="text-sm sm:text-lg mb-4 font-semibold">Mineral Water (Gallons)</h3>
             {editingStock ? (
               <input type="number" name="mineralWater" value={tempStock.mineralWater} onChange={handleStockChange} className="w-full p-3 text-3xl text-center border-2 border-white/30 rounded-lg bg-white/10 text-white font-bold mb-2 focus:outline-none focus:border-white/60 focus:bg-white/20" min="0" />
             ) : (
-              <div className="text-5xl font-bold mb-2">{stock.mineralWater}</div>
+              <div className="text-3xl sm:text-5xl font-bold mb-2">{stock.mineralWater}</div>
             )}
             <div className="text-sm font-semibold px-4 py-2 rounded-full inline-block text-white" style={{ backgroundColor: getStockStatus(stock.mineralWater).bg }}>
               {getStockStatus(stock.mineralWater).label}
@@ -703,9 +699,9 @@ const Stock = () => {
       </section>
 
       {/* Annual Performance Reports Section with Toggle */}
-      <section className="bg-white rounded-xl p-8 mb-8 shadow-sm">
-        <div className="flex justify-between items-center mb-8 pb-4 border-b-2 border-slate-200">
-          <h2 className="text-slate-800 text-2xl m-0">Performance Reports</h2>
+      <section className="bg-white rounded-xl p-4 sm:p-8 mb-8 shadow-sm">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 pb-4 border-b-2 border-slate-200 gap-4">
+          <h2 className="text-slate-800 text-xl sm:text-2xl m-0">Performance Reports</h2>
           <div className="flex gap-2 bg-slate-100 p-1 rounded-full">
             <button 
               className={`px-5 py-2 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${dataViewMode === 'monthly' ? 'bg-white text-primary shadow-sm' : ''}`}
@@ -724,9 +720,9 @@ const Stock = () => {
 
         {/* Revenue Projection Card - ALWAYS VISIBLE */}
         {!projectionLoading && revenueProjection && yearForecast?.hasMinimumData ? (
-          <div className="bg-gradient-to-br from-primary-dark to-primary-dark rounded-2xl p-8 mb-8 text-white shadow-lg border border-white/10">
-            <div className="flex justify-between items-start mb-8">
-              <div className="flex items-center gap-4">
+          <div className="bg-gradient-to-br from-primary-dark to-primary-dark rounded-2xl p-4 sm:p-8 mb-8 text-white shadow-lg border border-white/10">
+            <div className="flex flex-col lg:flex-row justify-between items-start mb-8 gap-4">
+              <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
                 <span className="text-4xl"></span>
                 <div>
                   <h3 className="text-2xl m-0 mb-1 text-white">{revenueProjection.monthName} {revenueProjection.year} Revenue Projection</h3>
@@ -750,32 +746,32 @@ const Stock = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-4 gap-6 mb-8">
-              <div className="bg-white/10 rounded-xl p-5 backdrop-blur border border-white/10">
-                <span className="block text-base uppercase tracking-wider mb-2">Revenue to Date</span>
-                <span className="block text-3xl font-bold mb-1 text-white">₱{revenueProjection.currentRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 mb-8">
+              <div className="bg-white/10 rounded-xl p-3 sm:p-5 backdrop-blur border border-white/10">
+                <span className="block text-xs sm:text-base uppercase tracking-wider mb-2">Revenue to Date</span>
+                <span className="block text-xl sm:text-3xl font-bold mb-1 text-white">₱{revenueProjection.currentRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
                 <span className="block text-slate-400 text-xs">{revenueProjection.daysPassed} days</span>
               </div>
-              <div className="bg-white/10 rounded-xl p-5 backdrop-blur border border-white/10">
-                <span className="block text-base uppercase tracking-wider mb-2">Projected End of Month</span>
-                <span className="block text-3xl font-bold mb-1 text-white">₱{revenueProjection.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+              <div className="bg-white/10 rounded-xl p-3 sm:p-5 backdrop-blur border border-white/10">
+                <span className="block text-xs sm:text-base uppercase tracking-wider mb-2">Projected End of Month</span>
+                <span className="block text-xl sm:text-3xl font-bold mb-1 text-white">₱{revenueProjection.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
                 <span className="block text-slate-400 text-xs">Target</span>
               </div>
-              <div className="bg-white/10 rounded-xl p-5 backdrop-blur border border-white/10">
-                <span className="block text-base uppercase tracking-wider mb-2">Daily Average</span>
-                <span className="block text-3xl font-bold mb-1 text-white">₱{revenueProjection.dailyAverage?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+              <div className="bg-white/10 rounded-xl p-3 sm:p-5 backdrop-blur border border-white/10">
+                <span className="block text-xs sm:text-base uppercase tracking-wider mb-2">Daily Average</span>
+                <span className="block text-xl sm:text-3xl font-bold mb-1 text-white">₱{revenueProjection.dailyAverage?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
                 <span className="block text-slate-400 text-xs">per day</span>
               </div>
-              <div className="bg-white/10 rounded-xl p-5 backdrop-blur border border-white/10">
-                <span className="block text-base uppercase tracking-wider mb-2">Remaining Potential</span>
-                <span className="block text-3xl font-bold mb-1 text-white">₱{(revenueProjection.projectedRevenue - revenueProjection.currentRevenue)?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+              <div className="bg-white/10 rounded-xl p-3 sm:p-5 backdrop-blur border border-white/10">
+                <span className="block text-xs sm:text-base uppercase tracking-wider mb-2">Remaining Potential</span>
+                <span className="block text-xl sm:text-3xl font-bold mb-1 text-white">₱{(revenueProjection.projectedRevenue - revenueProjection.currentRevenue)?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
                 <span className="block text-slate-400 text-xs">{revenueProjection.daysRemaining} days left</span>
               </div>
             </div>
 
             {chartData.length > 0 && (
-              <div className="bg-white rounded-xl p-6 mb-8">
-                <ResponsiveContainer width="100%" height={300}>
+              <div className="bg-white rounded-xl p-4 sm:p-6 mb-8">
+                <ResponsiveContainer width="100%" height={250}>
                   <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                     <XAxis dataKey="day" tickFormatter={(day) => `Day ${day}`} stroke="#64748b" />
@@ -790,21 +786,21 @@ const Stock = () => {
             )}
 
             {yearForecast?.futureMonths?.length > 0 && (
-              <div className="bg-white/5 rounded-xl p-6 mb-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h4 className="text-white m-0 text-lg">{yearForecast.year} Year Forecast</h4>
-                  <span className="text-yellow-500 font-bold text-2xl">Total Projected: ₱{yearForecast.totalYearProjection?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+              <div className="bg-white/5 rounded-xl p-4 sm:p-6 mb-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2">
+                  <h4 className="text-white m-0 text-base sm:text-lg">{yearForecast.year} Year Forecast</h4>
+                  <span className="text-yellow-500 font-bold text-xl sm:text-2xl">Total: ₱{yearForecast.totalYearProjection?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                 </div>
-                <div className="grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-4">
                   <div className="bg-primary/20 border border-primary rounded-lg p-4 text-center relative">
                     <span className="block text-white text-base font-semibold mb-2">{revenueProjection.monthName}</span>
-  <span className="block text-white font-bold text-2xl">₱{revenueProjection.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+  <span className="block text-white font-bold text-lg sm:text-2xl">₱{revenueProjection.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                     <span className="absolute -top-2 right-2 bg-primary text-white text-[0.7rem] px-2 py-1 rounded-full">Current</span>
                   </div>
                   {yearForecast.futureMonths.map((month, index) => (
                     <div key={index} className="bg-white/3 rounded-lg p-4 text-center relative">
                       <span className="block text-white text-base font-semibold mb-2">{month.monthName}</span>
-                      <span className="block text-white font-bold text-2xl">₱{month.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                      <span className="block text-white font-bold text-lg sm:text-2xl">₱{month.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                     </div>
                   ))}
                 </div>
@@ -812,7 +808,7 @@ const Stock = () => {
             )}
 
             {yearComparison && yearComparison.hasPreviousYearData && (
-              <div className="bg-white/5 rounded-xl p-6">
+              <div className="bg-white/5 rounded-xl p-4 sm:p-6">
                 <div>
                   <h4 className="text-white m-0 mb-6 text-lg">{yearComparison.previousYear} vs {yearComparison.currentYear}</h4>
                 </div>
@@ -841,8 +837,8 @@ const Stock = () => {
             )}
           </div>
         ) : (
-          <div className="bg-gradient-to-br from-primary-dark to-primary-dark rounded-2xl p-12 text-center text-white mb-8">
-            <div className="text-6xl mb-4 opacity-50"></div>
+          <div className="bg-gradient-to-br from-primary-dark to-primary-dark rounded-2xl p-6 sm:p-12 text-center text-white mb-8">
+            <div className="text-4xl sm:text-6xl mb-4 opacity-50"></div>
             <h3 className="text-white mb-2">Monthly Revenue Prediction</h3>
             <p className="text-slate-400 mb-6">{projectionLoading ? 'Loading revenue projections...' : `Predictions will be available on ${new Date(new Date().getFullYear(), new Date().getMonth(), 4).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}.`}</p>
             {!projectionLoading && (

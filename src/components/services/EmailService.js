@@ -31,13 +31,6 @@ export const testEmailJSConnection = async () => {
     console.log('Service ID:', EMAILJS_SERVICE_ID);
     console.log('Public Key:', EMAILJS_PUBLIC_KEY);
 
-    // Try to send a test email to yourself
-    const testParams = {
-      to_email: 'test@example.com', // Replace with your test email
-      subject: 'AQUA-LLERA Email Test',
-      message: 'This is a test email from AQUA-LLERA platform.'
-    };
-
     // Note: You'll need to create a simple test template in EmailJS first
     // await emailjs.send(EMAILJS_SERVICE_ID, 'test_template_id', testParams);
 
@@ -231,10 +224,4 @@ export const sendApprovalEmail = async (stationData) => {
 // Initialize EmailJS when this module loads
 initializeEmailJS();
 
-export default {
-  sendRejectionEmail,
-  sendApprovalEmail,
-  sendAdminInvitation,
-  testEmailJSConnection,
-  initializeEmailJS
-};
+

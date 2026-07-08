@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { getArchivedYear } from '../../utils/monthlyArchiver';
 import { calculateMonthlyRevenue, getDailyRevenueForArchive } from '../../utils/revenueCalculator';
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid,
+  XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, BarChart, Bar
 } from 'recharts';
 
@@ -81,10 +81,9 @@ const HistoricalPerformance = ({ stationId }) => {
       if (actualRevenue === 0) return null;
       
       // Get daily breakdown
-      const { dailyData, total } = await getDailyRevenueForArchive(stationId, targetYear, targetMonth);
+      const { dailyData } = await getDailyRevenueForArchive(stationId, targetYear, targetMonth);
       
       // Count orders for the month
-      const { db } = await import('firebase/database');
       const { ref, get } = await import('firebase/database');
       const { database } = await import('../config/Firebase');
       
@@ -231,6 +230,7 @@ const HistoricalPerformance = ({ stationId }) => {
     };
 
     loadHistoricalData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stationId]);
 
   const getAccuracyColor = (accuracy) => {
@@ -262,7 +262,7 @@ const HistoricalPerformance = ({ stationId }) => {
   }
 
   return (
-    <section className={`bg-white rounded-xl p-8 mb-8 shadow-sm ${showSkeleton ? 'skeleton-mode' : ''}`}>
+    <section className={`bg-white rounded-xl p-4 sm:p-8 mb-8 shadow-sm ${showSkeleton ? 'skeleton-mode' : ''}`}>
       <div className="mb-6 pb-4 border-b-2 border-slate-200">
         <h2 className="text-slate-800 text-2xl m-0 mb-2">Monthly Reports</h2>
         <p className="text-slate-500 text-sm m-0">
@@ -316,19 +316,19 @@ const HistoricalPerformance = ({ stationId }) => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 sm:gap-4">
                   <div
-                    className="flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm"
+                    className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1 sm:py-2 rounded-full font-semibold text-[10px] sm:text-sm"
                     style={{
                       backgroundColor: `${accuracyInfo.color}20`,
                       color: accuracyInfo.color,
                       border: `1px solid ${accuracyInfo.color}40`
                     }}
                   >
-                    <span className="text-base">{accuracyInfo.icon}</span>
+                    <span className="text-xs sm:text-base">{accuracyInfo.icon}</span>
                     <span className="font-bold">{month.accuracy.toFixed(1)}%</span>
                   </div>
-                  <button className="bg-primary/10 border border-primary/30 text-primary px-3 py-2 rounded-lg cursor-pointer text-sm font-semibold transition-all hover:bg-primary/20 hover:border-primary">
+                  <button className="bg-primary/10 border border-primary/30 text-primary px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg cursor-pointer text-xs sm:text-sm font-semibold transition-all hover:bg-primary/20 hover:border-primary">
                     {isExpanded ? '▲' : '▼'}
                   </button>
                 </div>
@@ -336,7 +336,7 @@ const HistoricalPerformance = ({ stationId }) => {
 
               {isExpanded && (
                 <div className="px-5 pb-5 border-t border-slate-200 animate-[slideDown_0.3s_ease]">
-                  <div className="flex items-center justify-around bg-gradient-to-br from-surface to-surface rounded-xl p-6 mb-6 gap-4">
+                  <div className="flex flex-col sm:flex-row items-center justify-around bg-gradient-to-br from-surface to-surface rounded-xl p-4 sm:p-6 mb-6 gap-4">
                     <div className="flex flex-col items-center gap-2">
                       <span className="text-slate-500 text-xs uppercase tracking-wider font-semibold">Projected</span>
                       <span className="text-xl font-bold text-gray-700">
@@ -399,7 +399,7 @@ const HistoricalPerformance = ({ stationId }) => {
                     </div>
                   )}
 
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                     <div className="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-lg p-4">
                       <span className="text-2xl"></span>
                       <div className="flex flex-col gap-1">

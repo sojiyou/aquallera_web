@@ -25,7 +25,7 @@ export const archiveLastMonth = async (stationId) => {
     const actualRevenue = await calculateMonthlyRevenue(stationId, year, lastMonth);
     
     // Get daily breakdown
-    const { dailyData, total } = await getDailyRevenueForArchive(stationId, year, lastMonth);
+    const { dailyData } = await getDailyRevenueForArchive(stationId, year, lastMonth);
     
     // Get projected revenue (from cache if available)
     let projectedRevenue = 0;

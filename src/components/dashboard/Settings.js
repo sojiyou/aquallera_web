@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ref, update, onValue } from 'firebase/database';
+import { ref, update } from 'firebase/database';
 import { database, auth } from '../config/Firebase';
 import TimePickerWheel from './TimePickerWheel';
 
@@ -328,9 +328,9 @@ const Settings = ({ stationData, setStationData }) => {
   }
 
   return (
-    <section className="p-8 max-w-[1200px] mx-auto">
-      <div className="flex justify-between items-center mb-8 pb-4 border-b-2 border-slate-200">
-        <h2 className="text-white text-3xl font-bold m-0">Station Settings</h2>
+    <section className="p-4 sm:p-8 max-w-[1200px] mx-auto">
+      <div className="flex justify-between items-center mb-8 pb-4 border-b-2 border-slate-200 flex-wrap gap-3">
+        <h2 className="text-white text-2xl md:text-3xl font-bold m-0">Station Settings</h2>
         <div className="settings-actions">
           {!isEditing ? (
             <button 
@@ -340,7 +340,7 @@ const Settings = ({ stationData, setStationData }) => {
               Edit Settings
             </button>
           ) : (
-            <div className="flex gap-4 items-center">
+            <div className="flex gap-3 sm:gap-4 items-center flex-wrap">
               <button 
                 className="bg-slate-500 text-white px-6 py-3 rounded-lg font-semibold cursor-pointer transition-all hover:bg-slate-600 disabled:opacity-70 disabled:cursor-not-allowed"
                 onClick={() => {
@@ -379,9 +379,9 @@ const Settings = ({ stationData, setStationData }) => {
         </div>
       )}
 
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(400px,1fr))] gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Basic Information */}
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
+        <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
           <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">Basic Information</h3>
           <div className="mb-5">
             <label className="block mb-2 text-gray-700 font-medium text-sm">Station Name</label>
@@ -434,7 +434,7 @@ const Settings = ({ stationData, setStationData }) => {
         </div>
 
         {/* Location Information */}
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
+        <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
           <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">Location</h3>
           <div className="mb-5">
             <label className="block mb-2 text-gray-700 font-medium text-sm">Address</label>
@@ -448,7 +448,7 @@ const Settings = ({ stationData, setStationData }) => {
               className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="mb-5">
               <label className="block mb-2 text-gray-700 font-medium text-sm">City</label>
               <input
@@ -547,10 +547,10 @@ const Settings = ({ stationData, setStationData }) => {
         </div>
 
         {/* Business Hours */}
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
+        <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
           <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">Business Hours</h3>
           <div className="mt-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="mb-5">
                 <label className="block mb-2 text-gray-700 font-medium text-sm">Opening Time</label>
                 <TimePickerWheel
@@ -586,7 +586,7 @@ const Settings = ({ stationData, setStationData }) => {
         </div>
 
         {/* Services */}
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
+        <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
           <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">Services</h3>
           <div className="mb-6">
             <label>Available Services</label>
@@ -649,7 +649,7 @@ const Settings = ({ stationData, setStationData }) => {
                 </p>
 
                 {isEditing && (
-                  <div className="flex gap-3 mb-4 items-start">
+                  <div className="flex flex-col sm:flex-row gap-3 mb-4 items-start">
                     <div className="flex-1 min-w-0">
                       <TimePickerWheel
                         value={newDeliveryTime}
@@ -702,7 +702,7 @@ const Settings = ({ stationData, setStationData }) => {
         </div>
 
         {/* Pricing */}
-        <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
+        <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
           <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">Pricing</h3>
           <div className="mt-4">
             <div className="mb-5">

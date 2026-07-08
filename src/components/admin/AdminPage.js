@@ -361,16 +361,6 @@ const AdminPage = () => {
     return activeTab === 'pending' ? pendingStations : approvedStations;
   };
 
-  // Function to mask email for display (shows first 3 chars and domain)
-  const maskEmail = (email) => {
-    if (!email) return 'N/A';
-    const [username, domain] = email.split('@');
-    const maskedUsername = username.length > 3
-      ? username.substring(0, 3) + '*'.repeat(username.length - 3)
-      : username;
-    return `${maskedUsername}@${domain}`;
-  };
-
   // Function to mask phone number
   const maskPhone = (phone) => {
     if (!phone) return 'N/A';

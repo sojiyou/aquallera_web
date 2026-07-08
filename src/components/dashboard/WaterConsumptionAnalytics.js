@@ -4,11 +4,10 @@ import {
   getCurrentMonthConsumptionProjection, 
   calculateStockDepletion,
   getMonthOverMonthComparison,
-  getYearConsumptionProjections
 } from '../../utils/consumptionProjection';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer, Cell, LineChart, Line, Legend
+  Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
 
 // Sample data for demo/development
@@ -165,6 +164,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
 
   useEffect(() => {
     loadConsumptionData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stationId]);
 
   const loadConsumptionData = async () => {
@@ -257,7 +257,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
     
     return (
       <div className="flex flex-col items-center gap-3">
-        <div className="font-bold text-slate-800 text-2xl mb-3">{nameLabel}</div>
+        <div className="font-bold text-slate-800 text-xl sm:text-2xl mb-3">{nameLabel}</div>
         <svg width={size} height={size} className="block">
           <circle
             cx={size / 2}
@@ -291,11 +291,11 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
             {Math.round(safePercentage)}%
           </text>
         </svg>
-        <div className="text-center w-full">
-          <div className="text-xl font-semibold text-slate-800">Current: {formatNumber(current)} {unitLabel}</div>
-          <div className="text-xl text-slate-500">Projected for month: {formatNumber(projected)} {unitLabel}</div>
+          <div className="text-center w-full">
+          <div className="text-sm sm:text-xl font-semibold text-slate-800">Current: {formatNumber(current)} {unitLabel}</div>
+          <div className="text-sm sm:text-xl text-slate-500">Projected: {formatNumber(projected)} {unitLabel}</div>
         </div>
-        <div className="mt-3 pt-3 border-t border-slate-200 w-full flex justify-between items-center gap-4">
+        <div className="mt-3 pt-3 border-t border-slate-200 w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4">
           <div className="text-xs text-slate-500 m-0 p-0 leading-relaxed">Daily average: {dailyAvg.toFixed(1)} {unitLabel}/day</div>
           <div className="text-xs font-semibold text-slate-800 bg-slate-100 px-2 py-0.5 rounded-full inline-flex items-center m-0 leading-relaxed">
             Days until stock runs out: {depletionDays === 999 || depletionDays > 365 ? 'No sales yet' : depletionDays}
@@ -309,13 +309,9 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
     setExpandedMonth(expandedMonth === monthKey ? null : monthKey);
   };
 
-  const formatMonthName = (monthKey) => {
-    return monthKey.charAt(0).toUpperCase() + monthKey.slice(1);
-  };
-
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 text-slate-500">
+      <div className="flex flex-col items-center justify-center py-8 sm:py-12 text-slate-500">
         <div className="border-[3px] border-slate-200 border-t-primary rounded-full w-[30px] h-[30px] animate-spin mb-4"></div>
         <p>Loading consumption data...</p>
       </div>
@@ -324,8 +320,8 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
 
   if (!projection) {
     return (
-      <div className="text-center py-12 bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl">
-        <div className="text-5xl mb-4 opacity-50"></div>
+      <div className="text-center py-8 sm:py-12 bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl">
+        <div className="text-4xl sm:text-5xl mb-4 opacity-50"></div>
         <h4 className="text-slate-800 mb-2">No Consumption Data</h4>
         <p className="text-slate-500 mb-4">Complete some orders to see consumption analytics!</p>
       </div>
@@ -352,21 +348,21 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
       )}
 
       {/* Current Month Section with Circular Progress Bars - 3 COLUMN LAYOUT */}
-      <div className="bg-white rounded-xl p-6 mb-6 shadow-sm border border-slate-200">
-        <div className="flex justify-between items-center mb-6 pb-3 border-b-2 border-slate-200">
-          <h4 className="text-slate-800 m-0 text-lg">{projection.monthName} {projection.year} Consumption</h4>
+      <div className="bg-white rounded-xl p-4 sm:p-6 mb-6 shadow-sm border border-slate-200">
+        <div className="flex justify-between items-center mb-6 pb-3 border-b-2 border-slate-200 flex-wrap gap-2">
+          <h4 className="text-slate-800 m-0 text-base sm:text-lg">{projection.monthName} {projection.year} Consumption</h4>
           <span className="text-slate-500 text-xs bg-slate-100 px-3 py-1 rounded-full">
             Day {projection.daysPassed} of {projection.daysInMonth}
           </span>
         </div>
 
         {/* 3-Column Grid for Circular Progress Bars */}
-        <div className="grid grid-cols-3 gap-6 mt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mt-4">
           {/* Pure Water */}
-          <div className="bg-white rounded-2xl p-5 text-center shadow-sm border border-slate-200 transition-all hover:-translate-y-0.5 hover:shadow-md">
+          <div className="bg-white rounded-2xl p-3 sm:p-5 text-center shadow-sm border border-slate-200 transition-all hover:-translate-y-0.5 hover:shadow-md">
             {momComparison && (
               <div className="mb-2">
-                <span className="text-base font-medium bg-slate-100 px-2.5 py-1 rounded-full inline-block text-slate-600">
+                <span className="text-xs sm:text-base font-medium bg-slate-100 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full inline-block text-slate-600">
                   {formatChangeText(momComparison.changes.pureWater, momComparison.previousMonth.name)}
                 </span>
               </div>
@@ -385,10 +381,10 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
           </div>
 
           {/* Spring Water */}
-          <div className="bg-white rounded-2xl p-5 text-center shadow-sm border border-slate-200 transition-all hover:-translate-y-0.5 hover:shadow-md">
+          <div className="bg-white rounded-2xl p-3 sm:p-5 text-center shadow-sm border border-slate-200 transition-all hover:-translate-y-0.5 hover:shadow-md">
             {momComparison && (
               <div className="mb-2">
-                <span className="text-base font-medium bg-slate-100 px-2.5 py-1 rounded-full inline-block text-slate-600">
+                <span className="text-xs sm:text-base font-medium bg-slate-100 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full inline-block text-slate-600">
                   {formatChangeText(momComparison.changes.springWater, momComparison.previousMonth.name)}
                 </span>
               </div>
@@ -407,10 +403,10 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
           </div>
 
           {/* Mineral Water */}
-          <div className="bg-white rounded-2xl p-5 text-center shadow-sm border border-slate-200 transition-all hover:-translate-y-0.5 hover:shadow-md">
+          <div className="bg-white rounded-2xl p-3 sm:p-5 text-center shadow-sm border border-slate-200 transition-all hover:-translate-y-0.5 hover:shadow-md">
             {momComparison && (
               <div className="mb-2">
-                <span className="text-base font-medium bg-slate-100 px-2.5 py-1 rounded-full inline-block text-slate-600">
+                <span className="text-xs sm:text-base font-medium bg-slate-100 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full inline-block text-slate-600">
                   {formatChangeText(momComparison.changes.mineralWater, momComparison.previousMonth.name)}
                 </span>
               </div>
@@ -432,8 +428,8 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
 
       {/* Water Consumption Reports Section with Toggle */}
       <div className="mt-6">
-        <div className="flex justify-between items-center mb-6 pb-3 border-b-2 border-slate-200">
-          <h4 className="text-slate-800 m-0 text-lg">Water Consumption Reports</h4>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-3 border-b-2 border-slate-200 gap-3">
+          <h4 className="text-slate-800 m-0 text-base sm:text-lg">Water Consumption Reports</h4>
           <div className="flex gap-1 bg-slate-100 p-0.5 rounded-full">
             <button 
               className={`px-4 py-1.5 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${consumptionViewMode === 'monthly' ? 'bg-white text-primary shadow-sm' : ''}`}
@@ -468,10 +464,10 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
                     >
                       <div className="flex items-center gap-4">
                         <div className="text-2xl"></div>
-                        <div className="month-info">
+                        <div className="month-info min-w-0 flex-1">
                           <h3 className="m-0 mb-1 text-base text-slate-800">{month.monthName} {month.year}</h3>
-                          <p className="m-0 text-xs text-slate-500">
-                            {month.totalOrders} orders • {formatNumber(month.pureWater)}g Pure • {formatNumber(month.springWater)} gal Spring • {formatNumber(month.mineralWater)}g Mineral
+                          <p className="m-0 text-xs text-slate-500 truncate">
+                            {month.totalOrders} orders
                           </p>
                         </div>
                       </div>
@@ -482,63 +478,70 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
 
                     {isExpanded && (
                       <div className="px-5 pb-5 border-t border-slate-200 animate-[slideDown_0.2s_ease-out]">
-                        {/* Daily Consumption Trends - Line Chart */}
-                        <div className="mb-6 px-2">
+                        {/* Daily Consumption Trends - Stacked Bar Chart */}
+                        <div className="mb-6">
                           <h4 className="text-slate-800 text-sm m-0 mb-4 font-semibold">Daily Consumption Trends</h4>
-                          <ResponsiveContainer width="100%" height={250}>
-                            <LineChart
+                          <ResponsiveContainer width="100%" height={220}>
+                            <BarChart
                               data={month.dailyData}
-                              margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                              margin={{ top: 5, right: 4, left: -10, bottom: 0 }}
+                              barSize={8}
                             >
-                              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
                               <XAxis
                                 dataKey="day"
-                                tick={{ fontSize: 11 }}
+                                tick={{ fontSize: 10 }}
                                 tickFormatter={(day) => day % 5 === 0 ? day : ''}
-                                stroke="#64748b"
+                                stroke="#94a3b8"
+                                axisLine={false}
+                                tickLine={false}
                               />
-                              <YAxis tick={{ fontSize: 11 }} stroke="#64748b" />
-                              <Tooltip 
+                              <YAxis
+                                tick={{ fontSize: 10 }}
+                                stroke="#94a3b8"
+                                axisLine={false}
+                                tickLine={false}
+                              />
+                              <Tooltip
                                 formatter={(value, name) => {
-                                  const unit = 'gal';
-                                  return [`${Math.round(value)} ${unit}`, name];
+                                  const labels = { pureWater: 'Pure Water', springWater: 'Spring Water', mineralWater: 'Mineral Water' };
+                                  return [`${Math.round(value)} gal`, labels[name] || name];
                                 }}
                                 labelFormatter={(label) => `Day ${label}`}
+                                contentStyle={{ fontSize: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}
                               />
-                              <Legend />
-                              <Line
-                                type="monotone"
+                              <Legend
+                                wrapperStyle={{ fontSize: '11px', paddingTop: '4px' }}
+                                iconType="circle"
+                                iconSize={8}
+                              />
+                              <Bar
                                 dataKey="pureWater"
-                                stroke="#065A82"
-                                strokeWidth={2}
-                                dot={{ r: 2, fill: "#065A82" }}
-                                activeDot={{ r: 5 }}
-                                name="Pure Water (gal)"
+                                stackId="consumption"
+                                fill="#065A82"
+                                radius={[0, 0, 0, 0]}
+                                name="Pure Water"
                               />
-                              <Line
-                                type="monotone"
+                              <Bar
                                 dataKey="springWater"
-                                stroke="#1C7293"
-                                strokeWidth={2}
-                                dot={{ r: 2, fill: "#1C7293" }}
-                                activeDot={{ r: 5 }}
-                                name="Spring Water (gal)"
+                                stackId="consumption"
+                                fill="#1C7293"
+                                radius={[0, 0, 0, 0]}
+                                name="Spring Water"
                               />
-                              <Line
-                                type="monotone"
+                              <Bar
                                 dataKey="mineralWater"
-                                stroke="#f59e0b"
-                                strokeWidth={2}
-                                dot={{ r: 2, fill: "#f59e0b" }}
-                                activeDot={{ r: 5 }}
-                                name="Mineral Water (gal)"
+                                stackId="consumption"
+                                fill="#f59e0b"
+                                radius={[0, 0, 4, 4]}
+                                name="Mineral Water"
                               />
-                            </LineChart>
+                            </BarChart>
                           </ResponsiveContainer>
                         </div>
 
                         {/* Water Type Stats */}
-                        <div className="grid grid-cols-3 gap-4 mb-5">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-5">
                           <div className="text-center p-4 rounded-lg bg-slate-100 border-l-3 border-l-blue-500">
                             <span className="text-2xl block mb-2"></span>
                             <span className="text-2xl font-bold text-slate-800 block">{formatNumber(month.pureWater)} gal</span>
@@ -556,7 +559,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-4 gap-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                           <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg p-3">
                             <span className="text-xl"></span>
                             <div>
@@ -601,69 +604,69 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
           </div>
         )}
 
-        {/* Annual View - Summaries Only (No Chart) */}
+        {/* Annual View */}
         {consumptionViewMode === 'annual' && (
-          <div className="mt-2 p-5 bg-slate-50 rounded-lg border border-slate-200">
+          <div className="mt-2 p-4 sm:p-5 bg-slate-50 rounded-lg border border-slate-200">
             <div className="flex flex-col gap-5">
-              <div className="flex items-center gap-4">
-                <div className="bg-gradient-to-br from-primary to-primary-dark text-white text-2xl font-bold px-5 py-2 rounded-full">{annualData.year}</div>
-                <div className="year-summary">
-                  <h3 className="m-0 mb-1 text-lg text-slate-800">{formatNumber(annualData.totals.pureWater + annualData.totals.mineralWater + annualData.totals.springWater)} total units</h3>
-                  <p className="m-0 text-xs text-slate-500">{annualData.totalOrders} orders • {formatNumber(annualData.avgMonthly.pureWater)} pure/mo avg</p>
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="bg-gradient-to-br from-primary to-primary-dark text-white text-xl sm:text-2xl font-bold px-4 sm:px-5 py-1.5 sm:py-2 rounded-full">{annualData.year}</div>
+                <div className="min-w-0">
+                  <h3 className="m-0 mb-1 text-base sm:text-lg text-slate-800">{formatNumber(annualData.totals.pureWater + annualData.totals.mineralWater + annualData.totals.springWater)} total units</h3>
+                  <p className="m-0 text-xs text-slate-500 truncate">{annualData.totalOrders} orders • {formatNumber(annualData.avgMonthly.pureWater)} pure/mo avg</p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
-                <div className="flex items-center gap-4 rounded-xl p-5 transition-all hover:shadow-sm bg-gradient-to-br from-secondary/5 to-secondary/10 border border-secondary/30">
-                  <span className="text-3xl"></span>
-                  <div>
-                    <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Best Month</span>
-                    <span className="text-slate-800 text-lg font-bold">{annualData.bestMonth.name}</span>
-                    <span className="text-slate-500 text-xs">
-                      {annualData.bestMonth.pureWater}g Pure • {annualData.bestMonth.springWater} gal Spring • {annualData.bestMonth.mineralWater}g Mineral
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                <div className="flex items-center gap-3 sm:gap-4 rounded-xl p-3 sm:p-5 transition-all hover:shadow-sm bg-gradient-to-br from-secondary/5 to-secondary/10 border border-secondary/30">
+                  <span className="text-2xl sm:text-3xl"></span>
+                  <div className="min-w-0 flex-1">
+                    <span className="text-slate-500 text-[10px] sm:text-xs font-semibold uppercase tracking-wider">Best Month</span>
+                    <span className="text-slate-800 text-base sm:text-lg font-bold block truncate">{annualData.bestMonth.name}</span>
+                    <span className="text-slate-500 text-[10px] sm:text-xs truncate block">
+                      {annualData.bestMonth.pureWater}g P • {annualData.bestMonth.springWater}g S • {annualData.bestMonth.mineralWater}g M
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 rounded-xl p-5 transition-all hover:shadow-sm bg-gradient-to-br from-red-50 to-red-100 border border-red-300">
-                  <span className="text-3xl"></span>
-                  <div>
-                    <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Slowest Month</span>
-                    <span className="text-slate-800 text-lg font-bold">{annualData.slowestMonth.name}</span>
-                    <span className="text-slate-500 text-xs">
-                      {annualData.slowestMonth.pureWater}g Pure • {annualData.slowestMonth.springWater} gal Spring • {annualData.slowestMonth.mineralWater}g Mineral
+                <div className="flex items-center gap-3 sm:gap-4 rounded-xl p-3 sm:p-5 transition-all hover:shadow-sm bg-gradient-to-br from-red-50 to-red-100 border border-red-300">
+                  <span className="text-2xl sm:text-3xl"></span>
+                  <div className="min-w-0 flex-1">
+                    <span className="text-slate-500 text-[10px] sm:text-xs font-semibold uppercase tracking-wider">Slowest Month</span>
+                    <span className="text-slate-800 text-base sm:text-lg font-bold block truncate">{annualData.slowestMonth.name}</span>
+                    <span className="text-slate-500 text-[10px] sm:text-xs truncate block">
+                      {annualData.slowestMonth.pureWater}g P • {annualData.slowestMonth.springWater}g S • {annualData.slowestMonth.mineralWater}g M
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 rounded-xl p-5 transition-all hover:shadow-sm bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/30">
-                  <span className="text-3xl"></span>
-                  <div>
-                    <span className="text-slate-500 text-xs font-semibold uppercase tracking-wider">Monthly Average</span>
-                    <span className="text-slate-800 text-lg font-bold">Per Month</span>
-                    <span className="text-slate-500 text-xs">
-                      {annualData.avgMonthly.pureWater}g Pure • {annualData.avgMonthly.springWater} gal Spring • {annualData.avgMonthly.mineralWater}g Mineral
+                <div className="flex items-center gap-3 sm:gap-4 rounded-xl p-3 sm:p-5 transition-all hover:shadow-sm bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/30">
+                  <span className="text-2xl sm:text-3xl"></span>
+                  <div className="min-w-0 flex-1">
+                    <span className="text-slate-500 text-[10px] sm:text-xs font-semibold uppercase tracking-wider">Monthly Average</span>
+                    <span className="text-slate-800 text-base sm:text-lg font-bold block">Per Month</span>
+                    <span className="text-slate-500 text-[10px] sm:text-xs truncate block">
+                      {annualData.avgMonthly.pureWater}g P • {annualData.avgMonthly.springWater}g S • {annualData.avgMonthly.mineralWater}g M
                     </span>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-primary-dark to-primary-dark rounded-xl p-6 text-white">
-                <h4 className="text-white m-0 mb-4 text-lg">Year Summary</h4>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-2 bg-white/10 p-4 rounded-lg backdrop-blur">
-                    <span className="text-slate-400 text-xs uppercase tracking-wider">Total Pure Water</span>
-                    <span className="text-white text-xl font-bold">{formatNumber(annualData.totals.pureWater)} gal</span>
+              <div className="bg-gradient-to-br from-primary-dark to-primary-dark rounded-xl p-4 sm:p-6 text-white">
+                <h4 className="text-white m-0 mb-4 text-base sm:text-lg">Year Summary</h4>
+                <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                  <div className="flex flex-col gap-1 sm:gap-2 bg-white/10 p-3 sm:p-4 rounded-lg backdrop-blur">
+                    <span className="text-slate-400 text-[10px] sm:text-xs uppercase tracking-wider">Total Pure Water</span>
+                    <span className="text-white text-sm sm:text-xl font-bold">{formatNumber(annualData.totals.pureWater)} gal</span>
                   </div>
-                  <div className="flex flex-col gap-2 bg-white/10 p-4 rounded-lg backdrop-blur">
-                    <span className="text-slate-400 text-xs uppercase tracking-wider">Total Spring Water</span>
-                    <span className="text-white text-xl font-bold">{formatNumber(annualData.totals.springWater)} gal</span>
+                  <div className="flex flex-col gap-1 sm:gap-2 bg-white/10 p-3 sm:p-4 rounded-lg backdrop-blur">
+                    <span className="text-slate-400 text-[10px] sm:text-xs uppercase tracking-wider">Total Spring Water</span>
+                    <span className="text-white text-sm sm:text-xl font-bold">{formatNumber(annualData.totals.springWater)} gal</span>
                   </div>
-                  <div className="flex flex-col gap-2 bg-white/10 p-4 rounded-lg backdrop-blur">
-                    <span className="text-slate-400 text-xs uppercase tracking-wider">Total Mineral Water</span>
-                    <span className="text-white text-xl font-bold">{formatNumber(annualData.totals.mineralWater)} gal</span>
+                  <div className="flex flex-col gap-1 sm:gap-2 bg-white/10 p-3 sm:p-4 rounded-lg backdrop-blur">
+                    <span className="text-slate-400 text-[10px] sm:text-xs uppercase tracking-wider">Total Mineral Water</span>
+                    <span className="text-white text-sm sm:text-xl font-bold">{formatNumber(annualData.totals.mineralWater)} gal</span>
                   </div>
-                  <div className="flex flex-col gap-2 bg-white/10 p-4 rounded-lg backdrop-blur">
-                    <span className="text-slate-400 text-xs uppercase tracking-wider">Total Orders</span>
-                    <span className="text-white text-xl font-bold">{annualData.totalOrders}</span>
+                  <div className="flex flex-col gap-1 sm:gap-2 bg-white/10 p-3 sm:p-4 rounded-lg backdrop-blur">
+                    <span className="text-slate-400 text-[10px] sm:text-xs uppercase tracking-wider">Total Orders</span>
+                    <span className="text-white text-sm sm:text-xl font-bold">{annualData.totalOrders}</span>
                   </div>
                 </div>
               </div>

@@ -9,7 +9,7 @@ export const getCurrentMonthConsumptionProjection = async (stationId) => {
   const { year, month, day, daysInMonth, daysRemaining } = getCurrentDateInfo();
   
   // Get actual consumption so far this month
-  const { dailyData, totals } = await getDailyConsumptionForMonth(stationId, year, month);
+  const { totals } = await getDailyConsumptionForMonth(stationId, year, month);
   const currentConsumption = totals;
   
   // Check if we're past Day 3 of the month
