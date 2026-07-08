@@ -1,70 +1,80 @@
-# Getting Started with Create React App
+# AQUA-LLERA Admin Dashboard
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Admin dashboard for the AQUA-LLERA water station management platform.
+
+## Features
+
+- **Orders Management** — View and filter customer orders; mobile card layout with customer name, phone, amount, and View button.
+- **Stock & Analytics** — Inventory tracking, revenue projections with confidence level, year-over-year comparison, and performance reports.
+- **Water Consumption Analytics** — Monthly/annual consumption tracking with stacked bar charts and circular progress indicators.
+- **Station Settings** — Manage station info, location, operating hours, services, and pricing.
+- **Admin Panel** — Pending/approved station review, admin invitation management, business permit inspection.
+
+## Mobile Responsiveness
+
+Designed for 375px (iPhone SE/12/13) and up with responsive breakpoints:
+
+### Dashboard
+| Component | Mobile (`<md`) | Desktop (`md+`) |
+|---|---|---|
+| Orders | Card layout (customer + phone + View) | Full table with Type, Status, Amount columns |
+| Nav pills | `px-2 py-1.5 text-[11px]`, `gap-1` | Full-width pill buttons |
+
+### Stock & Performance
+- Analytics cards: `p-4 sm:p-6`, numbers `text-2xl sm:text-3xl`
+- Inventory cards: `p-4 sm:p-8`, count `text-3xl sm:text-5xl`, label `text-sm sm:text-lg`
+- Year Forecast amounts: `text-lg sm:text-2xl`
+- Revenue projection: confidence badge, refresh button, and date text inline using `text-[11px]` mobile / `text-sm` desktop with compact padding
+- Historical Performance: section `p-4 sm:p-8`, stat cards `grid-cols-1 sm:grid-cols-3`, expanded metrics `flex-col sm:flex-row`
+- Annual Reports: section `p-4 sm:p-8`, breakdown rows `flex-col sm:flex-row`, stat cards `grid-cols-1 sm:grid-cols-3`, summary `p-4 sm:p-6`
+
+### Water Consumption Analytics
+- Circular progress cards: `p-3 sm:p-5`, grid `grid-cols-1 sm:grid-cols-3`
+- Monthly chart: stacked `BarChart` (8px bars, 220px height, compact legend)
+- Annual view: container `p-4 sm:p-5`, water-type labels shortened (`g P • g S • g M`), Year Summary `text-sm sm:text-xl`
+
+### Admin Page
+- Header: `flex-col sm:flex-row`, title `text-xl sm:text-3xl`
+- Stats cards: `p-4 sm:p-6`, numbers `text-2xl sm:text-3xl`
+- Tab bar: `overflow-x-auto` with `whitespace-nowrap`, compact `px-3 py-2 text-xs` on mobile
+- Admins list: card layout on mobile, full table on `md+`
+- Station cards: `minmax(min(100%,500px),1fr)` grid, detail labels `min-w-[90px]` mobile / `120px` desktop
+- Action buttons: `min-w-[100px]` mobile / `140px` desktop
+- Invite dialog: `w-[90vw] max-w-[400px]`
+- Station details modal: responsive padding
+
+## Vercel Deployment
+
+The project is configured for Vercel. The `CI=true` build will pass with zero ESLint warnings.
+
+To deploy:
+```bash
+npm run build
+```
 
 ## Available Scripts
 
-In the project directory, you can run:
-
 ### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Runs the app in development mode at [http://localhost:3000](http://localhost:3000).
 
 ### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Launches the test runner in interactive watch mode.
 
 ### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Builds for production to the `build` folder. The build is minified with hashed filenames.
 
 ### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Ejects from Create React App configuration (one-way operation).
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Tech Stack
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- React (Create React App)
+- Tailwind CSS
+- Firebase (Realtime Database, Auth, Storage)
+- Recharts (charts)
+- EmailJS (email notifications)
+- Mapbox GL (location picker)
