@@ -729,19 +729,19 @@ const Stock = () => {
                   <p className="text-white m-0 text-sm">Based on {revenueProjection.daysPassed} days of actual data • {revenueProjection.daysRemaining} days remaining</p>
                 </div>
               </div>
-              <div className="flex flex-col items-end gap-3">
+              <div className="flex items-center gap-1 sm:gap-3 justify-end flex-shrink-0 min-w-0">
                 {projectionConfidence && (
-                  <div className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold" style={{ backgroundColor: `${projectionConfidence.color}20`, color: projectionConfidence.color }}>
-                    <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: projectionConfidence.color }}></span>
+                  <div className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1 sm:py-2 rounded-full text-[11px] sm:text-sm font-semibold whitespace-nowrap" style={{ backgroundColor: `${projectionConfidence.color}20`, color: projectionConfidence.color }}>
+                    <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full inline-block flex-shrink-0" style={{ backgroundColor: projectionConfidence.color }}></span>
                     {projectionConfidence.level} Confidence
                   </div>
                 )}
-                <div className="flex flex-col items-end gap-1">
-                  <button className={`flex items-center gap-2 bg-white/10 text-white border border-white/20 px-4 py-2 rounded-full text-sm font-semibold cursor-pointer transition-all backdrop-blur hover:bg-blue-500/30 hover:border-blue-500 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed ${isRefreshing ? 'refreshing' : ''}`} onClick={handleRefreshProjections} disabled={isRefreshing}>
-                    <span className={`text-lg inline-block leading-none ${isRefreshing ? 'spin' : ''}`}></span>
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <button className={`flex items-center gap-1 sm:gap-2 bg-white/10 text-white border border-white/20 px-2 sm:px-4 py-1 sm:py-2 rounded-full text-[11px] sm:text-sm font-semibold cursor-pointer transition-all backdrop-blur hover:bg-blue-500/30 hover:border-blue-500 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed ${isRefreshing ? 'refreshing' : ''}`} onClick={handleRefreshProjections} disabled={isRefreshing}>
+                    <span className={`text-sm sm:text-lg inline-block leading-none ${isRefreshing ? 'spin' : ''}`}></span>
                     {isRefreshing ? 'Refreshing...' : 'Refresh'}
                   </button>
-                  {lastRefreshed && !isRefreshing && <span className="text-slate-500 text-[0.75rem] text-right">Updated {formatLastRefreshed(lastRefreshed)}</span>}
+                  {lastRefreshed && !isRefreshing && <span className="text-slate-500 text-[0.6rem] sm:text-[0.75rem] whitespace-nowrap">Updated {formatLastRefreshed(lastRefreshed)}</span>}
                 </div>
               </div>
             </div>
