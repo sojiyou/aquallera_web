@@ -868,7 +868,7 @@ const Dashboard = () => {
                   {stationData.stationName || 'Your Station'}
                 </p>
               </div>
-              <button onClick={handleLogout} className="bg-red-500 text-white border-none px-4 py-2 rounded-md cursor-pointer font-medium ml-auto hover:bg-red-600">
+              <button onClick={handleLogout} className="bg-primary-darkest text-white border-none px-4 py-2 rounded-md cursor-pointer font-medium ml-auto hover:brightness-110">
                 Logout
               </button>
             </div>
@@ -920,7 +920,7 @@ const Dashboard = () => {
                   {stationData.stationName || 'Your Station'}
                 </p>
               </div>
-              <button onClick={handleLogout} className="bg-red-500 text-white border-none px-4 py-2 rounded-md cursor-pointer font-medium ml-auto hover:bg-red-600">
+              <button onClick={handleLogout} className="bg-primary-darkest text-white border-none px-4 py-2 rounded-md cursor-pointer font-medium ml-auto hover:brightness-110">
                 Logout
               </button>
             </div>
@@ -1008,7 +1008,7 @@ const Dashboard = () => {
               <div className="w-2 h-2 rounded-full bg-secondary animate-[pulse_2s_infinite]"></div>
               <span>Online</span>
             </div>
-            <button onClick={handleLogout} className="bg-slate-500 text-white border-none px-3 py-1 rounded cursor-pointer text-xs sm:text-sm hover:bg-slate-600">
+            <button onClick={handleLogout} className="bg-primary-darkest text-white border-none px-3 py-1 rounded cursor-pointer text-xs sm:text-sm hover:brightness-110">
               Logout
             </button>
           </div>

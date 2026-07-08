@@ -481,63 +481,68 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
                         {/* Daily Consumption Trends - Stacked Bar Chart */}
                         <div className="mb-6">
                           <h4 className="text-slate-800 text-sm m-0 mb-4 font-semibold">Daily Consumption Trends</h4>
-                          <ResponsiveContainer width="100%" height={220}>
-                            <BarChart
-                              data={month.dailyData}
-                              margin={{ top: 5, right: 4, left: -10, bottom: 0 }}
-                              barSize={8}
-                            >
-                              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-                              <XAxis
-                                dataKey="day"
-                                tick={{ fontSize: 10 }}
-                                tickFormatter={(day) => day % 5 === 0 ? day : ''}
-                                stroke="#94a3b8"
-                                axisLine={false}
-                                tickLine={false}
-                              />
-                              <YAxis
-                                tick={{ fontSize: 10 }}
-                                stroke="#94a3b8"
-                                axisLine={false}
-                                tickLine={false}
-                              />
-                              <Tooltip
-                                formatter={(value, name) => {
-                                  const labels = { pureWater: 'Pure Water', springWater: 'Spring Water', mineralWater: 'Mineral Water' };
-                                  return [`${Math.round(value)} gal`, labels[name] || name];
-                                }}
-                                labelFormatter={(label) => `Day ${label}`}
-                                contentStyle={{ fontSize: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}
-                              />
-                              <Legend
-                                wrapperStyle={{ fontSize: '11px', paddingTop: '4px' }}
-                                iconType="circle"
-                                iconSize={8}
-                              />
-                              <Bar
-                                dataKey="pureWater"
-                                stackId="consumption"
-                                fill="#065A82"
-                                radius={[0, 0, 0, 0]}
-                                name="Pure Water"
-                              />
-                              <Bar
-                                dataKey="springWater"
-                                stackId="consumption"
-                                fill="#1C7293"
-                                radius={[0, 0, 0, 0]}
-                                name="Spring Water"
-                              />
-                              <Bar
-                                dataKey="mineralWater"
-                                stackId="consumption"
-                                fill="#f59e0b"
-                                radius={[0, 0, 4, 4]}
-                                name="Mineral Water"
-                              />
-                            </BarChart>
-                          </ResponsiveContainer>
+                          <div className="hidden md:block">
+                            <ResponsiveContainer width="100%" height={220}>
+                              <BarChart
+                                data={month.dailyData}
+                                margin={{ top: 5, right: 4, left: -10, bottom: 0 }}
+                                barSize={8}
+                              >
+                                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+                                <XAxis
+                                  dataKey="day"
+                                  tick={{ fontSize: 10 }}
+                                  tickFormatter={(day) => day % 5 === 0 ? day : ''}
+                                  stroke="#94a3b8"
+                                  axisLine={false}
+                                  tickLine={false}
+                                />
+                                <YAxis
+                                  tick={{ fontSize: 10 }}
+                                  stroke="#94a3b8"
+                                  axisLine={false}
+                                  tickLine={false}
+                                />
+                                <Tooltip
+                                  formatter={(value, name) => {
+                                    const labels = { pureWater: 'Pure Water', springWater: 'Spring Water', mineralWater: 'Mineral Water' };
+                                    return [`${Math.round(value)} gal`, labels[name] || name];
+                                  }}
+                                  labelFormatter={(label) => `Day ${label}`}
+                                  contentStyle={{ fontSize: '12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}
+                                />
+                                <Legend
+                                  wrapperStyle={{ fontSize: '11px', paddingTop: '4px' }}
+                                  iconType="circle"
+                                  iconSize={8}
+                                />
+                                <Bar
+                                  dataKey="pureWater"
+                                  stackId="consumption"
+                                  fill="#065A82"
+                                  radius={[0, 0, 0, 0]}
+                                  name="Pure Water"
+                                />
+                                <Bar
+                                  dataKey="springWater"
+                                  stackId="consumption"
+                                  fill="#1C7293"
+                                  radius={[0, 0, 0, 0]}
+                                  name="Spring Water"
+                                />
+                                <Bar
+                                  dataKey="mineralWater"
+                                  stackId="consumption"
+                                  fill="#f59e0b"
+                                  radius={[0, 0, 4, 4]}
+                                  name="Mineral Water"
+                                />
+                              </BarChart>
+                            </ResponsiveContainer>
+                          </div>
+                          <div className="block md:hidden text-center py-6 px-4 bg-slate-50 rounded-lg border border-slate-200">
+                            <span className="text-slate-400 mb-2 block">Charts are available on tablet and desktop views</span>
+                          </div>
                         </div>
 
                         {/* Water Type Stats */}

@@ -370,32 +370,37 @@ const HistoricalPerformance = ({ stationId }) => {
                   {month.dailyData && month.dailyData.length > 0 && (
                     <div className="mb-6">
                       <h4 className="text-slate-800 text-sm m-0 mb-4 font-semibold">Daily Revenue Breakdown</h4>
-                      <ResponsiveContainer width="100%" height={200}>
-                        <BarChart
-                          data={month.dailyData}
-                          margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
-                        >
-                          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                          <XAxis
-                            dataKey="day"
-                            tick={{ fontSize: 12 }}
-                            tickFormatter={(day) => day % 5 === 0 ? day : ''}
-                          />
-                          <YAxis
-                            tick={{ fontSize: 12 }}
-                            tickFormatter={(value) => `₱${(value / 1000).toFixed(0)}k`}
-                          />
-                          <Tooltip
-                            formatter={(value) => [`₱${value?.toLocaleString()}`, 'Revenue']}
-                            labelFormatter={(label) => `Day ${label}`}
-                          />
-                          <Bar
-                            dataKey="revenue"
-                            fill="#065A82"
-                            radius={[4, 4, 0, 0]}
-                          />
-                        </BarChart>
-                      </ResponsiveContainer>
+                      <div className="hidden md:block">
+                        <ResponsiveContainer width="100%" height={200}>
+                          <BarChart
+                            data={month.dailyData}
+                            margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                          >
+                            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                            <XAxis
+                              dataKey="day"
+                              tick={{ fontSize: 12 }}
+                              tickFormatter={(day) => day % 5 === 0 ? day : ''}
+                            />
+                            <YAxis
+                              tick={{ fontSize: 12 }}
+                              tickFormatter={(value) => `₱${(value / 1000).toFixed(0)}k`}
+                            />
+                            <Tooltip
+                              formatter={(value) => [`₱${value?.toLocaleString()}`, 'Revenue']}
+                              labelFormatter={(label) => `Day ${label}`}
+                            />
+                            <Bar
+                              dataKey="revenue"
+                              fill="#065A82"
+                              radius={[4, 4, 0, 0]}
+                            />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                      <div className="block md:hidden text-center py-6 px-4 bg-slate-50 rounded-lg border border-slate-200">
+                        <span className="text-slate-400 mb-2 block">Charts are available on tablet and desktop views</span>
+                      </div>
                     </div>
                   )}
 

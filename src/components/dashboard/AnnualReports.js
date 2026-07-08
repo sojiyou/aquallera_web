@@ -344,44 +344,49 @@ const AnnualReports = ({ stationId }) => {
 
               {isExpanded && (<>
               <div className="p-4 sm:p-6 bg-white">
-                <ResponsiveContainer width="100%" height={200}>
-                  <BarChart
-                    data={chartData}
-                    margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                    <XAxis
-                      dataKey="month"
-                      tick={{ fontSize: 11 }}
-                      stroke="#64748b"
-                    />
-                    <YAxis
-                      tick={{ fontSize: 11 }}
-                      tickFormatter={(value) => `₱${(value / 1000).toFixed(0)}k`}
-                      stroke="#64748b"
-                    />
-                    <Tooltip
-                      formatter={(value, name) => {
-                        if (name === 'revenue') return [formatCurrency(value), 'Revenue'];
-                        return [value, 'Orders'];
-                      }}
-                      contentStyle={{
-                        backgroundColor: 'white',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '8px',
-                        padding: '8px 12px'
-                      }}
-                    />
-                    <Bar dataKey="revenue" radius={[4, 4, 0, 0]}>
-                      {chartData.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={getBarColor(entry.revenue, report.avgMonthly)}
-                        />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
+                <div className="hidden md:block">
+                  <ResponsiveContainer width="100%" height={200}>
+                    <BarChart
+                      data={chartData}
+                      margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                      <XAxis
+                        dataKey="month"
+                        tick={{ fontSize: 11 }}
+                        stroke="#64748b"
+                      />
+                      <YAxis
+                        tick={{ fontSize: 11 }}
+                        tickFormatter={(value) => `₱${(value / 1000).toFixed(0)}k`}
+                        stroke="#64748b"
+                      />
+                      <Tooltip
+                        formatter={(value, name) => {
+                          if (name === 'revenue') return [formatCurrency(value), 'Revenue'];
+                          return [value, 'Orders'];
+                        }}
+                        contentStyle={{
+                          backgroundColor: 'white',
+                          border: '1px solid #e2e8f0',
+                          borderRadius: '8px',
+                          padding: '8px 12px'
+                        }}
+                      />
+                      <Bar dataKey="revenue" radius={[4, 4, 0, 0]}>
+                        {chartData.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={getBarColor(entry.revenue, report.avgMonthly)}
+                          />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="block md:hidden text-center py-6 px-4 bg-slate-50 rounded-lg border border-slate-200">
+                  <span className="text-slate-400 mb-2 block">Charts are available on tablet and desktop views</span>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 p-4 sm:p-6 bg-white border-t border-slate-200">
