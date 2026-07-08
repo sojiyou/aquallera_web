@@ -86,7 +86,7 @@ const HistoricalPerformance = ({ stationId }) => {
       // Count orders for the month
       const { db } = await import('firebase/database');
       const { ref, get } = await import('firebase/database');
-      const { database } = await import('../components/config/Firebase');
+      const { database } = await import('../config/Firebase');
       
       const ordersRef = ref(database, 'orders');
       const ordersSnapshot = await get(ordersRef);

@@ -89,7 +89,7 @@ const AnnualReports = ({ stationId }) => {
         // Count orders for this month
         const { db } = await import('firebase/database');
         const { ref, get } = await import('firebase/database');
-        const { database } = await import('../components/config/Firebase');
+        const { database } = await import('../config/Firebase');
         
         const ordersRef = ref(database, 'orders');
         const ordersSnapshot = await get(ordersRef);
@@ -160,7 +160,7 @@ const AnnualReports = ({ stationId }) => {
     try {
       const { db } = await import('firebase/database');
       const { ref, get } = await import('firebase/database');
-      const { database } = await import('../components/config/Firebase');
+      const { database } = await import('../config/Firebase');
       
       const ordersRef = ref(database, 'orders');
       const ordersSnapshot = await get(ordersRef);
