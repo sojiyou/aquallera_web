@@ -439,15 +439,15 @@ const AdminPage = () => {
     <div className="min-h-screen bg-slate-50 font-sans flex flex-col">
       <div className="flex-1">
         {/* Admin Header */}
-        <header className="bg-gradient-to-br from-primary-dark to-primary-dark text-white px-8 py-6 border-b border-slate-600">
-        <div className="max-w-[1400px] mx-auto flex justify-between items-center">
-          <div>
-            <h1 className="m-0 mb-1 text-3xl">AQUA-LLERA Admin Dashboard</h1>
-            <p className="m-0 text-slate-300 text-sm">System Administrator Control Panel</p>
+        <header className="bg-gradient-to-br from-primary-dark to-primary-dark text-white px-4 sm:px-8 py-4 sm:py-6 border-b border-slate-600">
+        <div className="max-w-[1400px] mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div className="min-w-0">
+            <h1 className="m-0 mb-1 text-xl sm:text-3xl">AQUA-LLERA Admin Dashboard</h1>
+            <p className="m-0 text-slate-300 text-xs sm:text-sm">System Administrator Control Panel</p>
           </div>
 
 
-          <div className="flex gap-3">
+          <div className="flex gap-2 sm:gap-3">
             <button
               onClick={() => setShowInviteDialog(true)}
               className="px-4 py-2 border border-white/20 rounded-md cursor-pointer font-medium text-sm transition-all bg-white/10 text-white hover:bg-white/20">
@@ -473,50 +473,50 @@ const AdminPage = () => {
       </header>
 
       {/* Stats Overview */}
-      <section className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-6 p-8 max-w-[1400px] mx-auto">
-        <div className="bg-white p-6 rounded-xl shadow-sm flex items-center gap-4 transition-transform hover:-translate-y-0.5">
-          <div className="w-15 h-15 rounded-xl flex items-center justify-center text-2xl bg-primary/10 text-primary-dark"></div>
-          <div>
-            <h3 className="m-0 text-slate-800 text-3xl">{stats.totalStations}</h3>
-            <p className="m-1 text-slate-500 text-sm">Total Stations</p>
+      <section className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 sm:gap-6 p-4 sm:p-8 max-w-[1400px] mx-auto">
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm flex items-center gap-3 sm:gap-4 transition-transform hover:-translate-y-0.5">
+          <div className="w-12 h-12 sm:w-15 sm:h-15 rounded-xl flex items-center justify-center text-lg sm:text-2xl bg-primary/10 text-primary-dark"></div>
+          <div className="min-w-0">
+            <h3 className="m-0 text-slate-800 text-2xl sm:text-3xl">{stats.totalStations}</h3>
+            <p className="m-1 text-slate-500 text-xs sm:text-sm">Total Stations</p>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-sm flex items-center gap-4 transition-transform hover:-translate-y-0.5">
-          <div className="w-15 h-15 rounded-xl flex items-center justify-center text-2xl bg-amber-100 text-amber-600"></div>
-          <div>
-            <h3 className="m-0 text-slate-800 text-3xl">{stats.pendingStations}</h3>
-            <p className="m-1 text-slate-500 text-sm">Pending Review</p>
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm flex items-center gap-3 sm:gap-4 transition-transform hover:-translate-y-0.5">
+          <div className="w-12 h-12 sm:w-15 sm:h-15 rounded-xl flex items-center justify-center text-lg sm:text-2xl bg-amber-100 text-amber-600"></div>
+          <div className="min-w-0">
+            <h3 className="m-0 text-slate-800 text-2xl sm:text-3xl">{stats.pendingStations}</h3>
+            <p className="m-1 text-slate-500 text-xs sm:text-sm">Pending Review</p>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-sm flex items-center gap-4 transition-transform hover:-translate-y-0.5">
-          <div className="w-15 h-15 rounded-xl flex items-center justify-center text-2xl bg-emerald-100 text-emerald-600"></div>
-          <div>
-            <h3 className="m-0 text-slate-800 text-3xl">{stats.approvedStations}</h3>
-            <p className="m-1 text-slate-500 text-sm">Approved Stations</p>
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm flex items-center gap-3 sm:gap-4 transition-transform hover:-translate-y-0.5">
+          <div className="w-12 h-12 sm:w-15 sm:h-15 rounded-xl flex items-center justify-center text-lg sm:text-2xl bg-emerald-100 text-emerald-600"></div>
+          <div className="min-w-0">
+            <h3 className="m-0 text-slate-800 text-2xl sm:text-3xl">{stats.approvedStations}</h3>
+            <p className="m-1 text-slate-500 text-xs sm:text-sm">Approved Stations</p>
           </div>
         </div>
 
       </section>
 
       {/* Main Content */}
-      <main className="max-w-[1400px] mx-auto px-8 pb-8">
-        <div className="flex gap-2 px-8 max-w-[1400px] mx-auto mb-6 border-b-2 border-slate-200">
+      <main className="max-w-[1400px] mx-auto px-4 sm:px-8 pb-8">
+        <div className="flex gap-1 sm:gap-2 px-4 sm:px-8 max-w-[1400px] mx-auto mb-6 border-b-2 border-slate-200 overflow-x-auto">
           <button
-            className={`px-6 py-3 border-none bg-transparent text-slate-500 text-sm font-medium cursor-pointer relative transition-all rounded-t-lg hover:bg-slate-100 hover:text-slate-700${activeTab === 'pending' ? ' text-primary bg-primary/5' : ''}`}
+            className={`px-3 sm:px-6 py-2 sm:py-3 border-none bg-transparent text-slate-500 text-xs sm:text-sm font-medium cursor-pointer relative transition-all rounded-t-lg whitespace-nowrap hover:bg-slate-100 hover:text-slate-700${activeTab === 'pending' ? ' text-primary bg-primary/5' : ''}`}
             onClick={() => setActiveTab('pending')}
           >
             Pending Review ({pendingStations.length})
           </button>
           <button
-            className={`px-6 py-3 border-none bg-transparent text-slate-500 text-sm font-medium cursor-pointer relative transition-all rounded-t-lg hover:bg-slate-100 hover:text-slate-700${activeTab === 'approved' ? ' text-primary bg-primary/5' : ''}`}
+            className={`px-3 sm:px-6 py-2 sm:py-3 border-none bg-transparent text-slate-500 text-xs sm:text-sm font-medium cursor-pointer relative transition-all rounded-t-lg whitespace-nowrap hover:bg-slate-100 hover:text-slate-700${activeTab === 'approved' ? ' text-primary bg-primary/5' : ''}`}
             onClick={() => setActiveTab('approved')}
           >
             Approved Stations ({approvedStations.length})
           </button>
           <button
-            className={`px-6 py-3 border-none bg-transparent text-slate-500 text-sm font-medium cursor-pointer relative transition-all rounded-t-lg hover:bg-slate-100 hover:text-slate-700${activeTab === 'admins' ? ' text-primary bg-primary/5' : ''}`}
+            className={`px-3 sm:px-6 py-2 sm:py-3 border-none bg-transparent text-slate-500 text-xs sm:text-sm font-medium cursor-pointer relative transition-all rounded-t-lg whitespace-nowrap hover:bg-slate-100 hover:text-slate-700${activeTab === 'admins' ? ' text-primary bg-primary/5' : ''}`}
             onClick={() => setActiveTab('admins')}
           >
             Admins ({admins.length})
@@ -529,51 +529,80 @@ const AdminPage = () => {
             <p>Loading station data...</p>
           </div>
         ) : activeTab === 'admins' ? (
-          <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+          <div className="bg-white rounded-xl shadow-sm">
             {admins.length === 0 ? (
               <div className="text-center py-16">
                 <h3 className="text-slate-800 m-0 mb-2">No admins yet</h3>
                 <p className="text-slate-500 m-0">Invite an admin to get started.</p>
               </div>
             ) : (
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50">
-                    <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Email</th>
-                    <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Invited By</th>
-                    <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Date Invited</th>
-                    <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <>
+                {/* Desktop table */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full text-left">
+                    <thead>
+                      <tr className="border-b border-slate-200 bg-slate-50">
+                        <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Email</th>
+                        <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Invited By</th>
+                        <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Date Invited</th>
+                        <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {admins.map((admin) => (
+                        <tr key={admin.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                          <td className="px-6 py-4">
+                            <span className="text-sm font-medium text-slate-800">{admin.email}</span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="text-sm text-slate-600">{admin.invitedBy || 'N/A'}</span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="text-sm text-slate-600">{admin.createdAt ? formatDate(admin.createdAt) : 'N/A'}</span>
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            <button
+                              onClick={() => handleRemoveAdmin(admin.id, admin.email)}
+                              disabled={removingAdminId === admin.id}
+                              className="px-3 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium transition-all bg-red-50 text-red-600 hover:bg-red-600 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              {removingAdminId === admin.id ? 'Removing...' : 'Remove'}
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Mobile cards */}
+                <div className="md:hidden divide-y divide-slate-200">
                   {admins.map((admin) => (
-                    <tr key={admin.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                      <td className="px-6 py-4">
-                        <span className="text-sm font-medium text-slate-800">{admin.email}</span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-sm text-slate-600">{admin.invitedBy || 'N/A'}</span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-sm text-slate-600">{admin.createdAt ? formatDate(admin.createdAt) : 'N/A'}</span>
-                      </td>
-                      <td className="px-6 py-4 text-right">
+                    <div key={admin.id} className="px-4 py-4">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1 min-w-0 mr-3">
+                          <div className="font-semibold text-slate-800 text-[15px] leading-tight truncate">{admin.email}</div>
+                          <div className="text-slate-400 text-xs mt-0.5">Invited by: {admin.invitedBy || 'N/A'}</div>
+                        </div>
                         <button
                           onClick={() => handleRemoveAdmin(admin.id, admin.email)}
                           disabled={removingAdminId === admin.id}
-                          className="px-3 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium transition-all bg-red-50 text-red-600 hover:bg-red-600 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="flex-shrink-0 px-3 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium transition-all bg-red-50 text-red-600 hover:bg-red-600 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {removingAdminId === admin.id ? 'Removing...' : 'Remove'}
                         </button>
-                      </td>
-                    </tr>
+                      </div>
+                      {admin.createdAt && (
+                        <div className="text-slate-400 text-xs">Invited: {formatDate(admin.createdAt)}</div>
+                      )}
+                    </div>
                   ))}
-                </tbody>
-              </table>
+                </div>
+              </>
             )}
           </div>
         ) : (
-          <div className="grid gap-6 grid-cols-[repeat(auto-fill,minmax(500px,1fr))]">
+          <div className="grid gap-4 sm:gap-6 grid-cols-[repeat(auto-fill,minmax(min(100%,500px),1fr))]">
             {getFilteredStations().length === 0 ? (
               <div className="text-center py-16 bg-white rounded-xl shadow-sm">
                 <div className="text-5xl mb-4 opacity-50">
@@ -588,7 +617,7 @@ const AdminPage = () => {
               </div>
             ) : (
               getFilteredStations().map(station => (
-                <div key={station.id} className="bg-white rounded-xl p-6 shadow-sm border-l-4 border-l-primary">
+                <div key={station.id} className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border-l-4 border-l-primary">
                   <div className="flex justify-between items-start mb-4 pb-4 border-b border-slate-200">
                     <div>
                       <h3 className="m-0 text-slate-800 text-xl">{station.stationName || 'Unnamed Station'}</h3>
@@ -606,51 +635,51 @@ const AdminPage = () => {
 
                   <div className="mb-6">
                     <div className="flex py-2 text-sm border-b border-slate-100 last:border-b-0">
-                      <span className="min-w-[120px] text-slate-500 font-medium">Location:</span>
+                        <span className="min-w-[90px] sm:min-w-[120px] text-slate-500 font-medium">Location:</span>
                       <span className="flex-1 text-slate-800 break-words">
                         {station.address || 'N/A'}, {station.city || 'N/A'}
                       </span>
                     </div>
 
                     <div className="flex py-2 text-sm border-b border-slate-100 last:border-b-0">
-                      <span className="min-w-[120px] text-slate-500 font-medium">Owner:</span>
+                        <span className="min-w-[90px] sm:min-w-[120px] text-slate-500 font-medium">Owner:</span>
                       <span className="flex-1 text-slate-800 break-words">{station.ownerName || 'N/A'}</span>
                     </div>
 
                     <div className="flex py-2 text-sm border-b border-slate-100 last:border-b-0">
-                      <span className="min-w-[120px] text-slate-500 font-medium">Email:</span>
+                        <span className="min-w-[90px] sm:min-w-[120px] text-slate-500 font-medium">Email:</span>
                       <span className="flex-1 text-slate-800 break-words font-mono">{station.email || 'N/A'}</span>
                     </div>
 
                     {station.password && (
                       <div className="flex py-2 text-sm border-b border-slate-100 last:border-b-0">
-                        <span className="min-w-[120px] text-slate-500 font-medium">Password:</span>
+                        <span className="min-w-[90px] sm:min-w-[120px] text-slate-500 font-medium">Password:</span>
                         <span className="flex-1 text-slate-800 break-words font-mono">{station.password}</span>
                       </div>
                     )}
 
                     <div className="flex py-2 text-sm border-b border-slate-100 last:border-b-0">
-                      <span className="min-w-[120px] text-slate-500 font-medium">Contact:</span>
+                        <span className="min-w-[90px] sm:min-w-[120px] text-slate-500 font-medium">Contact:</span>
                       <span className="flex-1 text-slate-800 break-words">{station.phone ? maskPhone(station.phone) : 'N/A'}</span>
                     </div>
 
                     {station.businessPermitNumber && (
                       <div className="flex py-2 text-sm border-b border-slate-100 last:border-b-0">
-                        <span className="min-w-[120px] text-slate-500 font-medium">Permit #:</span>
+                        <span className="min-w-[90px] sm:min-w-[120px] text-slate-500 font-medium">Permit #:</span>
                         <span className="flex-1 text-slate-800 break-words">{station.businessPermitNumber}</span>
                       </div>
                     )}
 
                     {station.rejectionReason && (
                       <div className="bg-red-50 p-3 rounded-md mt-2 border border-red-200 flex py-2 text-sm">
-                        <span className="min-w-[120px] text-red-600 font-medium">Rejection Reason:</span>
+                        <span className="min-w-[90px] sm:min-w-[120px] text-red-600 font-medium">Rejection Reason:</span>
                         <span className="flex-1 text-slate-800 break-words">{station.rejectionReason}</span>
                       </div>
                     )}
 
                     {station.approvedAt && (
                       <div className="bg-secondary/5 p-3 rounded-md mt-2 border border-secondary/20 flex py-2 text-sm">
-                        <span className="min-w-[120px] text-secondary font-medium">Approved On:</span>
+                        <span className="min-w-[90px] sm:min-w-[120px] text-secondary font-medium">Approved On:</span>
                         <span className="flex-1 text-slate-800 break-words">{formatDate(station.approvedAt)}</span>
                       </div>
                     )}
@@ -661,21 +690,21 @@ const AdminPage = () => {
                       <>
                         <button
                           onClick={() => handleApproveStation(station.id)}
-                          className="px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[140px] bg-secondary text-white hover:bg-primary-dark"
+                          className="px-3 sm:px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[100px] sm:min-w-[140px] bg-secondary text-white hover:bg-primary-dark"
                           disabled={rejectingStationId === station.id}
                         >
                           Approve Station
                         </button>
                         <button
                           onClick={() => handleRejectStation(station.id)}
-                          className="px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[140px] bg-red-500 text-white hover:bg-red-600"
+                          className="px-3 sm:px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[100px] sm:min-w-[140px] bg-red-500 text-white hover:bg-red-600"
                           disabled={rejectingStationId === station.id}
                         >
                           {rejectingStationId === station.id ? 'Sending Email...' : 'Reject Station'}
                         </button>
                         <button
                           onClick={() => handleViewDetails(station)}
-                          className="px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[140px] bg-primary text-white hover:bg-primary-dark"
+                          className="px-3 sm:px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[100px] sm:min-w-[140px] bg-primary text-white hover:bg-primary-dark"
                           disabled={rejectingStationId === station.id}
                         >
                           View Details
@@ -685,13 +714,13 @@ const AdminPage = () => {
                       <>
                         <button
                           onClick={() => handleRevokeApproval(station.id)}
-                          className="px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[140px] bg-amber-500 text-white hover:bg-amber-600"
+                          className="px-3 sm:px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[100px] sm:min-w-[140px] bg-amber-500 text-white hover:bg-amber-600"
                         >
                           Revoke Approval
                         </button>
                         <button
                           onClick={() => handleViewDetails(station)}
-                          className="px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[140px] bg-primary text-white hover:bg-primary-dark"
+                          className="px-3 sm:px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[100px] sm:min-w-[140px] bg-primary text-white hover:bg-primary-dark"
                         >
                           View Details
                         </button>
@@ -700,7 +729,7 @@ const AdminPage = () => {
                             navigator.clipboard.writeText(station.id);
                             showAlert({ type: 'success', message: 'Station ID copied to clipboard!' });
                           }}
-                          className="px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[140px] bg-primary text-white hover:bg-primary-dark"
+                          className="px-3 sm:px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[100px] sm:min-w-[140px] bg-primary text-white hover:bg-primary-dark"
                         >
                           Copy ID
                         </button>
@@ -719,12 +748,12 @@ const AdminPage = () => {
       {showDetailsModal && selectedStation && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[1000] p-4 animate-[fadeIn_0.3s_ease]">
           <div className="bg-white rounded-2xl w-full max-w-[800px] max-h-[90vh] overflow-y-auto shadow-2xl animate-[slideUp_0.3s_ease]">
-            <div className="flex justify-between items-center px-8 py-6 border-b border-gray-200 bg-gradient-to-br from-primary-dark to-primary-dark text-white rounded-t-2xl">
-              <h2 className="m-0 text-2xl">Station Details</h2>
+            <div className="flex justify-between items-center px-4 sm:px-8 py-4 sm:py-6 border-b border-gray-200 bg-gradient-to-br from-primary-dark to-primary-dark text-white rounded-t-2xl">
+              <h2 className="m-0 text-xl sm:text-2xl">Station Details</h2>
               <button onClick={closeModal} className="bg-transparent border-none text-white text-3xl cursor-pointer w-10 h-10 flex items-center justify-center rounded-full transition-all hover:bg-white/10">×</button>
             </div>
 
-            <div className="p-8">
+            <div className="p-4 sm:p-8">
               <div className="mb-8 pb-6 border-b border-gray-200 last:border-b-0">
                 <h3 className="text-slate-800 m-0 mb-4 text-xl flex items-center gap-2">Station Information</h3>
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4">
@@ -819,7 +848,7 @@ const AdminPage = () => {
                       }}
                     />
                   </div>
-                  <div className="flex gap-2 justify-center mt-4">
+                  <div className="flex gap-2 justify-center mt-4 flex-wrap">
                     <button
                       onClick={() => {
                         const win = window.open();
@@ -852,7 +881,7 @@ const AdminPage = () => {
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4">
                   <div className="flex flex-col gap-1">
                     <span className="font-semibold text-gray-600 text-sm">Station ID:</span>
-                    <span className="text-gray-800 text-base break-words p-2 bg-gray-50 rounded-md border border-gray-200 font-mono text-sm bg-slate-800 text-white p-2 rounded">{selectedStation.id}</span>
+                    <span className="text-gray-800 text-sm sm:text-base break-words p-2 bg-slate-800 text-white rounded-md font-mono">{selectedStation.id}</span>
                   </div>
                   <div className="flex flex-col gap-1">
                     <span className="font-semibold text-gray-600 text-sm">Status:</span>
@@ -874,7 +903,7 @@ const AdminPage = () => {
               </div>
             </div>
 
-            <div className="px-8 py-6 border-t border-gray-200 flex justify-end gap-4">
+            <div className="px-4 sm:px-8 py-4 sm:py-6 border-t border-gray-200 flex justify-end gap-3 sm:gap-4">
               <button onClick={closeModal} className="px-6 py-3 border-none rounded-lg cursor-pointer font-semibold text-sm transition-all bg-gray-500 text-white hover:bg-gray-600">
                 Close
               </button>
@@ -893,9 +922,9 @@ const AdminPage = () => {
       )}
 
       {/* Admin Footer */}
-      <footer className="bg-primary-dark text-slate-300 px-8 py-4 mt-12 border-t border-slate-700">
+      <footer className="bg-primary-dark text-slate-300 px-4 sm:px-8 py-4 mt-12 border-t border-slate-700">
         <div className="max-w-[1400px] mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-4 text-xs">
+          <div className="flex items-center gap-2 sm:gap-4 text-xs flex-wrap">
             <span>Secure Admin Portal</span>
             <span>•</span>
             <span>Admin Only</span>
@@ -912,7 +941,7 @@ const AdminPage = () => {
       {/* Invite Admin Dialog */}
       {showInviteDialog && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-2xl w-[400px]">
+          <div className="bg-white rounded-lg shadow-2xl w-[90vw] max-w-[400px]">
             <div className="px-6 py-5 border-b border-gray-200">
               <h2 className="m-0 text-xl text-slate-800">Invite New Admin</h2>
             </div>
