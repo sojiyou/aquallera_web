@@ -23,7 +23,7 @@ const Home = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center px-8 pt-32 pb-16 max-w-[1200px] mx-auto min-h-[80vh] text-center md:text-left">
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center px-8 pt-52 md:pt-32 pb-16 max-w-[1200px] mx-auto min-h-[80vh] text-center md:text-left">
         <div className="">
           <h1 className="text-4xl md:text-5xl text-slate-800 mb-6 leading-tight">Manage Your Water Station Efficiently</h1>
           <p className="text-xl text-slate-500 mb-8 leading-relaxed">
