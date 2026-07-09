@@ -59,6 +59,32 @@ const convertCoordinatesToAddress = async (lat, lng) => {
   }
 };
 
+// Shared helpers
+const getStatusBadge = (status) => {
+  const statusConfig = {
+    pending: { bg: '#fef3c7', color: '#92400e', label: 'Pending' },
+    Pending: { bg: '#fef3c7', color: '#92400e', label: 'Pending' },
+    confirmed: { bg: '#dbeafe', color: '#1e40af', label: 'Confirmed' },
+    Confirmed: { bg: '#dbeafe', color: '#1e40af', label: 'Confirmed' },
+    preparing: { bg: '#ede9fe', color: '#5b21b6', label: 'Preparing' },
+    Preparing: { bg: '#ede9fe', color: '#5b21b6', label: 'Preparing' },
+    on_delivery: { bg: '#dbeafe', color: '#1e40af', label: 'For Delivery' },
+    ready: { bg: '#d1fae5', color: '#065f46', label: 'For Pickup' },
+    Ready: { bg: '#d1fae5', color: '#065f46', label: 'Ready' },
+    completed: { bg: '#e2e8f0', color: '#475569', label: 'Completed' },
+    Completed: { bg: '#e2e8f0', color: '#475569', label: 'Completed' },
+    delivered: { bg: '#e2e8f0', color: '#475569', label: 'Delivered' },
+    Delivered: { bg: '#e2e8f0', color: '#475569', label: 'Delivered' },
+    cancelled: { bg: '#fee2e2', color: '#991b1b', label: 'Cancelled' },
+    Cancelled: { bg: '#fee2e2', color: '#991b1b', label: 'Cancelled' },
+  };
+  return statusConfig[status] || { bg: '#f1f5f9', color: '#475569', label: status };
+};
+
+const formatCurrency = (amount) => {
+  return `₱${parseFloat(amount || 0).toFixed(2)}`;
+};
+
 // ===== ORDERS TABLE COMPONENT =====
 const OrdersTable = ({ orders, onOrderClick }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -77,31 +103,6 @@ const OrdersTable = ({ orders, onOrderClick }) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
     }
-  };
-
-  const getStatusBadge = (status) => {
-    const statusConfig = {
-      pending: { bg: '#fef3c7', color: '#92400e', label: 'Pending' },
-      Pending: { bg: '#fef3c7', color: '#92400e', label: 'Pending' },
-      confirmed: { bg: '#dbeafe', color: '#1e40af', label: 'Confirmed' },
-      Confirmed: { bg: '#dbeafe', color: '#1e40af', label: 'Confirmed' },
-      preparing: { bg: '#ede9fe', color: '#5b21b6', label: 'Preparing' },
-      Preparing: { bg: '#ede9fe', color: '#5b21b6', label: 'Preparing' },
-      on_delivery: { bg: '#dbeafe', color: '#1e40af', label: 'For Delivery' },
-      ready: { bg: '#d1fae5', color: '#065f46', label: 'For Pickup' },
-      Ready: { bg: '#d1fae5', color: '#065f46', label: 'Ready' },
-      completed: { bg: '#e2e8f0', color: '#475569', label: 'Completed' },
-      Completed: { bg: '#e2e8f0', color: '#475569', label: 'Completed' },
-      delivered: { bg: '#e2e8f0', color: '#475569', label: 'Delivered' },
-      Delivered: { bg: '#e2e8f0', color: '#475569', label: 'Delivered' },
-      cancelled: { bg: '#fee2e2', color: '#991b1b', label: 'Cancelled' },
-      Cancelled: { bg: '#fee2e2', color: '#991b1b', label: 'Cancelled' },
-    };
-    return statusConfig[status] || { bg: '#f1f5f9', color: '#475569', label: status };
-  };
-
-  const formatCurrency = (amount) => {
-    return `₱${parseFloat(amount || 0).toFixed(2)}`;
   };
 
   if (orders.length === 0) {
@@ -616,6 +617,147 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
   );
 };
 
+// ===== GROUPED ORDERS VIEW COMPONENT =====
+const GroupedOrdersView = ({ orders, onOrderClick, onBulkStatusUpdate, isUpdating }) => {
+  const convertTo12Hour = (time24) => {
+    if (!time24) return '';
+    const [h, m] = time24.split(':');
+    const hour = parseInt(h, 10);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const hour12 = hour % 12 || 12;
+    return `${hour12}:${m} ${ampm}`;
+  };
+
+  const getNextStatusAction = (ordersInGroup) => {
+    const statusCounts = {};
+    ordersInGroup.forEach(o => {
+      const s = (o.status || '').toLowerCase();
+      statusCounts[s] = (statusCounts[s] || 0) + 1;
+    });
+
+    const sorted = Object.entries(statusCounts).sort(([,a], [,b]) => b - a);
+    if (sorted.length === 0) return null;
+
+    const commonStatus = sorted[0][0];
+
+    const nextMap = {
+      pending: { status: 'confirmed', label: 'Mark All as Confirmed' },
+      confirmed: { status: 'preparing', label: 'Mark All as Preparing' },
+      preparing: { status: 'on_delivery', label: 'Mark All as Out for Delivery' },
+      on_delivery: { status: 'completed', label: 'Mark All as Completed' },
+    };
+
+    return nextMap[commonStatus] || null;
+  };
+
+  const groups = React.useMemo(() => {
+    const deliveryGroups = {};
+    const pickups = [];
+
+    orders.forEach(order => {
+      if (order.orderType === 'Delivery' && order.time) {
+        const t = order.time;
+        if (!deliveryGroups[t]) deliveryGroups[t] = [];
+        deliveryGroups[t].push(order);
+      } else {
+        pickups.push(order);
+      }
+    });
+
+    const sortedGroups = Object.entries(deliveryGroups).sort(([a], [b]) => a.localeCompare(b));
+    return { deliveryGroups: sortedGroups, pickups };
+  }, [orders]);
+
+  if (orders.length === 0) {
+    return (
+      <div className="text-center py-16 bg-white rounded-xl shadow-sm">
+        <div className="text-5xl mb-4"></div>
+        <h3 className="text-slate-800 m-0 mb-2">No orders found</h3>
+        <p className="text-slate-500 m-0">There are no orders matching your current filter.</p>
+      </div>
+    );
+  }
+
+  if (groups.deliveryGroups.length === 0) {
+    return (
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 text-center">
+        <p className="text-slate-500">No delivery orders found for the current filter.</p>
+        {groups.pickups.length > 0 && (
+          <p className="text-slate-400 text-sm mt-2">{groups.pickups.length} pickup order(s) available.</p>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {groups.deliveryGroups.map(([time, timeOrders]) => {
+        const nextAction = getNextStatusAction(timeOrders);
+
+        return (
+          <div key={time} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-cyan-50 to-blue-50 border-b border-slate-200">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-800 text-base">{convertTo12Hour(time)}</h4>
+                  <span className="text-xs text-slate-500">{timeOrders.length} order{timeOrders.length > 1 ? 's' : ''}</span>
+                </div>
+              </div>
+              {nextAction && (
+                <button
+                  onClick={() => onBulkStatusUpdate(timeOrders, nextAction.status)}
+                  disabled={isUpdating === time}
+                  className="px-4 py-2 bg-primary text-white border-none rounded-lg cursor-pointer font-semibold text-xs transition-all hover:bg-primary-dark hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {isUpdating === time ? 'Updating...' : nextAction.label}
+                </button>
+              )}
+            </div>
+            <div className="divide-y divide-slate-100">
+              {timeOrders.map(order => {
+                const orderId = order.orderId || order.id || 'N/A';
+                const customerName = order.customerName || 'N/A';
+                const grandTotal = order.grandTotal || (order.waterSubtotal || 0) + (order.transactionFee || 0);
+                const statusInfo = getStatusBadge(order.status);
+
+                return (
+                  <div
+                    key={orderId}
+                    className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50 transition-colors"
+                    onClick={() => onOrderClick(order)}
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-slate-800 text-sm truncate">{customerName}</span>
+                        <span className="text-primary font-mono text-[10px]">#{orderId}</span>
+                      </div>
+                      <div className="flex items-center gap-3 mt-0.5">
+                        <span className="text-xs text-slate-500">{order.customerPhone || ''}</span>
+                        <span className="font-bold text-slate-700 text-xs">{formatCurrency(grandTotal)}</span>
+                      </div>
+                    </div>
+                    <span
+                      className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-semibold whitespace-nowrap shadow-sm"
+                      style={{ backgroundColor: statusInfo.bg, color: statusInfo.color }}
+                    >
+                      {statusInfo.label}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 const Dashboard = () => {
   const [alertProps, showAlert, closeAlert] = useAlert();
   const [activeSection, setActiveSection] = useState('orders');
@@ -633,6 +775,8 @@ const Dashboard = () => {
   const [, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [viewMode, setViewMode] = useState('list');
+  const [isBulkUpdating, setIsBulkUpdating] = useState(null);
   const navigate = useNavigate();
 
   const extractLatLng = (locationString) => {
@@ -775,6 +919,37 @@ const Dashboard = () => {
         ? { ...prev, status: newStatus }
         : prev
     );
+  };
+
+  const handleBulkStatusUpdate = async (ordersToUpdate, newStatus) => {
+    setIsBulkUpdating(ordersToUpdate[0]?.time || 'all');
+    try {
+      const updates = {};
+      ordersToUpdate.forEach(order => {
+        const key = order.orderId || order.id;
+        if (key) {
+          updates[`orders/${key}/status`] = newStatus;
+          updates[`orders/${key}/updatedAt`] = new Date().toISOString();
+        }
+      });
+      await update(ref(database), updates);
+      setOrders(prevOrders => 
+        prevOrders.map(order => {
+          const match = ordersToUpdate.some(o => (o.orderId || o.id) === (order.orderId || order.id));
+          return match ? { ...order, status: newStatus } : order;
+        })
+      );
+      const updateTargets = ordersToUpdate.filter(o => (o.orderId || o.id) === (selectedOrder?.orderId || selectedOrder?.id));
+      if (updateTargets.length > 0) {
+        setSelectedOrder(prev => prev ? { ...prev, status: newStatus } : prev);
+      }
+      showAlert({ type: 'success', message: `${ordersToUpdate.length} order(s) updated to ${newStatus.replace(/_/g, ' ')}` });
+    } catch (error) {
+      console.error('Error in bulk status update:', error);
+      showAlert({ type: 'error', message: 'Failed to update orders. Please try again.' });
+    } finally {
+      setIsBulkUpdating(null);
+    }
   };
 
   useEffect(() => {
@@ -1026,27 +1201,52 @@ const Dashboard = () => {
       {activeSection === 'orders' && (
         <>
           <section className="max-w-[1200px] mx-auto px-4 sm:px-8 py-4 sm:py-8">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
-              <h2 className="text-white m-0 text-xl md:text-2xl">Order Management</h2>
-              <div className="relative">
-                <select 
-                  className="appearance-none bg-white border-2 border-slate-200 rounded-xl px-4 py-3 pr-10 text-sm font-medium text-slate-800 cursor-pointer min-w-[200px] transition-all hover:border-primary focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.15)]"
-                  value={activeTab}
-                  onChange={(e) => setActiveTab(e.target.value)}
-                >
-                  <option value="all">All Orders</option>
-                  <option value="pending">Pending</option>
-                  <option value="confirmed">Confirmed</option>
-                  <option value="preparing">Preparing</option>
-                  <option value="for_pickup">For Pickup</option>
-                  <option value="for_delivery">For Delivery</option>
-                  <option value="completed">Completed</option>
-                  <option value="cancelled">Cancelled</option>
-                </select>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <h2 className="text-white m-0 text-xl md:text-2xl">Order Management</h2>
+                  <div className="flex bg-white/10 rounded-xl p-1 gap-0.5">
+                    <button
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border-none cursor-pointer ${viewMode === 'list' ? 'bg-white text-primary shadow-sm' : 'bg-transparent text-white/70 hover:text-white'}`}
+                      onClick={() => setViewMode('list')}
+                    >
+                      List View
+                    </button>
+                    <button
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border-none cursor-pointer ${viewMode === 'grouped' ? 'bg-white text-primary shadow-sm' : 'bg-transparent text-white/70 hover:text-white'}`}
+                      onClick={() => setViewMode('grouped')}
+                    >
+                      By Time
+                    </button>
+                  </div>
+                </div>
+                <div className="relative">
+                  <select 
+                    className="appearance-none bg-white border-2 border-slate-200 rounded-xl px-4 py-3 pr-10 text-sm font-medium text-slate-800 cursor-pointer min-w-[200px] transition-all hover:border-primary focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.15)]"
+                    value={activeTab}
+                    onChange={(e) => setActiveTab(e.target.value)}
+                  >
+                    <option value="all">All Orders</option>
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="preparing">Preparing</option>
+                    <option value="for_pickup">For Pickup</option>
+                    <option value="for_delivery">For Delivery</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                </div>
               </div>
-            </div>
 
-            <OrdersTable orders={getFilteredOrders()} onOrderClick={handleOrderClick} />
+            {viewMode === 'grouped' ? (
+              <GroupedOrdersView
+                orders={getFilteredOrders()}
+                onOrderClick={handleOrderClick}
+                onBulkStatusUpdate={handleBulkStatusUpdate}
+                isUpdating={isBulkUpdating}
+              />
+            ) : (
+              <OrdersTable orders={getFilteredOrders()} onOrderClick={handleOrderClick} />
+            )}
           </section>
 
           {showModal && selectedOrder && (
