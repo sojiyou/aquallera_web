@@ -5,9 +5,11 @@ Admin dashboard for the AQUA-LLERA water station management platform.
 ## Features
 
 - **Orders Management** — View and filter customer orders; mobile card layout with customer name, phone, amount, and View button.
+- **Grouped Delivery View ("By Time")** — Toggle between list view and time-grouped view of today's `on_delivery` deliveries with bulk status update capabilities. Header shows "Deliveries for today: {date}".
 - **Stock & Analytics** — Inventory tracking, revenue projections with confidence level, year-over-year comparison, and performance reports.
 - **Water Consumption Analytics** — Monthly/annual consumption tracking with stacked bar charts and circular progress indicators.
-- **Station Settings** — Manage station info, location, operating hours, services, and pricing.
+- **Station Settings** — Manage station info, location, operating hours, services, pricing, delivery hours, and delivery days (day-of-week toggle).
+- **Station Signup (6 steps)** — Multi-step registration: Basic Info → Location (Mapbox map) → Services (types, hours, delivery radius, delivery hours, delivery days) → Pricing → Business Permit → Account. Includes inline field validation with real-time password indicators.
 - **Admin Panel** — Pending/approved station review, admin invitation management, business permit inspection.
 
 ## Mobile Responsiveness
