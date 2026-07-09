@@ -80,3 +80,9 @@ Ejects from Create React App configuration (one-way operation).
 - Recharts (charts)
 - EmailJS (email notifications)
 - Mapbox GL (location picker)
+
+## Session Log
+
+| Session ID | What we did |
+|---|---|
+| `2026-07-09` | Added delivery days (Settings.js, Signup.js) with day-of-week toggle; split Signup from 5 to 6 steps (Location + Services separated); added grouped delivery orders view with "By Time"/"List View" toggle and bulk status update; replaced PWA date picker with available date buttons; fixed BOM warning in Settings.js; added inline validation with `onBlur` and real-time password indicators; limited grouped view to today's `on_delivery` orders with "Deliveries for today: {date}" header |
