@@ -87,8 +87,9 @@ const OrdersTable = ({ orders, onOrderClick }) => {
       Confirmed: { bg: '#dbeafe', color: '#1e40af', label: 'Confirmed' },
       preparing: { bg: '#ede9fe', color: '#5b21b6', label: 'Preparing' },
       Preparing: { bg: '#ede9fe', color: '#5b21b6', label: 'Preparing' },
-      on_delivery: { bg: '#dbeafe', color: '#1e40af', label: 'On Delivery' },
-      ready: { bg: '#d1fae5', color: '#065f46', label: 'Ready' },
+      on_delivery: { bg: '#dbeafe', color: '#1e40af', label: 'For Delivery' },
+      ready: { bg: '#d1fae5', color: '#065f46', label: 'For Pickup' },
+      Ready: { bg: '#d1fae5', color: '#065f46', label: 'Ready' },
       completed: { bg: '#e2e8f0', color: '#475569', label: 'Completed' },
       Completed: { bg: '#e2e8f0', color: '#475569', label: 'Completed' },
       delivered: { bg: '#e2e8f0', color: '#475569', label: 'Delivered' },
@@ -595,7 +596,7 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
                   )}
                 </>
               )}
-              {(order.status === 'on_delivery' || order.status === 'ready') && (
+              {(order.status === 'on_delivery' || order.status === 'On_Delivery' || order.status === 'ready' || order.status === 'Ready') && (
                 <button onClick={() => handleStatusUpdate('completed')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-secondary hover:bg-primary-dark">
                   Mark as Completed
                 </button>
@@ -742,6 +743,8 @@ const Dashboard = () => {
       if (activeTab === 'pending') return status === 'pending';
       if (activeTab === 'confirmed') return status === 'confirmed';
       if (activeTab === 'preparing') return status === 'preparing';
+      if (activeTab === 'for_pickup') return status === 'ready';
+      if (activeTab === 'for_delivery') return status === 'on_delivery';
       if (activeTab === 'completed') return status === 'completed' || status === 'delivered';
       if (activeTab === 'cancelled') return status === 'cancelled';
       
@@ -766,6 +769,11 @@ const Dashboard = () => {
           ? { ...order, status: newStatus }
           : order
       )
+    );
+    setSelectedOrder(prev => 
+      prev && (prev.orderId || prev.id) === orderId
+        ? { ...prev, status: newStatus }
+        : prev
     );
   };
 
@@ -1030,6 +1038,8 @@ const Dashboard = () => {
                   <option value="pending">Pending</option>
                   <option value="confirmed">Confirmed</option>
                   <option value="preparing">Preparing</option>
+                  <option value="for_pickup">For Pickup</option>
+                  <option value="for_delivery">For Delivery</option>
                   <option value="completed">Completed</option>
                   <option value="cancelled">Cancelled</option>
                 </select>
