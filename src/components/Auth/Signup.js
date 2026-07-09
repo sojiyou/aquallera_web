@@ -91,6 +91,7 @@ const Signup = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
+    setErrors(prev => ({ ...prev, [name]: '' }));
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
@@ -105,6 +106,7 @@ const Signup = () => {
   };
 
   const handleServiceTypeChange = (serviceType) => {
+    setErrors(prev => ({ ...prev, serviceTypes: '' }));
     setFormData(prev => {
       const currentTypes = [...prev.serviceTypes];
       if (currentTypes.includes(serviceType)) {
@@ -125,19 +127,18 @@ const Signup = () => {
   const addDeliveryHour = () => {
     if (!newDeliveryTime) return;
 
-    // Check if time already exists
     if (formData.deliveryHours.includes(newDeliveryTime)) {
       setErrors(prev => ({ ...prev, deliveryHours: 'This delivery time already exists' }));
       return;
     }
 
+    setErrors(prev => ({ ...prev, deliveryHours: '' }));
     setFormData(prev => ({
       ...prev,
       deliveryHours: [...prev.deliveryHours, newDeliveryTime].sort()
     }));
 
     setNewDeliveryTime('09:00');
-    setErrors(prev => ({ ...prev, deliveryHours: '' }));
   };
 
   const removeDeliveryHour = (timeToRemove) => {
@@ -148,6 +149,7 @@ const Signup = () => {
   };
 
   const toggleDeliveryDay = (day) => {
+    setErrors(prev => ({ ...prev, deliveryDays: '' }));
     setFormData(prev => {
       const current = [...(prev.deliveryDays || [])];
       if (current.includes(day)) {
@@ -507,7 +509,48 @@ const Signup = () => {
     setMapboxSearch('');
   };
 
-  // ========== VALIDATION FUNCTIONS ==========
+  // ========== INLINE FIELD VALIDATION ==========
+  const validateField = (name, value) => {
+    switch (name) {
+      case 'stationName':
+        return value.trim() ? '' : 'Station name required';
+      case 'ownerName':
+        return value.trim() ? '' : 'Owner name required';
+      case 'email':
+        if (!value.trim()) return 'Email required';
+        return /\S+@\S+\.\S+/.test(value) ? '' : 'Invalid email format';
+      case 'phone':
+        return value.trim() ? '' : 'Phone number required';
+      case 'address':
+        return value.trim() ? '' : 'Address required';
+      case 'city':
+        return value.trim() ? '' : 'City required';
+      case 'state':
+        return value.trim() ? '' : 'State required';
+      case 'zipCode':
+        return value.trim() ? '' : 'ZIP code required';
+      case 'businessPermitNumber':
+        return value.trim() ? '' : 'Business permit number required';
+      case 'password':
+        if (!value) return 'Password required';
+        return value.length >= 6 ? '' : 'Password must be at least 6 characters';
+      case 'confirmPassword':
+        return value === formData.password ? '' : 'Passwords do not match';
+      case 'termsAccepted':
+        return value ? '' : 'You must accept the terms';
+      default:
+        return '';
+    }
+  };
+
+  const handleBlur = (e) => {
+    const { name, value, type, checked } = e.target;
+    const val = type === 'checkbox' ? checked : value;
+    const error = validateField(name, val);
+    setErrors(prev => ({ ...prev, [name]: error }));
+  };
+
+  // ========== STEP VALIDATION ==========
   const validateStep = (step) => {
     const newErrors = {};
 
@@ -743,6 +786,7 @@ const Signup = () => {
                   name="stationName"
                   value={formData.stationName}
                   onChange={handleInputChange}
+                  onBlur={handleBlur}
                   placeholder="e.g., Crystal Clear Water Station"
                   className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.stationName ? 'border-red-500' : 'border-slate-200'}`}
                 />
@@ -756,6 +800,7 @@ const Signup = () => {
                   name="ownerName"
                   value={formData.ownerName}
                   onChange={handleInputChange}
+                  onBlur={handleBlur}
                   placeholder="Full name of the owner"
                   className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.ownerName ? 'border-red-500' : 'border-slate-200'}`}
                 />
@@ -769,6 +814,7 @@ const Signup = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
+                  onBlur={handleBlur}
                   placeholder="your@email.com"
                   className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.email ? 'border-red-500' : 'border-slate-200'}`}
                 />
@@ -782,6 +828,7 @@ const Signup = () => {
                   name="phone"
                   value={formData.phone}
                   onChange={handleNumberInputChange}
+                  onBlur={handleBlur}
                   placeholder="09XXXXXXXXX"
                   className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.phone ? 'border-red-500' : 'border-slate-200'}`}
                 />
@@ -891,6 +938,7 @@ const Signup = () => {
                   name="address"
                   value={formData.address}
                   onChange={handleInputChange}
+                  onBlur={handleBlur}
                   placeholder="Street address (auto-filled from map)"
                   className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.address ? 'border-red-500' : 'border-slate-200'}`}
                 />
@@ -905,6 +953,7 @@ const Signup = () => {
                     name="city"
                     value={formData.city}
                     onChange={handleInputChange}
+                    onBlur={handleBlur}
                     placeholder="City (auto-filled from map)"
                     className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.city ? 'border-red-500' : 'border-slate-200'}`}
                   />
@@ -913,11 +962,12 @@ const Signup = () => {
 
                 <div className="mb-6">
                   <label className="block mb-2 text-gray-700 font-medium text-sm">State *</label>
-                  <input
+                    <input
                     type="text"
                     name="state"
                     value={formData.state}
                     onChange={handleInputChange}
+                    onBlur={handleBlur}
                     placeholder="State/Province (auto-filled from map)"
                     className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.state ? 'border-red-500' : 'border-slate-200'}`}
                   />
@@ -927,11 +977,12 @@ const Signup = () => {
 
               <div className="mb-6">
                 <label className="block mb-2 text-gray-700 font-medium text-sm">ZIP Code *</label>
-                <input
+                  <input
                   type="text"
                   name="zipCode"
                   value={formData.zipCode}
                   onChange={handleInputChange}
+                  onBlur={handleBlur}
                   placeholder="12345"
                   className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.zipCode ? 'border-red-500' : 'border-slate-200'}`}
                 />
@@ -1220,6 +1271,7 @@ const Signup = () => {
                   name="businessPermitNumber"
                   value={formData.businessPermitNumber}
                   onChange={handleInputChange}
+                  onBlur={handleBlur}
                   placeholder="Enter your official permit number"
                   className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.businessPermitNumber ? 'border-red-500' : 'border-slate-200'}`}
                 />
@@ -1334,6 +1386,7 @@ const Signup = () => {
                         name="password"
                         value={formData.password}
                         onChange={handleInputChange}
+                        onBlur={handleBlur}
                         placeholder="Minimum 6 characters"
                         className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.password ? 'border-red-500' : 'border-slate-200'}`}
                       />
@@ -1358,6 +1411,16 @@ const Signup = () => {
                       </button>
                     </div>
                     {errors.password && <span className="text-red-500 text-sm mt-1 block">{errors.password}</span>}
+                    {formData.password && (
+                      <div className="flex items-center gap-2 mt-1.5">
+                        <span className={formData.password.length >= 6 ? 'text-green-600' : 'text-slate-400'}>
+                          {formData.password.length >= 6 ? '✓' : '○'}
+                        </span>
+                        <span className={`text-xs ${formData.password.length >= 6 ? 'text-green-600' : 'text-slate-500'}`}>
+                          At least 6 characters
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="mb-6">
@@ -1368,6 +1431,7 @@ const Signup = () => {
                         name="confirmPassword"
                         value={formData.confirmPassword}
                         onChange={handleInputChange}
+                        onBlur={handleBlur}
                         placeholder="Confirm your password"
                         className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.confirmPassword ? 'border-red-500' : 'border-slate-200'}`}
                       />
@@ -1392,6 +1456,16 @@ const Signup = () => {
                       </button>
                     </div>
                     {errors.confirmPassword && <span className="text-red-500 text-sm mt-1 block">{errors.confirmPassword}</span>}
+                    {formData.confirmPassword && (
+                      <div className="flex items-center gap-2 mt-1.5">
+                        <span className={formData.password === formData.confirmPassword ? 'text-green-600' : 'text-slate-400'}>
+                          {formData.password === formData.confirmPassword ? '✓' : '○'}
+                        </span>
+                        <span className={`text-xs ${formData.password === formData.confirmPassword ? 'text-green-600' : 'text-slate-500'}`}>
+                          Passwords match
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="mb-6">
@@ -1401,6 +1475,7 @@ const Signup = () => {
                         name="termsAccepted"
                         checked={formData.termsAccepted}
                         onChange={handleInputChange}
+                        onBlur={handleBlur}
                         className="w-[18px] h-[18px] m-0"
                       />
                       <span>I agree to Terms & Conditions and Data Privacy Policy</span>
