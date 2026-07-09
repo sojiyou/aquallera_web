@@ -85,6 +85,12 @@ const formatCurrency = (amount) => {
   return `₱${parseFloat(amount || 0).toFixed(2)}`;
 };
 
+const getFormattedDate = () => {
+  const now = new Date();
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  return `${months[now.getMonth()]} ${String(now.getDate()).padStart(2, '0')}, ${now.getFullYear()}`;
+};
+
 // ===== ORDERS TABLE COMPONENT =====
 const OrdersTable = ({ orders, onOrderClick }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -619,6 +625,14 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
 
 // ===== GROUPED ORDERS VIEW COMPONENT =====
 const GroupedOrdersView = ({ orders, onOrderClick, onBulkStatusUpdate, isUpdating }) => {
+  const today = React.useMemo(() => new Date().toISOString().split('T')[0], []);
+
+  const filteredOrders = React.useMemo(() =>
+    orders.filter(o =>
+      (o.status || '').toLowerCase() === 'on_delivery' &&
+      o.date === today
+    ), [orders, today]);
+
   const convertTo12Hour = (time24) => {
     if (!time24) return '';
     const [h, m] = time24.split(':');
@@ -652,28 +666,25 @@ const GroupedOrdersView = ({ orders, onOrderClick, onBulkStatusUpdate, isUpdatin
 
   const groups = React.useMemo(() => {
     const deliveryGroups = {};
-    const pickups = [];
 
-    orders.forEach(order => {
+    filteredOrders.forEach(order => {
       if (order.orderType === 'Delivery' && order.time) {
         const t = order.time;
         if (!deliveryGroups[t]) deliveryGroups[t] = [];
         deliveryGroups[t].push(order);
-      } else {
-        pickups.push(order);
       }
     });
 
     const sortedGroups = Object.entries(deliveryGroups).sort(([a], [b]) => a.localeCompare(b));
-    return { deliveryGroups: sortedGroups, pickups };
-  }, [orders]);
+    return { deliveryGroups: sortedGroups };
+  }, [filteredOrders]);
 
-  if (orders.length === 0) {
+  if (filteredOrders.length === 0) {
     return (
       <div className="text-center py-16 bg-white rounded-xl shadow-sm">
         <div className="text-5xl mb-4"></div>
-        <h3 className="text-slate-800 m-0 mb-2">No orders found</h3>
-        <p className="text-slate-500 m-0">There are no orders matching your current filter.</p>
+        <h3 className="text-slate-800 m-0 mb-2">No deliveries scheduled for today</h3>
+        <p className="text-slate-500 m-0">There are no delivery orders scheduled for today.</p>
       </div>
     );
   }
@@ -681,10 +692,7 @@ const GroupedOrdersView = ({ orders, onOrderClick, onBulkStatusUpdate, isUpdatin
   if (groups.deliveryGroups.length === 0) {
     return (
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-8 text-center">
-        <p className="text-slate-500">No delivery orders found for the current filter.</p>
-        {groups.pickups.length > 0 && (
-          <p className="text-slate-400 text-sm mt-2">{groups.pickups.length} pickup order(s) available.</p>
-        )}
+        <p className="text-slate-500">No deliveries scheduled for today.</p>
       </div>
     );
   }
@@ -1203,7 +1211,9 @@ const Dashboard = () => {
           <section className="max-w-[1200px] mx-auto px-4 sm:px-8 py-4 sm:py-8">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
                 <div className="flex items-center gap-3 flex-wrap">
-                  <h2 className="text-white m-0 text-xl md:text-2xl">Order Management</h2>
+                  <h2 className="text-white m-0 text-xl md:text-2xl">
+                    {viewMode === 'grouped' ? `Deliveries for today: ${getFormattedDate()}` : 'Order Management'}
+                  </h2>
                   <div className="flex bg-white/10 rounded-xl p-1 gap-0.5">
                     <button
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border-none cursor-pointer ${viewMode === 'list' ? 'bg-white text-primary shadow-sm' : 'bg-transparent text-white/70 hover:text-white'}`}
@@ -1219,22 +1229,24 @@ const Dashboard = () => {
                     </button>
                   </div>
                 </div>
-                <div className="relative">
-                  <select 
-                    className="appearance-none bg-white border-2 border-slate-200 rounded-xl px-4 py-3 pr-10 text-sm font-medium text-slate-800 cursor-pointer min-w-[200px] transition-all hover:border-primary focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.15)]"
-                    value={activeTab}
-                    onChange={(e) => setActiveTab(e.target.value)}
-                  >
-                    <option value="all">All Orders</option>
-                    <option value="pending">Pending</option>
-                    <option value="confirmed">Confirmed</option>
-                    <option value="preparing">Preparing</option>
-                    <option value="for_pickup">For Pickup</option>
-                    <option value="for_delivery">For Delivery</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
-                </div>
+                {viewMode !== 'grouped' && (
+                  <div className="relative">
+                    <select 
+                      className="appearance-none bg-white border-2 border-slate-200 rounded-xl px-4 py-3 pr-10 text-sm font-medium text-slate-800 cursor-pointer min-w-[200px] transition-all hover:border-primary focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.15)]"
+                      value={activeTab}
+                      onChange={(e) => setActiveTab(e.target.value)}
+                    >
+                      <option value="all">All Orders</option>
+                      <option value="pending">Pending</option>
+                      <option value="confirmed">Confirmed</option>
+                      <option value="preparing">Preparing</option>
+                      <option value="for_pickup">For Pickup</option>
+                      <option value="for_delivery">For Delivery</option>
+                      <option value="completed">Completed</option>
+                      <option value="cancelled">Cancelled</option>
+                    </select>
+                  </div>
+                )}
               </div>
 
             {viewMode === 'grouped' ? (
