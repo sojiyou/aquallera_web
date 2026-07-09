@@ -42,6 +42,7 @@ const Signup = () => {
     serviceTypes: [],
     deliveryRadius: 5,
     deliveryHours: [], // NEW: Array of delivery time slots
+    deliveryDays: [], // NEW: Array of delivery days
 
     // PRICING VARIABLES
     pricing_gallon_pure: '',
@@ -144,6 +145,17 @@ const Signup = () => {
       ...prev,
       deliveryHours: prev.deliveryHours.filter(time => time !== timeToRemove)
     }));
+  };
+
+  const toggleDeliveryDay = (day) => {
+    setFormData(prev => {
+      const current = [...(prev.deliveryDays || [])];
+      if (current.includes(day)) {
+        return { ...prev, deliveryDays: current.filter(d => d !== day) };
+      } else {
+        return { ...prev, deliveryDays: [...current, day] };
+      }
+    });
   };
 
   const handleFileSelect = (e) => {
@@ -518,20 +530,25 @@ const Signup = () => {
       if (!formData.city.trim()) newErrors.city = 'City required';
       if (!formData.state.trim()) newErrors.state = 'State required';
       if (!formData.zipCode.trim()) newErrors.zipCode = 'ZIP code required';
-      if (formData.serviceTypes.length === 0) {
-        newErrors.serviceTypes = 'Select at least one service type';
-      }
-      // NEW: Validate delivery hours if delivery service is selected
-      if (formData.serviceTypes.includes('delivery') && formData.deliveryHours.length === 0) {
-        newErrors.deliveryHours = 'Add at least one delivery time slot';
-      }
     }
 
     if (step === 3) {
-      // Pricing is optional
+      if (formData.serviceTypes.length === 0) {
+        newErrors.serviceTypes = 'Select at least one service type';
+      }
+      if (formData.serviceTypes.includes('delivery') && formData.deliveryHours.length === 0) {
+        newErrors.deliveryHours = 'Add at least one delivery time slot';
+      }
+      if (formData.serviceTypes.includes('delivery') && formData.deliveryDays.length === 0) {
+        newErrors.deliveryDays = 'Select at least one delivery day';
+      }
     }
 
     if (step === 4) {
+      // Pricing is optional
+    }
+
+    if (step === 5) {
       if (!formData.businessPermitNumber.trim()) {
         newErrors.businessPermitNumber = 'Business permit number required';
       }
@@ -540,7 +557,7 @@ const Signup = () => {
       }
     }
 
-    if (step === 5) {
+    if (step === 6) {
       if (!formData.password) {
         newErrors.password = 'Password required';
       } else if (formData.password.length < 6) {
@@ -575,7 +592,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validateStep(5)) return;
+    if (!validateStep(6)) return;
 
     setIsUploading(true);
     const progressInterval = simulateUploadProgress();
@@ -622,6 +639,7 @@ const Signup = () => {
         serviceTypes: formData.serviceTypes,
         deliveryRadius: Number(formData.deliveryRadius),
         deliveryHours: formData.deliveryHours,
+        deliveryDays: formData.deliveryDays,
         pricing_gallon_pure: formData.pricing_gallon_pure ? parseFloat(formData.pricing_gallon_pure) : null,
         pricing_gallon_spring: formData.pricing_gallon_spring ? parseFloat(formData.pricing_gallon_spring) : null,
         pricing_gallon_mineral: formData.pricing_gallon_mineral ? parseFloat(formData.pricing_gallon_mineral) : null,
@@ -694,7 +712,7 @@ const Signup = () => {
 
         {/* Progress Steps */}
         <div className="flex justify-between mb-8 relative">
-          {[1, 2, 3, 4, 5].map(step => (
+          {[1, 2, 3, 4, 5, 6].map(step => (
             <div
               key={step}
               className={`flex flex-col items-center relative z-[2] flex-1 ${currentStep >= step ? 'active' : ''} ${currentStep === step ? 'current' : ''}`}
@@ -703,9 +721,10 @@ const Signup = () => {
               <div className={`text-xs text-slate-500 font-medium text-center ${currentStep >= step ? 'text-primary font-semibold' : ''}`}>
                 {step === 1 && 'Basic Info'}
                 {step === 2 && 'Location'}
-                {step === 3 && 'Pricing'}
-                {step === 4 && 'Permit'}
-                {step === 5 && 'Account'}
+                {step === 3 && 'Services'}
+                {step === 4 && 'Pricing'}
+                {step === 5 && 'Permit'}
+                {step === 6 && 'Account'}
               </div>
             </div>
           ))}
@@ -771,7 +790,7 @@ const Signup = () => {
             </div>
           )}
 
-          {/* STEP 2: Location - WITH DELIVERY HOURS */}
+          {/* STEP 2: Location */}
           {currentStep === 2 && (
             <div>
               <h3 className="text-slate-800 mb-6 text-xl border-b-2 border-slate-100 pb-2">Station Location</h3>
@@ -918,8 +937,15 @@ const Signup = () => {
                 />
                 {errors.zipCode && <span className="text-red-500 text-sm mt-1 block">{errors.zipCode}</span>}
               </div>
+            </div>
+          )}
 
-              {/* SERVICES */}
+          {/* STEP 3: Services */}
+          {currentStep === 3 && (
+            <div>
+              <h3 className="text-slate-800 mb-6 text-xl border-b-2 border-slate-100 pb-2">Services Offered</h3>
+
+              {/* SERVICE TYPES */}
               <div className="mb-6">
                 <label className="block mb-2 text-gray-700 font-medium text-sm">Services Offered *</label>
                 <div className="flex gap-4 mt-2">
@@ -964,7 +990,7 @@ const Signup = () => {
                 </div>
               </div>
 
-              {/* NEW: DELIVERY HOURS SECTION */}
+              {/* DELIVERY SECTION */}
               {formData.serviceTypes.includes('delivery') && (
                 <>
                   <div className="mb-6">
@@ -988,7 +1014,6 @@ const Signup = () => {
                       Add the times when you deliver water to customers
                     </p>
 
-                    {/* Add Delivery Time */}
                     <div className="flex gap-2 mb-4">
                       <div className="flex-1 min-w-0">
                         <TimePickerWheel
@@ -1009,7 +1034,6 @@ const Signup = () => {
                       <span className="text-red-500 text-sm mt-1 block">{errors.deliveryHours}</span>
                     )}
 
-                    {/* Display Delivery Hours */}
                     {formData.deliveryHours.length > 0 && (
                       <div className="flex flex-col gap-2 mt-3">
                         {formData.deliveryHours.map((time, index) => (
@@ -1040,13 +1064,48 @@ const Signup = () => {
                       </div>
                     )}
                   </div>
+
+                  {/* DELIVERY DAYS */}
+                  <div className="mb-6">
+                    <label className="block mb-2 text-gray-700 font-medium text-sm">
+                      <svg className="w-4 h-4 inline mr-1.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      Delivery Days *
+                    </label>
+                    <p className="block text-slate-400 text-xs mt-1 italic" style={{ marginBottom: '0.75rem' }}>
+                      Select the days you deliver water
+                    </p>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {['monday','tuesday','wednesday','thursday','friday','saturday','sunday'].map(day => {
+                        const selected = (formData.deliveryDays || []).includes(day);
+                        return (
+                          <button
+                            key={day}
+                            type="button"
+                            onClick={() => toggleDeliveryDay(day)}
+                            className={`px-4 py-2 rounded-lg text-xs font-semibold border-2 cursor-pointer transition-all ${
+                              selected
+                                ? 'bg-primary text-white border-primary'
+                                : 'bg-white text-slate-600 border-slate-200 hover:border-primary hover:text-primary'
+                            }`}
+                          >
+                            {day.charAt(0).toUpperCase() + day.slice(1, 3)}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {formData.serviceTypes.includes('delivery') && formData.deliveryDays.length === 0 && (
+                      <span className="text-red-500 text-xs mt-1 block">{errors.deliveryDays}</span>
+                    )}
+                  </div>
                 </>
               )}
             </div>
           )}
 
-          {/* STEP 3: Pricing */}
-          {currentStep === 3 && (
+          {/* STEP 4: Pricing */}
+          {currentStep === 4 && (
             <div>
               <h3 className="text-slate-800 mb-6 text-xl border-b-2 border-slate-100 pb-2">Product Pricing (Optional)</h3>
               <p className="text-slate-500 text-sm mb-6 p-3 bg-slate-50 rounded-md border-l-4 border-primary">
@@ -1145,8 +1204,8 @@ const Signup = () => {
             </div>
           )}
 
-          {/* STEP 4: Business Permit */}
-          {currentStep === 4 && (
+          {/* STEP 5: Permit */}
+          {currentStep === 5 && (
             <div>
               <h3 className="text-slate-800 mb-6 text-xl border-b-2 border-slate-100 pb-2">Business Permit Verification</h3>
               <p className="text-slate-500 text-sm mb-6 p-3 bg-slate-50 rounded-md border-l-4 border-amber-500">
@@ -1257,8 +1316,8 @@ const Signup = () => {
             </div>
           )}
 
-          {/* STEP 5: Account Setup */}
-          {currentStep === 5 && (
+          {/* STEP 6: Account Setup */}
+          {currentStep === 6 && (
             <div>
               <h3 className="text-slate-800 mb-6 text-xl border-b-2 border-slate-100 pb-2">Account Setup</h3>
 
@@ -1413,7 +1472,7 @@ const Signup = () => {
               </button>
             )}
 
-            {currentStep < 5 ? (
+            {currentStep < 6 ? (
               <button type="button" onClick={nextStep} className="bg-primary text-white px-8 py-3 rounded-lg font-semibold cursor-pointer transition-all text-base min-w-[120px] hover:bg-primary-dark hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed">
                 Continue
               </button>

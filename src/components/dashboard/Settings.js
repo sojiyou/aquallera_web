@@ -51,7 +51,8 @@ const Settings = ({ stationData, setStationData }) => {
         },
         serviceTypes: ['pickup'],
         deliveryRadius: 5,
-        deliveryHours: [], // NEW: Initialize empty array
+        deliveryHours: [],
+        deliveryDays: [],
         pricing_gallon_pure: null,
         pricing_gallon_spring: null,
         pricing_gallon_mineral: null,
@@ -201,6 +202,17 @@ const Settings = ({ stationData, setStationData }) => {
     }));
   };
 
+  const toggleDeliveryDay = (day) => {
+    setFormData(prev => {
+      const current = [...(prev.deliveryDays || [])];
+      if (current.includes(day)) {
+        return { ...prev, deliveryDays: current.filter(d => d !== day) };
+      } else {
+        return { ...prev, deliveryDays: [...current, day] };
+      }
+    });
+  };
+
   const handleSave = async () => {
     setLoading(true);
     setMessage('');
@@ -268,7 +280,7 @@ const Settings = ({ stationData, setStationData }) => {
           else if (key === 'deliveryRadius') {
             updates[key] = parseInt(newValue) || 5;
           }
-          else if (key === 'serviceTypes' || key === 'deliveryHours') {
+          else if (key === 'serviceTypes' || key === 'deliveryHours' || key === 'deliveryDays') {
             updates[key] = Array.isArray(newValue) ? newValue : [];
           }
           else {
@@ -697,6 +709,42 @@ const Settings = ({ stationData, setStationData }) => {
                   </div>
                 )}
               </div>
+
+              {/* Delivery Days Section */}
+              <div className="mb-5">
+                <label className="block mb-2 text-gray-700 font-medium text-sm">
+                  <svg className="w-4 h-4 inline mr-1.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Delivery Days *
+                </label>
+                <p className="text-xs text-slate-400 italic mb-3">
+                  Select the days you deliver water
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {['monday','tuesday','wednesday','thursday','friday','saturday','sunday'].map(day => {
+                    const selected = (formData.deliveryDays || []).includes(day);
+                    return (
+                      <button
+                        key={day}
+                        type="button"
+                        disabled={!isEditing}
+                        onClick={() => toggleDeliveryDay(day)}
+                        className={`px-4 py-2 rounded-lg text-xs font-semibold border-2 cursor-pointer transition-all disabled:cursor-not-allowed ${
+                          selected
+                            ? 'bg-primary text-white border-primary'
+                            : 'bg-white text-slate-600 border-slate-200 hover:border-primary hover:text-primary'
+                        }`}
+                      >
+                        {day.charAt(0).toUpperCase() + day.slice(1, 3)}
+                      </button>
+                    );
+                  })}
+                </div>
+                {(formData.deliveryDays || []).length === 0 && (formData.serviceTypes || []).includes('delivery') && isEditing && (
+                  <span className="text-red-500 text-xs mt-1 block">Select at least one delivery day</span>
+                )}
+              </div>
             </>
           )}
         </div>
@@ -706,7 +754,7 @@ const Settings = ({ stationData, setStationData }) => {
           <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">Pricing</h3>
           <div className="mt-4">
             <div className="mb-5">
-              <label className="block mb-2 text-gray-700 font-medium text-sm">Gallon Pure Water (₱)</label>
+              <label className="block mb-2 text-gray-700 font-medium text-sm">Gallon Pure Water (â‚±)</label>
               <input
                 type="number"
                 name="pricing_gallon_pure"
@@ -724,7 +772,7 @@ const Settings = ({ stationData, setStationData }) => {
             </div>
 
             <div className="mb-5">
-              <label className="block mb-2 text-gray-700 font-medium text-sm">Gallon Spring Water (₱)</label>
+              <label className="block mb-2 text-gray-700 font-medium text-sm">Gallon Spring Water (â‚±)</label>
               <input
                 type="number"
                 name="pricing_gallon_spring"
@@ -742,7 +790,7 @@ const Settings = ({ stationData, setStationData }) => {
             </div>
 
             <div className="mb-5">
-              <label className="block mb-2 text-gray-700 font-medium text-sm">Gallon Mineral Water (₱)</label>
+              <label className="block mb-2 text-gray-700 font-medium text-sm">Gallon Mineral Water (â‚±)</label>
               <input
                 type="number"
                 name="pricing_gallon_mineral"
@@ -760,7 +808,7 @@ const Settings = ({ stationData, setStationData }) => {
             </div>
 
             <div className="mb-5">
-              <label className="block mb-2 text-gray-700 font-medium text-sm">Delivery Fee (₱)</label>
+              <label className="block mb-2 text-gray-700 font-medium text-sm">Delivery Fee (â‚±)</label>
               <input
                 type="number"
                 name="pricing_delivery_fee"
