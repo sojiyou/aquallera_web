@@ -564,37 +564,37 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
-                          <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg p-3">
-                            <span className="text-xl"></span>
-                            <div>
-                              <span className="text-[0.7rem] text-slate-500 font-medium">Total Orders</span>
-                              <span className="text-sm text-slate-800 font-bold">{month.totalOrders}</span>
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+                          <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 bg-slate-50 border border-slate-200 rounded-lg p-2 sm:p-3">
+                            <span className="text-lg sm:text-xl flex-shrink-0"></span>
+                            <div className="min-w-0 text-center sm:text-left">
+                              <span className="block text-[10px] sm:text-[0.7rem] text-slate-500 font-medium leading-tight">Total Orders</span>
+                              <span className="block text-sm sm:text-base text-slate-800 font-bold leading-tight">{month.totalOrders}</span>
                             </div>
                           </div>
-                          <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg p-3">
-                            <span className="text-xl"></span>
-                            <div>
-                              <span className="text-[0.7rem] text-slate-500 font-medium">Avg Pure/Order</span>
-                              <span className="text-sm text-slate-800 font-bold">
+                          <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 bg-slate-50 border border-slate-200 rounded-lg p-2 sm:p-3">
+                            <span className="text-lg sm:text-xl flex-shrink-0"></span>
+                            <div className="min-w-0 text-center sm:text-left">
+                              <span className="block text-[10px] sm:text-[0.7rem] text-slate-500 font-medium leading-tight">Avg Pure/Order</span>
+                              <span className="block text-sm sm:text-base text-slate-800 font-bold leading-tight break-words">
                                 {(month.pureWater / month.totalOrders).toFixed(1)} gal
                               </span>
                             </div>
                           </div>
-                          <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg p-3">
-                            <span className="text-xl"></span>
-                            <div>
-                              <span className="text-[0.7rem] text-slate-500 font-medium">Avg Spring/Order</span>
-                              <span className="text-sm text-slate-800 font-bold">
+                          <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 bg-slate-50 border border-slate-200 rounded-lg p-2 sm:p-3">
+                            <span className="text-lg sm:text-xl flex-shrink-0"></span>
+                            <div className="min-w-0 text-center sm:text-left">
+                              <span className="block text-[10px] sm:text-[0.7rem] text-slate-500 font-medium leading-tight">Avg Spring/Order</span>
+                              <span className="block text-sm sm:text-base text-slate-800 font-bold leading-tight break-words">
                                 {(month.springWater / month.totalOrders).toFixed(1)} gal
                               </span>
                             </div>
                           </div>
-                          <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg p-3">
-                            <span className="text-xl"></span>
-                            <div>
-                              <span className="text-[0.7rem] text-slate-500 font-medium">Avg Mineral/Order</span>
-                              <span className="text-sm text-slate-800 font-bold">
+                          <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 bg-slate-50 border border-slate-200 rounded-lg p-2 sm:p-3">
+                            <span className="text-lg sm:text-xl flex-shrink-0"></span>
+                            <div className="min-w-0 text-center sm:text-left">
+                              <span className="block text-[10px] sm:text-[0.7rem] text-slate-500 font-medium leading-tight">Avg Mineral/Order</span>
+                              <span className="block text-sm sm:text-base text-slate-800 font-bold leading-tight break-words">
                                 {(month.mineralWater / month.totalOrders).toFixed(1)} gal
                               </span>
                             </div>
