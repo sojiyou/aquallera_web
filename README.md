@@ -5,7 +5,7 @@ Admin dashboard for the AQUA-LLERA water station management platform.
 ## Features
 
 - **Orders Management** — View and filter customer orders; mobile card layout with customer name, phone, amount, and View button.
-- **Grouped Delivery View ("By Time")** — Toggle between list view and time-grouped view of today's `on_delivery` deliveries with bulk status update capabilities. Header shows "Deliveries for today: {date}".
+- **Calendar View** — Toggle between list view and interactive month calendar. Color-coded status dots on each date; click a day to see its orders grouped by time with bulk status update. Delivery day columns (e.g. Mon, Fri) are highlighted on the header.
 - **Stock & Analytics** — Inventory tracking, revenue projections with confidence level, year-over-year comparison, and performance reports.
 - **Water Consumption Analytics** — Monthly/annual consumption tracking with stacked bar charts and circular progress indicators.
 - **Station Settings** — Manage station info, location, operating hours, services, pricing, delivery hours, and delivery days (day-of-week toggle).
@@ -18,6 +18,7 @@ Admin dashboard for the AQUA-LLERA water station management platform.
 - Tailwind CSS
 - Firebase (Realtime Database, Auth, Storage)
 - Recharts (charts)
+- react-calendar (calendar view)
 - EmailJS (email notifications)
 - Mapbox GL (location picker)
 
@@ -85,6 +86,9 @@ Designed for 375px (iPhone SE/12/13) and up with responsive breakpoints:
 
 | Date | Commit | Changes |
 |------|--------|---------|
+| Jul 11 | `493a7e2` | **Fix Calendar white screen** — `formatShortWeekday` must return string (not JSX); delivery day headers styled via CSS `nth-child` column targeting |
+| Jul 11 | `6f678e3` | **Delivery day highlights** — Calendar weekday headers (Mon, Tue...) styled in bold teal for station's configured delivery days; added legend strip |
+| Jul 11 | `9e60408` | **Calendar view** — Replaced "By Time" grouped view with interactive month calendar using `react-calendar`. Color-coded status dots on dates; click day for inline order list with bulk status updates |
 | Jul 9 | `978a8d5` | **Grouped delivery view** — Added "By Time" / "List View" toggle with bulk status update for today's `on_delivery` deliveries |
 | Jul 9 | `f91e7bb` | **Delivery days + 6-step signup** — Added day-of-week toggle in Settings & Signup; split signup into 6 steps (Location + Services separated) |
 | Jul 9 | `b386328` | **Inline validation** — Added `onBlur` validation with real-time password strength indicators to signup form |
@@ -114,3 +118,4 @@ Designed for 375px (iPhone SE/12/13) and up with responsive breakpoints:
 | Session ID | What we did |
 |---|---|
 | `2026-07-09` | Added delivery days (Settings.js, Signup.js) with day-of-week toggle; split Signup from 5 to 6 steps (Location + Services separated); added grouped delivery orders view with "By Time"/"List View" toggle and bulk status update; replaced PWA date picker with available date buttons; fixed BOM warning in Settings.js; added inline validation with `onBlur` and real-time password indicators; limited grouped view to today's `on_delivery` orders with "Deliveries for today: {date}" header |
+| `2026-07-11` | Replaced "By Time" grouped view with Calendar view (`react-calendar`); orders shown on interactive month grid with color-coded status dots; delivery day columns highlighted on weekday headers via CSS nth-child |
