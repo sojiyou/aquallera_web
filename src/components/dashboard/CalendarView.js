@@ -60,7 +60,12 @@ const getNextStatusAction = (ordersInGroup) => {
   return nextMap[commonStatus] || null;
 };
 
-const CalendarView = ({ orders, onOrderClick, onBulkStatusUpdate, isUpdating }) => {
+const DAY_NAME_TO_INDEX = {
+  sunday: 0, monday: 1, tuesday: 2, wednesday: 3,
+  thursday: 4, friday: 5, saturday: 6,
+};
+
+const CalendarView = ({ orders, onOrderClick, onBulkStatusUpdate, isUpdating, deliveryDays }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const ordersByDate = useMemo(() => {
@@ -86,6 +91,17 @@ const CalendarView = ({ orders, onOrderClick, onBulkStatusUpdate, isUpdating }) 
     });
     return Object.entries(groups).sort(([a], [b]) => a.localeCompare(b));
   }, [selectedOrders]);
+
+  const deliveryDayIndices = useMemo(() => {
+    if (!deliveryDays || !Array.isArray(deliveryDays)) return new Set();
+    return new Set(
+      deliveryDays.map(d => DAY_NAME_TO_INDEX[d.toLowerCase()]).filter(i => i !== undefined)
+    );
+  }, [deliveryDays]);
+
+  const isDeliveryDay = (date) => {
+    return deliveryDayIndices.has(date.getDay());
+  };
 
   const getOrdersCount = (date) => {
     const str = toDateStr(date);
@@ -114,9 +130,10 @@ const CalendarView = ({ orders, onOrderClick, onBulkStatusUpdate, isUpdating }) 
 
   const tileClassName = ({ date, view }) => {
     if (view !== 'month') return null;
-    const count = getOrdersCount(date);
-    if (count === 0) return null;
-    return 'calendar-has-orders';
+    const classes = [];
+    if (getOrdersCount(date) > 0) classes.push('calendar-has-orders');
+    if (isDeliveryDay(date)) classes.push('calendar-delivery-day');
+    return classes.length > 0 ? classes.join(' ') : null;
   };
 
   const tileContent = ({ date, view }) => {
@@ -149,6 +166,24 @@ const CalendarView = ({ orders, onOrderClick, onBulkStatusUpdate, isUpdating }) 
             locale="en-US"
           />
         </div>
+        {deliveryDays && deliveryDays.length > 0 && (
+          <div className="px-4 pb-3 pt-1 border-t border-slate-100">
+            <div className="flex items-center gap-2 text-xs text-slate-500">
+              <span>Delivery days:</span>
+              <div className="flex gap-1.5">
+                {deliveryDays.map(day => (
+                  <span
+                    key={day}
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 font-semibold text-[10px]"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-teal-400" />
+                    {day}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="mt-6">
@@ -301,6 +336,12 @@ const CalendarView = ({ orders, onOrderClick, onBulkStatusUpdate, isUpdating }) 
         .react-calendar__tile.calendar-has-orders {
           font-weight: 700;
           color: #0f172a;
+        }
+        .react-calendar__tile.calendar-delivery-day {
+          box-shadow: inset 0 -3px 0 #14b8a6;
+        }
+        .react-calendar__tile.calendar-delivery-day.calendar-has-orders {
+          box-shadow: inset 0 -3px 0 #14b8a6, inset 3px 0 0 -1px rgba(20,184,166,0.15), inset -3px 0 0 -1px rgba(20,184,166,0.15);
         }
         .react-calendar__month-view__days__day--neighboringMonth {
           color: #cbd5e1;

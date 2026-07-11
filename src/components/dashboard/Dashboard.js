@@ -1107,6 +1107,7 @@ const Dashboard = () => {
                 onOrderClick={handleOrderClick}
                 onBulkStatusUpdate={handleBulkStatusUpdate}
                 isUpdating={isBulkUpdating}
+                deliveryDays={stationData?.deliveryDays}
               />
             ) : (
               <OrdersTable orders={getFilteredOrders()} onOrderClick={handleOrderClick} />
