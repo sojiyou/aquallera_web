@@ -106,7 +106,7 @@ export const sendRejectionEmail = async (stationData, rejectionReason) => {
       }) : 'N/A',
 
       // Support Information
-      support_email: 'support@aquallera.com',
+      support_email: 'aquallera.main@gmail.com',
       platform_name: 'AQUA-LLERA',
 
       // Current Year for footer
@@ -168,7 +168,7 @@ export const sendAdminInvitation = async (toEmail, generatedPassword, invitedBy)
       login_url: `${window.location.origin}/admin`,
       invited_by: invitedBy || 'Super Admin',
       platform_name: 'AQUA-LLERA',
-      support_email: 'support@aquallera.com',
+      support_email: 'aquallera.main@gmail.com',
       current_year: new Date().getFullYear()
     };
 
@@ -213,7 +213,7 @@ export const sendApprovalEmail = async (stationData) => {
         hour12: true
       }),
       dashboard_link: `${window.location.origin}/dashboard`,
-      support_email: 'support@aquallera.com',
+      support_email: 'aquallera.main@gmail.com',
       current_year: new Date().getFullYear()
     };
 

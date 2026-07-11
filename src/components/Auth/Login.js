@@ -282,7 +282,7 @@ const Login = () => {
   };
 
   const handleForgotPassword = () => {
-    showAlert({ type: 'warning', message: 'Forgot password feature coming soon! For now, please contact support at support@aquallera.com' });
+    showAlert({ type: 'warning', message: 'Forgot password feature coming soon! For now, please contact support at aquallera.main@gmail.com' });
   };
 
   const handleReapply = () => {

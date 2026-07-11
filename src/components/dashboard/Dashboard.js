@@ -937,7 +937,7 @@ const Dashboard = () => {
           <div className="flex gap-4 justify-center mt-8">
             <button 
               className="bg-slate-500 text-white px-8 py-4 rounded-lg font-semibold cursor-pointer transition-all hover:bg-slate-600"
-              onClick={() => window.location.href = 'mailto:support@aquallera.com'}
+              onClick={() => window.location.href = 'mailto:aquallera.main@gmail.com'}
             >
               Contact Support
             </button>
@@ -991,7 +991,7 @@ const Dashboard = () => {
             </button>
             <button 
               className="bg-slate-500 text-white px-8 py-4 rounded-lg font-semibold cursor-pointer transition-all hover:bg-slate-600"
-              onClick={() => window.location.href = 'mailto:support@aquallera.com'}
+              onClick={() => window.location.href = 'mailto:aquallera.main@gmail.com'}
             >
               Contact Support
             </button>

@@ -1530,7 +1530,7 @@ const Signup = () => {
                   <div className="mt-2 p-2.5 bg-slate-100 rounded-md text-[0.78rem] text-slate-600 leading-relaxed">
                     <p className="m-0">
                       <strong>Need Help?</strong><br />
-                      Email: <a href="mailto:support@aquallera.com" className="text-primary font-semibold no-underline hover:underline">support@aquallera.com</a>
+                      Email: <a href="mailto:aquallera.main@gmail.com" className="text-primary font-semibold no-underline hover:underline">aquallera.main@gmail.com</a>
                     </p>
                   </div>
                 </div>

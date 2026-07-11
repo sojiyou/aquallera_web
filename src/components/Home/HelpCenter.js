@@ -31,13 +31,13 @@ const HelpCenter = () => {
 
           <div className="bg-white rounded-xl p-6 shadow-sm border-l-4 border-l-secondary">
             <h2 className="text-xl text-slate-800 mb-3">Forgot Password</h2>
-            <p className="text-slate-600 mb-2">If you forgot your password, please contact the admin at <a href="mailto:sojodecaran200@gmail.com" className="text-primary">sojodecaran200@gmail.com</a> to retrieve your account credentials.</p>
+            <p className="text-slate-600 mb-2">If you forgot your password, please contact the admin at <a href="mailto:aquallera.main@gmail.com" className="text-primary">aquallera.main@gmail.com</a> to retrieve your account credentials.</p>
           </div>
 
           <div className="bg-white rounded-xl p-6 shadow-sm border-l-4 border-l-secondary">
             <h2 className="text-xl text-slate-800 mb-3">Contact Support</h2>
             <p className="text-slate-600 mb-2">Need further assistance? Reach out to us:</p>
-            <p className="text-slate-600">Email: <a href="mailto:sojodecaran200@gmail.com" className="text-primary">sojodecaran200@gmail.com</a></p>
+            <p className="text-slate-600">Email: <a href="mailto:aquallera.main@gmail.com" className="text-primary">aquallera.main@gmail.com</a></p>
           </div>
         </div>
       </section>
