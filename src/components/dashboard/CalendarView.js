@@ -99,9 +99,20 @@ const CalendarView = ({ orders, onOrderClick, onBulkStatusUpdate, isUpdating, de
     );
   }, [deliveryDays]);
 
-  const isDeliveryDay = (date) => {
-    return deliveryDayIndices.has(date.getDay());
-  };
+  const deliveryDayCss = useMemo(() => {
+    if (!deliveryDayIndices || deliveryDayIndices.size === 0) return '';
+    const rules = [];
+    deliveryDayIndices.forEach(index => {
+      const nth = index + 1;
+      rules.push(`
+        .react-calendar__month-view__weekdays__weekday:nth-child(${nth}) abbr {
+          color: #0d9488 !important;
+          font-weight: 800 !important;
+        }
+      `);
+    });
+    return rules.join('');
+  }, [deliveryDayIndices]);
 
   const getOrdersCount = (date) => {
     const str = toDateStr(date);
@@ -160,14 +171,6 @@ const CalendarView = ({ orders, onOrderClick, onBulkStatusUpdate, isUpdating, de
             value={selectedDate}
             tileContent={tileContent}
             tileClassName={tileClassName}
-            formatShortWeekday={(locale, date) => {
-              const names = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-              const name = names[date.getDay()];
-              if (isDeliveryDay(date)) {
-                return <span className="text-teal-600 font-extrabold">{name}</span>;
-              }
-              return name;
-            }}
             locale="en-US"
           />
         </div>
@@ -275,6 +278,7 @@ const CalendarView = ({ orders, onOrderClick, onBulkStatusUpdate, isUpdating, de
       </div>
 
       <style>{`
+        ${deliveryDayCss}
         .react-calendar {
           width: 100%;
           border: none;
