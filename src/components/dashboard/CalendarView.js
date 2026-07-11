@@ -130,10 +130,7 @@ const CalendarView = ({ orders, onOrderClick, onBulkStatusUpdate, isUpdating, de
 
   const tileClassName = ({ date, view }) => {
     if (view !== 'month') return null;
-    const classes = [];
-    if (getOrdersCount(date) > 0) classes.push('calendar-has-orders');
-    if (isDeliveryDay(date)) classes.push('calendar-delivery-day');
-    return classes.length > 0 ? classes.join(' ') : null;
+    return getOrdersCount(date) > 0 ? 'calendar-has-orders' : null;
   };
 
   const tileContent = ({ date, view }) => {
@@ -163,6 +160,14 @@ const CalendarView = ({ orders, onOrderClick, onBulkStatusUpdate, isUpdating, de
             value={selectedDate}
             tileContent={tileContent}
             tileClassName={tileClassName}
+            formatShortWeekday={(locale, date) => {
+              const names = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+              const name = names[date.getDay()];
+              if (isDeliveryDay(date)) {
+                return <span className="text-teal-600 font-extrabold">{name}</span>;
+              }
+              return name;
+            }}
             locale="en-US"
           />
         </div>
@@ -337,12 +342,7 @@ const CalendarView = ({ orders, onOrderClick, onBulkStatusUpdate, isUpdating, de
           font-weight: 700;
           color: #0f172a;
         }
-        .react-calendar__tile.calendar-delivery-day {
-          box-shadow: inset 0 -3px 0 #14b8a6;
-        }
-        .react-calendar__tile.calendar-delivery-day.calendar-has-orders {
-          box-shadow: inset 0 -3px 0 #14b8a6, inset 3px 0 0 -1px rgba(20,184,166,0.15), inset -3px 0 0 -1px rgba(20,184,166,0.15);
-        }
+
         .react-calendar__month-view__days__day--neighboringMonth {
           color: #cbd5e1;
         }
