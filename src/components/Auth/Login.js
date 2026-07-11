@@ -143,7 +143,7 @@ const Login = () => {
       console.log('Checking station status for:', formData.email);
       const stationData = await findStationByEmail(formData.email);
 
-      if (stationData && stationData.status === 'deletion_pending') {
+      if (stationData && (stationData.status === 'rejected' || stationData.status === 'deletion_pending')) {
         console.log('Station is marked for deletion:', stationData.id);
 
         setRejectionData({

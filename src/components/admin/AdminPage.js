@@ -1,9 +1,9 @@
 // src/components/Admin/AdminPage.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ref, onValue, update, push, set, get } from 'firebase/database';
 import { database } from '../config/Firebase';
-import { sendRejectionEmail, sendAdminInvitation } from '../services/EmailService';
+import { sendRejectionEmail, sendAdminInvitation, sendApprovalEmail } from '../services/EmailService';
 import AlertCard, { useAlert } from './AlertCard';
 
 const AdminPage = () => {
@@ -30,6 +30,7 @@ const AdminPage = () => {
   const [inviting, setInviting] = useState(false);
   const [admins, setAdmins] = useState([]);
   const [removingAdminId, setRemovingAdminId] = useState(null);
+  const unsubscribeRef = useRef(null);
 
   // Admin credentials (you should change these and keep them secure)
   const ADMIN_EMAIL = 'admin@aquallera.com';
@@ -40,10 +41,18 @@ const AdminPage = () => {
     const storedAuth = localStorage.getItem('adminAuthenticated');
     if (storedAuth === 'true') {
       setIsAuthenticated(true);
-      fetchAllData();
+      const unsubscribe = fetchAllData();
+      unsubscribeRef.current = unsubscribe;
     } else {
       setLoading(false);
     }
+
+    return () => {
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
+      }
+    };
   }, []);
 
   const fetchAllData = () => {
@@ -59,10 +68,13 @@ const AdminPage = () => {
           ...value
         }));
 
-        const pending = stationsArray.filter(station =>
+        const activeStations = stationsArray.filter(station =>
+          station.status !== 'rejected' && station.status !== 'deletion_pending'
+        );
+        const pending = activeStations.filter(station =>
           station.status === 'pending' || !station.status
         );
-        const approved = stationsArray.filter(station =>
+        const approved = activeStations.filter(station =>
           station.status === 'approved'
         );
 
@@ -116,6 +128,7 @@ const AdminPage = () => {
       adminsUnsubscribe();
     };
   };
+
 
   const generatePassword = (length = 10) => {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
@@ -224,13 +237,22 @@ const AdminPage = () => {
 
   const handleApproveStation = async (stationId) => {
     try {
+      const stationToApprove = [...pendingStations, ...approvedStations].find(station => station.id === stationId);
+      if (!stationToApprove) {
+        showAlert({ type: 'error', message: 'Station not found!' });
+        return;
+      }
+
       const stationRef = ref(database, `waterStations/${stationId}`);
       await update(stationRef, {
         status: 'approved',
         approvedAt: new Date().toISOString(),
         revokedAt: null
       });
-      showAlert({ type: 'success', message: 'Station approved successfully!' });
+
+      await sendApprovalEmail(stationToApprove);
+
+      showAlert({ type: 'success', message: 'Station approved successfully! Approval email sent.' });
     } catch (error) {
       console.error('Error approving station:', error);
       showAlert({ type: 'error', message: 'Error approving station. Please try again.' });
@@ -267,7 +289,7 @@ const AdminPage = () => {
 
               const stationRef = ref(database, `waterStations/${stationId}`);
             await update(stationRef, {
-              status: 'deletion_pending',
+              status: 'rejected',
               rejectionReason: reason,
               rejectedAt: new Date().toISOString(),
               rejectionEmailSent: true,
@@ -628,7 +650,7 @@ const AdminPage = () => {
                         </span>
                       </div>
                     </div>
-                    <div className={`px-3 py-1 rounded-full text-[0.75rem] font-semibold uppercase tracking-wider ${station.status === 'pending' || !station.status ? 'bg-amber-50 text-amber-600' : station.status === 'approved' ? 'bg-secondary/10 text-secondary' : station.status === 'rejected' ? 'bg-red-100 text-red-600' : ''}`}>
+                    <div className={`px-3 py-1 rounded-full text-[0.75rem] font-semibold uppercase tracking-wider ${station.status === 'pending' || !station.status ? 'bg-amber-50 text-amber-600' : station.status === 'approved' ? 'bg-secondary/10 text-secondary' : station.status === 'rejected' || station.status === 'deletion_pending' ? 'bg-red-100 text-red-600' : ''}`}>
                       {station.status || 'pending'}
                     </div>
                   </div>
@@ -885,7 +907,7 @@ const AdminPage = () => {
                   </div>
                   <div className="flex flex-col gap-1">
                     <span className="font-semibold text-gray-600 text-sm">Status:</span>
-                    <span className={`text-gray-800 text-base break-words p-2 bg-gray-50 rounded-md border border-gray-200 inline-block px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider w-fit ${selectedStation.status === 'pending' || !selectedStation.status ? 'bg-amber-50 text-amber-600' : selectedStation.status === 'approved' ? 'bg-secondary/10 text-secondary' : selectedStation.status === 'rejected' ? 'bg-red-100 text-red-600' : ''}`}>
+                    <span className={`text-gray-800 text-base break-words p-2 bg-gray-50 rounded-md border border-gray-200 inline-block px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider w-fit ${selectedStation.status === 'pending' || !selectedStation.status ? 'bg-amber-50 text-amber-600' : selectedStation.status === 'approved' ? 'bg-secondary/10 text-secondary' : selectedStation.status === 'rejected' || selectedStation.status === 'deletion_pending' ? 'bg-red-100 text-red-600' : ''}`}>
                       {selectedStation.status || 'pending'}
                     </span>
                   </div>
