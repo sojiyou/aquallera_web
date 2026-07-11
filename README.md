@@ -105,6 +105,9 @@ Designed for 375px (iPhone SE/12/13) and up with responsive breakpoints:
 | Jul 8 | `79b5c8c` | **Hero padding** — Fixed hero section top padding on mobile to avoid nav overlap |
 | Jul 8 | `25870b8` | **Firebase imports** — Fixed import paths in AnnualReports and HistoricalPerformance |
 | Jul 8 | `96a4317` | **Favicon** — Updated to Aquallera logo |
+| Jul 11 | `99cc5ce` | **Water drop icon** — Replaced Aquallera logo mark with dashboard water drop SVG as favicon (gradient fill, shine, rim); rendered PNG icons from SVG for PWA manifest |
+| Jul 11 | `7f7ca5c` | **Interior scene** — Added mountains, sky, snow caps, and waves inside the water drop icon |
+| Jul 11 | `a442817` | **Centered water drop** — Shifted 27px down to vertically center in viewBox for proper PWA icon alignment |
 | Jul 8 | `b3c6bb9` | **Password toggle** — Added show/hide password button on login and signup pages |
 | Jul 7 | `e2a2d96` | **Dashboard UI polish** — Wavy gradient background, 12-hour time format, fixed delivery hours, removed coords from signup, fixed stock input zero edge case, converted spring water L to gal, hid annual report charts behind expand toggle |
 | Jul 7 | `3a6e2f3` | **AlertCard component** — Replaced all native `alert()` calls across Auth and Dashboard files with styled AlertCard |
@@ -119,3 +122,4 @@ Designed for 375px (iPhone SE/12/13) and up with responsive breakpoints:
 |---|---|
 | `2026-07-09` | Added delivery days (Settings.js, Signup.js) with day-of-week toggle; split Signup from 5 to 6 steps (Location + Services separated); added grouped delivery orders view with "By Time"/"List View" toggle and bulk status update; replaced PWA date picker with available date buttons; fixed BOM warning in Settings.js; added inline validation with `onBlur` and real-time password indicators; limited grouped view to today's `on_delivery` orders with "Deliveries for today: {date}" header |
 | `2026-07-11` | Replaced "By Time" grouped view with Calendar view (`react-calendar`); orders shown on interactive month grid with color-coded status dots; delivery day columns highlighted on weekday headers via CSS nth-child |
+| `2026-07-11` | **Icon redesign** — Attempted globe badge overlay at various positions (top-right, lower-right, bottom-right, background) before switching to the dashboard water drop SVG as the website favicon and PWA icon. Added full interior scene (sky, mountains, snow caps, waves) and centered the drop vertically in the viewBox. |
