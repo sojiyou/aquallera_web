@@ -86,6 +86,9 @@ Designed for 375px (iPhone SE/12/13) and up with responsive breakpoints:
 
 | Date | Commit | Changes |
 |------|--------|---------|
+| Jul 11 | `adbe218` | **Update support email** — Changed all `support@aquallera.com` references to `aquallera.main@gmail.com` across Login, Signup, Dashboard, EmailService, and HelpCenter |
+| Jul 11 | `847eb8f` | **Approval email wired** — Connected `sendApprovalEmail` to new EmailJS account (`service_hgrfj7d`); email failure won't block station approval |
+| Jul 11 | `fb3b2bd` | **Admin page fixes** — Approval email now sent via EmailJS; rejection writes `status: 'rejected'` instead of `'deletion_pending'`; rejected stations filtered from both tabs; `onValue` subscriptions cleaned up on unmount; badge handles both statuses |
 | Jul 11 | `493a7e2` | **Fix Calendar white screen** — `formatShortWeekday` must return string (not JSX); delivery day headers styled via CSS `nth-child` column targeting |
 | Jul 11 | `6f678e3` | **Delivery day highlights** — Calendar weekday headers (Mon, Tue...) styled in bold teal for station's configured delivery days; added legend strip |
 | Jul 11 | `9e60408` | **Calendar view** — Replaced "By Time" grouped view with interactive month calendar using `react-calendar`. Color-coded status dots on dates; click day for inline order list with bulk status updates |
