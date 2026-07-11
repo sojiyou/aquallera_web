@@ -4,12 +4,51 @@
       <stop offset="0%" stop-color="#065A82"/>
       <stop offset="100%" stop-color="#1B3B6F"/>
     </linearGradient>
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#e0f7fa"/>
+      <stop offset="100%" stop-color="#b2dfdb"/>
+    </linearGradient>
+    <linearGradient id="mountBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#9EB3C2"/>
+      <stop offset="80%" stop-color="#B0BEC5"/>
+    </linearGradient>
+    <linearGradient id="mountGreen" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1C7293"/>
+      <stop offset="100%" stop-color="#1B3B6F"/>
+    </linearGradient>
+    <linearGradient id="wave1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1C7293"/>
+      <stop offset="100%" stop-color="#1B3B6F"/>
+    </linearGradient>
+    <linearGradient id="wave2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#9EB3C2"/>
+    </linearGradient>
     <radialGradient id="dropShine" cx="35%" cy="28%" r="55%">
       <stop offset="0%" stop-color="rgba(255,255,255,0.22)"/>
       <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
     </radialGradient>
+    <clipPath id="dropClip">
+      <path d="M150,22 C150,22 58,105 58,212 A92,92 0 0,0 242,212 C242,105 150,22 150,22Z"/>
+    </clipPath>
   </defs>
+
   <path d="M150,22 C150,22 58,105 58,212 A92,92 0 0,0 242,212 C242,105 150,22 150,22Z" fill="url(#dropGrad)"/>
+
+  <g clip-path="url(#dropClip)">
+    <rect x="58" y="22" width="184" height="192" fill="url(#skyGrad)"/>
+    <path d="M58,214 L82,178 L102,192 L128,148 L150,172 L164,144 L188,168 L208,150 L232,182 L242,214Z" fill="url(#mountBg)"/>
+    <path d="M128,148 L142,172 L114,172Z" fill="white" opacity="0.92"/>
+    <path d="M164,144 L177,166 L151,166Z" fill="white" opacity="0.92"/>
+    <path d="M208,150 L220,170 L196,170Z" fill="white" opacity="0.85"/>
+    <path d="M58,214 L97,174 L136,214Z" fill="url(#mountGreen)"/>
+    <path d="M110,214 L150,148 L190,214Z" fill="#1C7293"/>
+    <path d="M164,214 L205,176 L242,214Z" fill="url(#mountGreen)"/>
+    <path d="M150,148 L163,170 L137,170Z" fill="#9EB3C2" opacity="0.75"/>
+    <path d="M10,196 Q62,180 114,196 Q166,212 218,196 Q262,182 310,196 L310,300 L10,300 Z" fill="url(#wave1)" opacity="0.78"/>
+    <path d="M10,208 Q75,192 140,208 Q205,224 270,208 Q298,200 320,208 L320,300 L10,300 Z" fill="url(#wave2)" opacity="0.92"/>
+  </g>
+
   <path d="M150,22 C150,22 58,105 58,212 A92,92 0 0,0 242,212 C242,105 150,22 150,22Z" fill="url(#dropShine)"/>
   <path d="M150,22 C150,22 58,105 58,212 A92,92 0 0,0 242,212 C242,105 150,22 150,22Z" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2.5"/>
 </svg>
