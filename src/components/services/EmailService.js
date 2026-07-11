@@ -190,9 +190,13 @@ export const sendAdminInvitation = async (toEmail, generatedPassword, invitedBy)
 };
 
 /**
- * Send approval email to water station (optional - for future use)
+ * Send approval email to water station
  */
 export const sendApprovalEmail = async (stationData) => {
+  const APPROVAL_SERVICE_ID = 'service_hgrfj7d';
+  const APPROVAL_TEMPLATE_ID = 'template_87et26x';
+  const APPROVAL_PUBLIC_KEY = 'iq8pJ8vc0CW3xnPJ-';
+
   try {
     console.log('Preparing approval email for:', stationData.email);
 
@@ -200,20 +204,28 @@ export const sendApprovalEmail = async (stationData) => {
       to_email: stationData.email,
       to_name: stationData.ownerName,
       station_name: stationData.stationName,
-      approval_date: new Date().toLocaleDateString('en-PH'),
-      dashboard_link: 'https://your-app-url.com/dashboard',
-      support_email: 'support@aquallera.com'
+      approval_date: new Date().toLocaleDateString('en-PH', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      }),
+      dashboard_link: `${window.location.origin}/dashboard`,
+      support_email: 'support@aquallera.com',
+      current_year: new Date().getFullYear()
     };
 
-    // You'll need to create an approval template in EmailJS
     const response = await emailjs.send(
-      EMAILJS_SERVICE_ID,
-      'template_approval', // Create this template in EmailJS
-      emailParams
+      APPROVAL_SERVICE_ID,
+      APPROVAL_TEMPLATE_ID,
+      emailParams,
+      APPROVAL_PUBLIC_KEY
     );
 
     console.log('Approval email sent successfully');
-    return { success: true, response };
+    return { success: true, response, sentTo: stationData.email };
 
   } catch (error) {
     console.error('Failed to send approval email:', error);

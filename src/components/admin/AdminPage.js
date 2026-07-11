@@ -250,9 +250,12 @@ const AdminPage = () => {
         revokedAt: null
       });
 
-      await sendApprovalEmail(stationToApprove);
-
-      showAlert({ type: 'success', message: 'Station approved successfully! Approval email sent.' });
+      try {
+        await sendApprovalEmail(stationToApprove);
+        showAlert({ type: 'success', message: 'Station approved successfully! Approval email sent.' });
+      } catch {
+        showAlert({ type: 'success', message: 'Station approved successfully! (Email notification unavailable.)' });
+      }
     } catch (error) {
       console.error('Error approving station:', error);
       showAlert({ type: 'error', message: 'Error approving station. Please try again.' });
