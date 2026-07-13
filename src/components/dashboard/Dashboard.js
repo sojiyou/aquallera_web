@@ -87,6 +87,15 @@ const formatCurrency = (amount) => {
   return `₱${parseFloat(amount || 0).toFixed(2)}`;
 };
 
+const formatTime12hr = (time24) => {
+  if (!time24) return '';
+  const [h, m] = time24.split(':').map(Number);
+  if (isNaN(h) || isNaN(m)) return time24;
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const h12 = h % 12 || 12;
+  return `${h12}:${String(m).padStart(2, '0')} ${ampm}`;
+};
+
 // ===== ORDERS TABLE COMPONENT =====
 const OrdersTable = ({ orders, onOrderClick }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -147,7 +156,10 @@ const OrdersTable = ({ orders, onOrderClick }) => {
                   onClick={() => onOrderClick(order)}
                 >
                   <td className="w-[120px] px-4 py-3">
-                    <span className="font-semibold text-primary font-mono text-xs">#{orderId}</span>
+                    <div className="flex flex-col">
+                      <span className="font-semibold text-primary font-mono text-xs">#{orderId}</span>
+                      <span className="text-slate-400 text-[10px] mt-0.5">Created {new Date(order.createdAt || order.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
+                    </div>
                   </td>
                   <td className="min-w-[180px] px-4 py-3">
                     <div className="flex flex-col gap-0.5">
@@ -220,7 +232,10 @@ const OrdersTable = ({ orders, onOrderClick }) => {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <span className="font-semibold text-primary font-mono text-[11px]">#{orderId}</span>
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-primary font-mono text-[11px]">#{orderId}</span>
+                  <span className="text-slate-400 text-[10px]">Created {new Date(order.createdAt || order.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
+                </div>
                 <span className="font-bold text-slate-700 text-xs ml-auto">{formatCurrency(grandTotal)}</span>
               </div>
             </div>
@@ -480,7 +495,7 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
               <span className="text-xs text-slate-500 font-medium">Date</span>
               <span className="text-sm text-slate-800 font-medium">
                 {order.date && order.time 
-                  ? `${order.date} at ${order.time}`
+                  ? `${order.date} at ${formatTime12hr(order.time)}`
                   : order.createdAt 
                     ? new Date(order.createdAt).toLocaleString(undefined, { hour12: true })
                     : 'N/A'}
