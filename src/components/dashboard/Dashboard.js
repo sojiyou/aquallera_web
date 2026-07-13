@@ -684,7 +684,6 @@ const Dashboard = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [viewMode, setViewMode] = useState('list');
-  const [isBulkUpdating, setIsBulkUpdating] = useState(null);
   const navigate = useNavigate();
   const knownOrderIds = useRef(new Set());
   const isInitialOrdersLoad = useRef(true);
@@ -832,36 +831,6 @@ const Dashboard = () => {
     );
   };
 
-  const handleBulkStatusUpdate = async (ordersToUpdate, newStatus) => {
-    setIsBulkUpdating(ordersToUpdate[0]?.time || 'all');
-    try {
-      const updates = {};
-      ordersToUpdate.forEach(order => {
-        const key = order.orderId || order.id;
-        if (key) {
-          updates[`orders/${key}/status`] = newStatus;
-          updates[`orders/${key}/updatedAt`] = new Date().toISOString();
-        }
-      });
-      await update(ref(database), updates);
-      setOrders(prevOrders => 
-        prevOrders.map(order => {
-          const match = ordersToUpdate.some(o => (o.orderId || o.id) === (order.orderId || order.id));
-          return match ? { ...order, status: newStatus } : order;
-        })
-      );
-      const updateTargets = ordersToUpdate.filter(o => (o.orderId || o.id) === (selectedOrder?.orderId || selectedOrder?.id));
-      if (updateTargets.length > 0) {
-        setSelectedOrder(prev => prev ? { ...prev, status: newStatus } : prev);
-      }
-      showAlert({ type: 'success', message: `${ordersToUpdate.length} order(s) updated to ${newStatus.replace(/_/g, ' ')}` });
-    } catch (error) {
-      console.error('Error in bulk status update:', error);
-      showAlert({ type: 'error', message: 'Failed to update orders. Please try again.' });
-    } finally {
-      setIsBulkUpdating(null);
-    }
-  };
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
