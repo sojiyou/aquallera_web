@@ -38,34 +38,12 @@ const convertTo12Hour = (time24) => {
   return `${hour12}:${m} ${ampm}`;
 };
 
-const getNextStatusAction = (ordersInGroup) => {
-  const statusCounts = {};
-  ordersInGroup.forEach(o => {
-    const s = (o.status || '').toLowerCase();
-    statusCounts[s] = (statusCounts[s] || 0) + 1;
-  });
-
-  const sorted = Object.entries(statusCounts).sort(([, a], [, b]) => b - a);
-  if (sorted.length === 0) return null;
-
-  const commonStatus = sorted[0][0];
-
-  const nextMap = {
-    pending: { status: 'confirmed', label: 'Mark All as Confirmed' },
-    confirmed: { status: 'preparing', label: 'Mark All as Preparing' },
-    preparing: { status: 'on_delivery', label: 'Mark All as Out for Delivery' },
-    on_delivery: { status: 'completed', label: 'Mark All as Completed' },
-  };
-
-  return nextMap[commonStatus] || null;
-};
-
 const DAY_NAME_TO_INDEX = {
   sunday: 0, monday: 1, tuesday: 2, wednesday: 3,
   thursday: 4, friday: 5, saturday: 6,
 };
 
-const CalendarView = ({ orders, onOrderClick, onBulkStatusUpdate, isUpdating, deliveryDays }) => {
+const CalendarView = ({ orders, onOrderClick, deliveryDays }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const ordersByDate = useMemo(() => {
@@ -210,32 +188,18 @@ const CalendarView = ({ orders, onOrderClick, onBulkStatusUpdate, isUpdating, de
           </div>
         ) : (
           <div className="space-y-4">
-            {groupedByTime.map(([time, timeOrders]) => {
-              const nextAction = getNextStatusAction(timeOrders);
-
-              return (
+            {groupedByTime.map(([time, timeOrders]) => (
                 <div key={time} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                  <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-cyan-50 to-blue-50 border-b border-slate-200">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
-                        <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-slate-800 text-base">{convertTo12Hour(time)}</h4>
-                        <span className="text-xs text-slate-500">{timeOrders.length} order{timeOrders.length > 1 ? 's' : ''}</span>
-                      </div>
+                  <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-cyan-50 to-blue-50 border-b border-slate-200">
+                    <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
+                      <svg className="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
                     </div>
-                    {nextAction && (
-                      <button
-                        onClick={() => onBulkStatusUpdate(timeOrders, nextAction.status)}
-                        disabled={isUpdating === time}
-                        className="px-4 py-2 bg-primary text-white border-none rounded-lg cursor-pointer font-semibold text-xs transition-all hover:bg-primary-dark hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed"
-                      >
-                        {isUpdating === time ? 'Updating...' : nextAction.label}
-                      </button>
-                    )}
+                    <div>
+                      <h4 className="font-bold text-slate-800 text-base">{convertTo12Hour(time)}</h4>
+                      <span className="text-xs text-slate-500">{timeOrders.length} order{timeOrders.length > 1 ? 's' : ''}</span>
+                    </div>
                   </div>
                   <div className="divide-y divide-slate-100">
                     {timeOrders.map(order => {
@@ -247,8 +211,7 @@ const CalendarView = ({ orders, onOrderClick, onBulkStatusUpdate, isUpdating, de
                       return (
                         <div
                           key={orderId}
-                          className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50 transition-colors"
-                          onClick={() => onOrderClick(order)}
+                          className="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors"
                         >
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
@@ -266,13 +229,18 @@ const CalendarView = ({ orders, onOrderClick, onBulkStatusUpdate, isUpdating, de
                           >
                             {status.label}
                           </span>
+                          <button
+                            className="bg-primary text-white border-none px-3 py-1.5 rounded-md cursor-pointer text-xs font-semibold transition-all hover:bg-primary-dark active:scale-95"
+                            onClick={(e) => { e.stopPropagation(); onOrderClick(order); }}
+                          >
+                            View
+                          </button>
                         </div>
                       );
                     })}
                   </div>
                 </div>
-              );
-            })}
+              ))}
           </div>
         )}
       </div>

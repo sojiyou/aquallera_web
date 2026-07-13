@@ -1199,8 +1199,6 @@ const Dashboard = () => {
               <CalendarView
                 orders={getFilteredOrders()}
                 onOrderClick={handleOrderClick}
-                onBulkStatusUpdate={handleBulkStatusUpdate}
-                isUpdating={isBulkUpdating}
                 deliveryDays={stationData?.deliveryDays}
               />
             ) : (
