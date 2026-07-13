@@ -774,9 +774,10 @@ const Dashboard = () => {
   };
 
   const getFilteredOrders = () => {
-    if (activeTab === 'all') return orders;
+    const sorted = [...orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    if (activeTab === 'all') return sorted;
     
-    return orders.filter(order => {
+    return sorted.filter(order => {
       const status = (order.status || '').toLowerCase();
       
       if (activeTab === 'pending') return status === 'pending';
