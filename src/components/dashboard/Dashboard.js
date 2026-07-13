@@ -939,11 +939,16 @@ const Dashboard = () => {
                   {stationData.stationName || 'Your Station'}
                 </p>
               </div>
-              <button onClick={handleLogout} className="bg-primary-darkest text-white border-none p-2.5 rounded-md cursor-pointer ml-auto hover:brightness-110" title="Logout">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-              </button>
+              <div className="relative group ml-auto">
+                <button onClick={handleLogout} className="bg-primary-darkest text-white border-none p-2.5 rounded-md cursor-pointer hover:brightness-110">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                </button>
+                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                  Logout
+                </span>
+              </div>
             </div>
           </header>
 
@@ -993,11 +998,16 @@ const Dashboard = () => {
                   {stationData.stationName || 'Your Station'}
                 </p>
               </div>
-              <button onClick={handleLogout} className="bg-primary-darkest text-white border-none p-2.5 rounded-md cursor-pointer ml-auto hover:brightness-110" title="Logout">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-              </button>
+              <div className="relative group ml-auto">
+                <button onClick={handleLogout} className="bg-primary-darkest text-white border-none p-2.5 rounded-md cursor-pointer hover:brightness-110">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                </button>
+                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                  Logout
+                </span>
+              </div>
             </div>
           </header>
 
@@ -1084,11 +1094,16 @@ const Dashboard = () => {
               <span>Online</span>
             </div>
             <NotificationDropdown />
-            <button onClick={handleLogout} className="bg-primary-darkest text-white border-none p-2 rounded cursor-pointer hover:brightness-110" title="Logout">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-            </button>
+            <div className="relative group">
+              <button onClick={handleLogout} className="bg-primary-darkest text-white border-none p-2 rounded cursor-pointer hover:brightness-110">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+              </button>
+              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                Logout
+              </span>
+            </div>
           </div>
         </div>
       </header>
