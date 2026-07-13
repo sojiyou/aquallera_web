@@ -186,6 +186,7 @@ const OrdersTable = ({ orders, onOrderClick }) => {
       {/* Mobile Cards - hidden on md+ */}
       <div className="md:hidden divide-y divide-slate-200">
         {currentOrders.map((order, index) => {
+          const statusInfo = getStatusBadge(order.status);
           const orderId = order.orderId || order.id || 'N/A';
           const customerName = order.customerName || 'N/A';
           const grandTotal = order.grandTotal || (order.waterSubtotal || 0) + (order.transactionFee || 0);
@@ -203,12 +204,20 @@ const OrdersTable = ({ orders, onOrderClick }) => {
                     <div className="text-slate-400 text-xs mt-0.5">{order.customerPhone}</div>
                   )}
                 </div>
-                <button 
-                  className="flex-shrink-0 bg-primary text-white border-none px-4 py-[7px] rounded-md cursor-pointer text-xs font-semibold transition-all hover:bg-primary-dark active:scale-95"
-                  onClick={(e) => { e.stopPropagation(); onOrderClick(order); }}
-                >
-                  View
-                </button>
+                <div className="flex items-center gap-2">
+                  <span 
+                    className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold"
+                    style={{ backgroundColor: statusInfo.bg, color: statusInfo.color }}
+                  >
+                    {statusInfo.label}
+                  </span>
+                  <button 
+                    className="flex-shrink-0 bg-primary text-white border-none px-4 py-[7px] rounded-md cursor-pointer text-xs font-semibold transition-all hover:bg-primary-dark active:scale-95"
+                    onClick={(e) => { e.stopPropagation(); onOrderClick(order); }}
+                  >
+                    View
+                  </button>
+                </div>
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-semibold text-primary font-mono text-[11px]">#{orderId}</span>
