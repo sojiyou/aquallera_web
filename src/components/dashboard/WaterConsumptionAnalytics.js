@@ -431,18 +431,28 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-3 border-b-2 border-slate-200 gap-3">
           <h4 className="text-slate-800 m-0 text-base sm:text-lg">Water Consumption Reports</h4>
           <div className="flex gap-1 bg-slate-100 p-0.5 rounded-full">
-            <button 
-              className={`px-4 py-1.5 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${consumptionViewMode === 'monthly' ? 'bg-white text-primary shadow-sm' : ''}`}
-              onClick={() => setConsumptionViewMode('monthly')}
-            >
-              Monthly View
-            </button>
-            <button 
-              className={`px-4 py-1.5 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${consumptionViewMode === 'annual' ? 'bg-white text-primary shadow-sm' : ''}`}
-              onClick={() => setConsumptionViewMode('annual')}
-            >
-              Annual View
-            </button>
+            <div className="relative group">
+              <button 
+                className={`px-4 py-1.5 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${consumptionViewMode === 'monthly' ? 'bg-white text-primary shadow-sm' : ''}`}
+                onClick={() => setConsumptionViewMode('monthly')}
+              >
+                Monthly View
+              </button>
+              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                Monthly water usage breakdown
+              </span>
+            </div>
+            <div className="relative group">
+              <button 
+                className={`px-4 py-1.5 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${consumptionViewMode === 'annual' ? 'bg-white text-primary shadow-sm' : ''}`}
+                onClick={() => setConsumptionViewMode('annual')}
+              >
+                Annual View
+              </button>
+              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                Yearly consumption trends
+              </span>
+            </div>
           </div>
         </div>
 

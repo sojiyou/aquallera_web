@@ -241,43 +241,59 @@ const OrdersTable = ({ orders, onOrderClick }) => {
           </div>
           
           <div className="flex items-center gap-2">
-            <button 
-              className="w-8 h-8 border border-slate-300 bg-white rounded-md cursor-pointer flex items-center justify-center text-sm transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
-              onClick={() => handlePageChange(1)}
-              disabled={currentPage === 1}
-              title="First page"
-            >
-              &laquo;
-            </button>
-            <button 
-              className="w-8 h-8 border border-slate-300 bg-white rounded-md cursor-pointer flex items-center justify-center text-sm transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              title="Previous page"
-            >
-              &lsaquo;
-            </button>
+            <div className="relative group">
+              <button 
+                className="w-8 h-8 border border-slate-300 bg-white rounded-md cursor-pointer flex items-center justify-center text-sm transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
+                onClick={() => handlePageChange(1)}
+                disabled={currentPage === 1}
+              >
+                &laquo;
+              </button>
+              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                First page
+              </span>
+            </div>
+            <div className="relative group">
+              <button 
+                className="w-8 h-8 border border-slate-300 bg-white rounded-md cursor-pointer flex items-center justify-center text-sm transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                &lsaquo;
+              </button>
+              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                Previous page
+              </span>
+            </div>
             
             <span className="text-sm text-slate-700 font-semibold px-3 whitespace-nowrap">
               Page {currentPage} of {totalPages}
             </span>
             
-            <button 
-              className="w-8 h-8 border border-slate-300 bg-white rounded-md cursor-pointer flex items-center justify-center text-sm transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              title="Next page"
-            >
-              &rsaquo;
-            </button>
-            <button 
-              className="w-8 h-8 border border-slate-200 bg-white rounded-md cursor-pointer flex items-center justify-center text-xs transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed"
-              onClick={() => handlePageChange(totalPages)}
-              disabled={currentPage === totalPages}
-              title="Last page"
-            >
-              &raquo;
-            </button>
+            <div className="relative group">
+              <button 
+                className="w-8 h-8 border border-slate-300 bg-white rounded-md cursor-pointer flex items-center justify-center text-sm transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                &rsaquo;
+              </button>
+              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                Next page
+              </span>
+            </div>
+            <div className="relative group">
+              <button 
+                className="w-8 h-8 border border-slate-200 bg-white rounded-md cursor-pointer flex items-center justify-center text-xs transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed"
+                onClick={() => handlePageChange(totalPages)}
+                disabled={currentPage === totalPages}
+              >
+                &raquo;
+              </button>
+              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                Last page
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -420,7 +436,12 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
             <h2>Order Details</h2>
             <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-semibold text-xs font-mono">#{order.orderId || order.id || 'N/A'}</span>
           </div>
-          <button className="w-9 h-9 border-none bg-slate-100 rounded-full cursor-pointer text-lg text-slate-500 flex items-center justify-center transition-all hover:bg-slate-200 hover:text-slate-800" onClick={onClose}>&times;</button>
+          <div className="relative group">
+            <button className="w-9 h-9 border-none bg-slate-100 rounded-full cursor-pointer text-lg text-slate-500 flex items-center justify-center transition-all hover:bg-slate-200 hover:text-slate-800" onClick={onClose}>&times;</button>
+            <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              Close
+            </span>
+          </div>
         </div>
 
         <div className="p-4 sm:p-6">

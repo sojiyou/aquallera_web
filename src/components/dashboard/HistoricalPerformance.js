@@ -328,9 +328,14 @@ const HistoricalPerformance = ({ stationId }) => {
                     <span className="text-xs sm:text-base">{accuracyInfo.icon}</span>
                     <span className="font-bold">{month.accuracy.toFixed(1)}%</span>
                   </div>
-                  <button className="bg-primary/10 border border-primary/30 text-primary px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg cursor-pointer text-xs sm:text-sm font-semibold transition-all hover:bg-primary/20 hover:border-primary">
-                    {isExpanded ? '▲' : '▼'}
-                  </button>
+                  <div className="relative group">
+                    <button className="bg-primary/10 border border-primary/30 text-primary px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg cursor-pointer text-xs sm:text-sm font-semibold transition-all hover:bg-primary/20 hover:border-primary">
+                      {isExpanded ? '▲' : '▼'}
+                    </button>
+                    <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                      {isExpanded ? 'Collapse' : 'Expand'} details
+                    </span>
+                  </div>
                 </div>
               </div>
 

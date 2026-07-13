@@ -703,18 +703,28 @@ const Stock = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 pb-4 border-b-2 border-slate-200 gap-4">
           <h2 className="text-slate-800 text-xl sm:text-2xl m-0">Performance Reports</h2>
           <div className="flex gap-2 bg-slate-100 p-1 rounded-full">
-            <button 
-              className={`px-5 py-2 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${dataViewMode === 'monthly' ? 'bg-white text-primary shadow-sm' : ''}`}
-              onClick={() => setDataViewMode('monthly')}
-            >
-              Monthly View
-            </button>
-            <button 
-              className={`px-5 py-2 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${dataViewMode === 'annual' ? 'bg-white text-primary shadow-sm' : ''}`}
-              onClick={() => setDataViewMode('annual')}
-            >
-              Annual View
-            </button>
+            <div className="relative group">
+              <button 
+                className={`px-5 py-2 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${dataViewMode === 'monthly' ? 'bg-white text-primary shadow-sm' : ''}`}
+                onClick={() => setDataViewMode('monthly')}
+              >
+                Monthly View
+              </button>
+              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                Historical performance by month
+              </span>
+            </div>
+            <div className="relative group">
+              <button 
+                className={`px-5 py-2 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${dataViewMode === 'annual' ? 'bg-white text-primary shadow-sm' : ''}`}
+                onClick={() => setDataViewMode('annual')}
+              >
+                Annual View
+              </button>
+              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                Yearly revenue reports &amp; summaries
+              </span>
+            </div>
           </div>
         </div>
 
@@ -737,10 +747,15 @@ const Stock = () => {
                   </div>
                 )}
                 <div className="flex items-center gap-1 sm:gap-2">
-                  <button className={`flex items-center gap-1 sm:gap-2 bg-white/10 text-white border border-white/20 px-2 sm:px-4 py-1 sm:py-2 rounded-full text-[11px] sm:text-sm font-semibold cursor-pointer transition-all backdrop-blur hover:bg-blue-500/30 hover:border-blue-500 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed ${isRefreshing ? 'refreshing' : ''}`} onClick={handleRefreshProjections} disabled={isRefreshing}>
-                    <span className={`text-sm sm:text-lg inline-block leading-none ${isRefreshing ? 'spin' : ''}`}></span>
-                    {isRefreshing ? 'Refreshing...' : 'Refresh'}
-                  </button>
+                  <div className="relative group">
+                    <button className={`flex items-center gap-1 sm:gap-2 bg-white/10 text-white border border-white/20 px-2 sm:px-4 py-1 sm:py-2 rounded-full text-[11px] sm:text-sm font-semibold cursor-pointer transition-all backdrop-blur hover:bg-blue-500/30 hover:border-blue-500 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed ${isRefreshing ? 'refreshing' : ''}`} onClick={handleRefreshProjections} disabled={isRefreshing}>
+                      <span className={`text-sm sm:text-lg inline-block leading-none ${isRefreshing ? 'spin' : ''}`}></span>
+                      {isRefreshing ? 'Refreshing...' : 'Refresh'}
+                    </button>
+                    <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                      Recalculate revenue &amp; consumption projections
+                    </span>
+                  </div>
                   {lastRefreshed && !isRefreshing && <span className="text-slate-500 text-[0.6rem] sm:text-[0.75rem] whitespace-nowrap">Updated {formatLastRefreshed(lastRefreshed)}</span>}
                 </div>
               </div>

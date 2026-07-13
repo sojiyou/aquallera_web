@@ -687,14 +687,18 @@ const Settings = ({ stationData, setStationData }) => {
                         </svg>
                         <span className="flex-1 font-semibold text-slate-800 text-sm">{convertTo12Hour(time)}</span>
                         {isEditing && (
-                          <button
-                            type="button"
-                            onClick={() => removeDeliveryHour(time)}
-                            className="bg-red-50 text-red-600 border border-red-200 rounded w-7 h-7 flex items-center justify-center cursor-pointer transition-all text-base font-semibold flex-shrink-0 hover:bg-red-600 hover:text-white"
-                            title="Remove this delivery time"
-                          >
-                            &times;
-                          </button>
+                          <div className="relative group">
+                            <button
+                              type="button"
+                              onClick={() => removeDeliveryHour(time)}
+                              className="bg-red-50 text-red-600 border border-red-200 rounded w-7 h-7 flex items-center justify-center cursor-pointer transition-all text-base font-semibold flex-shrink-0 hover:bg-red-600 hover:text-white"
+                            >
+                              &times;
+                            </button>
+                            <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                              Remove time
+                            </span>
+                          </div>
                         )}
                       </div>
                     ))}
