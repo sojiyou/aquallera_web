@@ -139,14 +139,7 @@ export const sendRejectionEmail = async (stationData, rejectionReason) => {
   } catch (error) {
     console.error('Failed to send rejection email:', error);
 
-    // Throw a more descriptive error
-    if (error.text) {
-      throw new Error(`Email sending failed: ${error.text}`);
-    } else if (error.message) {
-      throw new Error(`Email sending failed: ${error.message}`);
-    } else {
-      throw new Error('Email sending failed: Unknown error');
-    }
+    throw new Error('Email sending failed. Please check your email configuration and try again.');
   }
 };
 

@@ -322,7 +322,7 @@ const Settings = ({ stationData, setStationData }) => {
       
     } catch (error) {
       console.error('Save error:', error);
-      setMessage('Error updating settings: ' + error.message);
+      setMessage('Error updating settings. Please try again.');
     } finally {
       setLoading(false);
     }

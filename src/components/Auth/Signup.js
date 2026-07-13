@@ -723,7 +723,7 @@ const Signup = () => {
           errorMessage += 'Password too weak';
           break;
         default:
-          errorMessage += error.message;
+          errorMessage += 'An unexpected error occurred. Please try again.';
       }
 
       showAlert({ type: 'error', message: errorMessage });

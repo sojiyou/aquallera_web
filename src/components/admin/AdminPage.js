@@ -188,7 +188,7 @@ const AdminPage = () => {
       setInviteEmail('');
     } catch (error) {
       console.error('Error inviting admin:', error);
-      showAlert({ type: 'error', message: error.message || 'Failed to send invitation' });
+      showAlert({ type: 'error', message: 'Failed to send invitation. Please check your email configuration and try again.' });
     } finally {
       setInviting(false);
     }
@@ -317,12 +317,12 @@ const AdminPage = () => {
             if (error.message && error.message.includes('Email sending failed')) {
               showAlert({
                 type: 'error',
-                message: `Failed to send rejection email!\n\nError: ${error.message}\n\nThe station has NOT been rejected. Please try again or check your EmailJS configuration.`
+                message: 'Failed to send rejection email. The station has NOT been rejected. Please check your email configuration and try again.'
               });
             } else {
               showAlert({
                 type: 'error',
-                message: `Error rejecting station!\n\nError: ${error.message}\n\nPlease try again.`
+                message: 'Error rejecting station. Please try again.'
               });
             }
           } finally {

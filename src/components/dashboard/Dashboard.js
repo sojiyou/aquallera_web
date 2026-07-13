@@ -1,6 +1,6 @@
 // src/components/Dashboard/Dashboard.js
-import React, { useState, useEffect } from 'react';
-import { ref, onValue, update, set, onDisconnect } from 'firebase/database';
+import React, { useState, useEffect, useRef } from 'react';
+import { ref, onValue, update, set, onDisconnect, push } from 'firebase/database';
 import { database, auth } from '../config/Firebase';
 import AlertCard, { useAlert } from '../admin/AlertCard';
 import Settings from './Settings';
@@ -8,6 +8,7 @@ import Stock from './Stock';
 import { useNavigate } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import CalendarView from './CalendarView';
+import NotificationDropdown from './NotificationDropdown';
 
 // Mapbox Geocoding Function using YOUR token
 const convertCoordinatesToAddress = async (lat, lng) => {
@@ -640,6 +641,8 @@ const Dashboard = () => {
   const [viewMode, setViewMode] = useState('list');
   const [isBulkUpdating, setIsBulkUpdating] = useState(null);
   const navigate = useNavigate();
+  const knownOrderIds = useRef(new Set());
+  const isInitialOrdersLoad = useRef(true);
 
   const extractLatLng = (locationString) => {
     if (!locationString) return null;
@@ -859,12 +862,35 @@ const Dashboard = () => {
 
           console.log("DASHBOARD - Station orders filtered:", stationOrders.length);
 
+          const currentIds = new Set(stationOrders.map(o => o.id));
+          const newPending = stationOrders.filter(
+            o => !knownOrderIds.current.has(o.id) && (o.status === "pending" || o.status === "Pending")
+          );
+
+          if (!isInitialOrdersLoad.current && newPending.length > 0) {
+            const notifRef = ref(database, `waterStations/${user.uid}/notifications`);
+            newPending.forEach(order => {
+              const newNotifRef = push(notifRef);
+              set(newNotifRef, {
+                customerName: order.customerName || "Unknown",
+                orderType: order.orderType || "Order",
+                orderId: order.id,
+                createdAt: new Date().toISOString(),
+                read: false
+              });
+            });
+          }
+
+          knownOrderIds.current = currentIds;
+
           setOrders(stationOrders);
           await calculateStats(stationOrders);
         } else {
+          knownOrderIds.current = new Set();
           setOrders([]);
           calculateStats([]);
         }
+        isInitialOrdersLoad.current = false;
         setLoading(false);
       });
 
@@ -913,8 +939,10 @@ const Dashboard = () => {
                   {stationData.stationName || 'Your Station'}
                 </p>
               </div>
-              <button onClick={handleLogout} className="bg-primary-darkest text-white border-none px-4 py-2 rounded-md cursor-pointer font-medium ml-auto hover:brightness-110">
-                Logout
+              <button onClick={handleLogout} className="bg-primary-darkest text-white border-none p-2.5 rounded-md cursor-pointer ml-auto hover:brightness-110" title="Logout">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
               </button>
             </div>
           </header>
@@ -965,8 +993,10 @@ const Dashboard = () => {
                   {stationData.stationName || 'Your Station'}
                 </p>
               </div>
-              <button onClick={handleLogout} className="bg-primary-darkest text-white border-none px-4 py-2 rounded-md cursor-pointer font-medium ml-auto hover:brightness-110">
-                Logout
+              <button onClick={handleLogout} className="bg-primary-darkest text-white border-none p-2.5 rounded-md cursor-pointer ml-auto hover:brightness-110" title="Logout">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
               </button>
             </div>
           </header>
@@ -1053,8 +1083,11 @@ const Dashboard = () => {
               <div className="w-2 h-2 rounded-full bg-secondary animate-[pulse_2s_infinite]"></div>
               <span>Online</span>
             </div>
-            <button onClick={handleLogout} className="bg-primary-darkest text-white border-none px-3 py-1 rounded cursor-pointer text-xs sm:text-sm hover:brightness-110">
-              Logout
+            <NotificationDropdown />
+            <button onClick={handleLogout} className="bg-primary-darkest text-white border-none p-2 rounded cursor-pointer hover:brightness-110" title="Logout">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
             </button>
           </div>
         </div>

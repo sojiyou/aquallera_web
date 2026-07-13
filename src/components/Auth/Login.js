@@ -272,7 +272,7 @@ const Login = () => {
       } else if (errorCode.includes('auth/requires-recent-login')) {
         errorMessage = 'Session expired. Please login again.';
       } else {
-        errorMessage = error.message || 'Login failed. Please try again.';
+        errorMessage = 'Login failed. Please try again.';
       }
 
       setErrors({ general: errorMessage });
