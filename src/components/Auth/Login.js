@@ -555,10 +555,10 @@ const Login = () => {
           </ul>
 
           <div style={{ marginTop: '1rem', padding: '0.75rem', background: '#9EB3C2', borderRadius: '6px', borderLeft: '4px solid #065A82' }}>
-            <small style={{ color: '#1B3B6F', display: 'block', marginBottom: '0.25rem' }}>
+            <small style={{ color: '#334155', display: 'block', marginBottom: '0.25rem' }}>
               <strong>Note:</strong> New stations require admin approval before full access.
             </small>
-            <small style={{ color: '#004ab1' }}>
+            <small style={{ color: '#475569' }}>
               Check your email for approval notifications or contact support if waiting more than 48 hours.
             </small>
           </div>
