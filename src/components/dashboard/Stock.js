@@ -881,24 +881,23 @@ const Stock = () => {
         ) : (
           <AnnualReports stationId={auth.currentUser?.uid} />
         )}
-      </section>
 
-      {/* Water Consumption Analytics Section */}
-      <div className="bg-white rounded-xl mb-6 shadow-sm overflow-hidden transition-all">
-        <div className={`flex justify-between items-center px-6 py-5 cursor-pointer transition-all bg-gradient-to-r from-slate-50 to-slate-100 border-l-4 border-l-blue-500 hover:bg-gradient-to-r hover:from-slate-100 hover:to-slate-200 hover:translate-x-1`} onClick={toggleConsumptionAnalytics}>
-          <div className="flex items-center gap-4 flex-wrap">
-            <span className="text-2xl"></span>
-            <h3 className="text-slate-800 text-xl m-0 font-semibold">Water Consumption</h3>
-            <span className="bg-slate-200 text-slate-600 px-3 py-1 rounded-full text-[0.7rem] font-semibold tracking-wider">Volume tracking</span>
+        {/* Water Consumption Analytics Section */}
+        <div className="bg-white rounded-xl mb-6 shadow-sm overflow-hidden transition-all border border-slate-200">
+          <div className={`flex justify-between items-center px-6 py-5 cursor-pointer transition-all bg-gradient-to-r from-slate-50 to-slate-100 border-l-4 border-l-blue-500 hover:bg-gradient-to-r hover:from-slate-100 hover:to-slate-200 hover:translate-x-1`} onClick={toggleConsumptionAnalytics}>
+            <div className="flex items-center gap-4 flex-wrap">
+              <h3 className="text-slate-800 text-xl m-0 font-semibold">Water Consumption</h3>
+              <span className="bg-slate-200 text-slate-600 px-3 py-1 rounded-full text-[0.7rem] font-semibold tracking-wider">Volume tracking</span>
+            </div>
+            <div className={`text-sm text-slate-500 transition-transform bg-white w-7 h-7 flex items-center justify-center rounded-full shadow-sm ${showConsumptionAnalytics ? 'rotate-90 text-blue-500 bg-blue-500/10' : ''}`}>&rsaquo;</div>
           </div>
-          <div className={`text-sm text-slate-500 transition-transform bg-white w-7 h-7 flex items-center justify-center rounded-full shadow-sm ${showConsumptionAnalytics ? 'rotate-90 text-blue-500 bg-blue-500/10' : ''}`}>&rsaquo;</div>
+          {showConsumptionAnalytics && (
+            <div className="p-6 border-t border-slate-200 animate-[toggleSlideDown_0.3s_ease-out]">
+              <WaterConsumptionAnalytics stationId={auth.currentUser?.uid} currentStock={stock} />
+            </div>
+          )}
         </div>
-        {showConsumptionAnalytics && (
-          <div className="p-6 border-t border-slate-200 animate-[toggleSlideDown_0.3s_ease-out]">
-            <WaterConsumptionAnalytics stationId={auth.currentUser?.uid} currentStock={stock} />
-          </div>
-        )}
-      </div>
+      </section>
 
       {alertProps && <AlertCard {...alertProps} onClose={closeAlert} />}
     </div>
