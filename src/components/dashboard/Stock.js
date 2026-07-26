@@ -592,11 +592,12 @@ const Stock = () => {
       {/* Analytics Section */}
       <section className="bg-white rounded-xl p-4 sm:p-8 mb-8 shadow-sm">
         <div className="flex justify-between items-center mb-8 pb-4 border-b-2 border-slate-200 flex-wrap gap-3">
-          <h2 className="text-slate-800 text-xl sm:text-2xl m-0">Business Analytics</h2>
-          <InfoTooltip
-            description="Overview of key business metrics — order volume, revenue, popular products, and top service areas."
-            formula="Total/Pending/Completed Orders = count by status. Total Revenue = sum of (product totals + delivery fee) for completed orders. Most Popular = highest total qty ordered. Top Location = most frequent delivery address (reverse-geocoded via Mapbox)."
-          />
+          <h2 className="text-slate-800 text-xl sm:text-2xl m-0">Business Analytics
+            <InfoTooltip
+              description="Shows your business numbers at a glance — total orders, pending and completed orders, total earnings, best-selling water type, and most frequent delivery area."
+              formula="Orders are counted by their status (pending or completed). Total earnings add up all completed order amounts plus delivery fees. The best-selling water is the one with the most gallons ordered. Top area is the delivery address that appears most often."
+            />
+          </h2>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -653,11 +654,12 @@ const Stock = () => {
       {/* Stock Inventory Section */}
       <section className="bg-white rounded-xl p-4 sm:p-8 mb-8 shadow-sm">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 pb-4 border-b-2 border-slate-200 gap-3">
-          <h2 className="text-slate-800 text-xl sm:text-2xl m-0">Water Stock Inventory</h2>
-          <InfoTooltip
-            description="Current gallon stock levels for Pure, Spring, and Mineral Water with color-coded status indicators."
-            formula="0 = Out of Stock (red). 1–9 = Low Stock (amber). 10–49 = Normal (blue). ≥50 = Stock (green). Edits write directly to Firebase."
-          />
+          <h2 className="text-slate-800 text-xl sm:text-2xl m-0">Water Stock Inventory
+            <InfoTooltip
+              description="Shows how many gallons of each water type (Pure, Spring, Mineral) you have in stock, with a color that tells you if stock is running low."
+              formula="Stock status colors: 0 gallons = red (Out of Stock), 1–9 = amber (Low Stock), 10–49 = blue (Normal), 50+ = green (Well Stocked). You can update stock manually and changes are saved immediately."
+            />
+          </h2>
           {!editingStock ? (
             <button className="bg-primary text-white border-none px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold cursor-pointer transition-all text-sm hover:bg-primary-dark hover:-translate-y-0.5" onClick={() => setEditingStock(true)}>
               Edit Stock
@@ -716,19 +718,19 @@ const Stock = () => {
       <section className="bg-white rounded-xl p-4 sm:p-8 mb-8 shadow-sm">
         <h2 className="text-slate-800 text-xl sm:text-2xl m-0 mb-6">Performance Reports
           <InfoTooltip
-            description="Container for Revenue Analytics and Water Consumption reports with historical data, projections, and year-over-year comparisons."
-            formula="Revenue and consumption projections based on current month's daily averages extended across remaining days. Historical data from archived months or calculated from orders."
+            description="A collection of revenue and water consumption reports showing past performance, future predictions, and year-to-year comparisons."
+            formula="Predictions are based on your current monthly average — total so far divided by days passed, then multiplied by remaining days. Past data comes from saved monthly records or is calculated from your order history."
           />
         </h2>
 
         {/* Revenue Analytics Collapsible */}
-        <div className="bg-white rounded-xl mb-6 shadow-sm overflow-hidden transition-all border border-slate-200">
+        <div className="bg-white rounded-xl mb-6 shadow-sm transition-all border border-slate-200">
           <div className={`flex justify-between items-center px-6 py-5 cursor-pointer transition-all bg-gradient-to-r from-slate-50 to-slate-100 border-l-4 border-l-blue-500 hover:bg-gradient-to-r hover:from-slate-100 hover:to-slate-200 hover:translate-x-1`} onClick={toggleRevenueAnalytics}>
             <div className="flex items-center gap-4 flex-wrap">
               <h3 className="text-slate-800 text-xl m-0 font-semibold">Revenue Analytics
                 <InfoTooltip
-                  description="Daily, monthly, and annual revenue tracking with projections, forecasts, and year-over-year growth."
-                  formula="Projected Monthly Revenue = currentRevenue + (dailyAverage × remainingDays); dailyAverage = currentRevenue ÷ currentDay. YoY Growth = ((currentYear − previousYear) ÷ previousYear) × 100%. Confidence: ≤6d Low, 7–14d Medium, 15–24d High, ≥25d Very High."
+                  description="Tracks your daily, monthly, and yearly earnings with future predictions and comparisons to previous years."
+                  formula="Predicted monthly earnings = what you've earned so far + (daily average × remaining days). Daily average = total earned so far ÷ days passed. Yearly comparison shows growth or decline vs. last year. Confidence grows as the month progresses — Low in first 6 days, Medium by day 14, High by day 24, Very High after that."
                 />
               </h3>
               <span className="bg-slate-200 text-slate-600 px-3 py-1 rounded-full text-[0.7rem] font-semibold tracking-wider">Revenue tracking</span>
@@ -736,7 +738,7 @@ const Stock = () => {
             <div className={`text-sm text-slate-500 transition-transform bg-white w-7 h-7 flex items-center justify-center rounded-full shadow-sm ${showRevenueAnalytics ? 'rotate-90 text-blue-500 bg-blue-500/10' : ''}`}>&rsaquo;</div>
           </div>
           {showRevenueAnalytics && (
-            <div className="p-6 border-t border-slate-200 animate-[toggleSlideDown_0.3s_ease-out]">
+            <div className="p-6 border-t border-slate-200 animate-[toggleSlideDown_0.3s_ease-out] overflow-hidden">
               {/* Monthly/Annual Toggle */}
               <div className="flex gap-2 bg-slate-100 p-1 rounded-full mb-6 w-fit">
                 <div className="relative group">
@@ -919,13 +921,13 @@ const Stock = () => {
         </div>
 
         {/* Water Consumption Analytics Section */}
-        <div className="bg-white rounded-xl mb-6 shadow-sm overflow-hidden transition-all border border-slate-200">
+        <div className="bg-white rounded-xl mb-6 shadow-sm transition-all border border-slate-200">
           <div className={`flex justify-between items-center px-6 py-5 cursor-pointer transition-all bg-gradient-to-r from-slate-50 to-slate-100 border-l-4 border-l-blue-500 hover:bg-gradient-to-r hover:from-slate-100 hover:to-slate-200 hover:translate-x-1`} onClick={toggleConsumptionAnalytics}>
             <div className="flex items-center gap-4 flex-wrap">
               <h3 className="text-slate-800 text-xl m-0 font-semibold">Water Consumption
                 <InfoTooltip
-                  description="Tracks water volume consumption per type with daily averages, stock depletion forecasts, and monthly trends."
-                  formula="Consumption = sum of qty from completed orders. Projected = currentConsumption + (dailyAverage × daysRemaining). Stock Depletion = floor(currentStock ÷ dailyAverage) days. MoM Change = ((current − previous) ÷ previous) × 100%."
+                  description="Tracks how much water (Pure, Spring, Mineral) your customers are consuming, with daily averages, stock run-out estimates, and monthly comparisons."
+                  formula="Consumption = total gallons from completed orders. Predicted consumption = current total + (daily average × remaining days). Days until stock runs out = current stock ÷ daily average (rounded down). Monthly change = how much more or less was consumed vs. the previous month."
                 />
               </h3>
               <span className="bg-slate-200 text-slate-600 px-3 py-1 rounded-full text-[0.7rem] font-semibold tracking-wider">Volume tracking</span>
@@ -933,7 +935,7 @@ const Stock = () => {
             <div className={`text-sm text-slate-500 transition-transform bg-white w-7 h-7 flex items-center justify-center rounded-full shadow-sm ${showConsumptionAnalytics ? 'rotate-90 text-blue-500 bg-blue-500/10' : ''}`}>&rsaquo;</div>
           </div>
           {showConsumptionAnalytics && (
-            <div className="p-6 border-t border-slate-200 animate-[toggleSlideDown_0.3s_ease-out]">
+            <div className="p-6 border-t border-slate-200 animate-[toggleSlideDown_0.3s_ease-out] overflow-hidden">
               <WaterConsumptionAnalytics stationId={auth.currentUser?.uid} currentStock={stock} />
             </div>
           )}
