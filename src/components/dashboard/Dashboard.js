@@ -508,29 +508,29 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
           </div>
 
           {order.orderType === 'Delivery' && (
-            <div className="bg-surface p-4 rounded-xl mb-6 border border-secondary/20">
-              <h4 className="m-0 mb-2 text-primary-dark text-sm">Delivery Address</h4>
+            <div className="p-4 rounded-xl mb-6 border border-white/10" style={{ background: '#1B3B6F' }}>
+              <h4 className="m-0 mb-2 text-slate-200 text-sm">Delivery Address</h4>
               {addressLoading ? (
-                <p className="text-slate-400 italic">Loading address...</p>
+                <p className="text-slate-400 italic text-sm">Loading address...</p>
               ) : (
                 <>
-                  <p className="m-0 mb-2 text-slate-800 font-medium">{address}</p>
+                  <p className="m-0 mb-2 text-slate-300 text-sm font-medium">{address}</p>
                   {order.additionalDetails && (
-                    <div className="my-2 p-3 bg-amber-50 rounded-md border-l-3 border-l-amber-500">
-                      <span className="font-semibold text-amber-800 text-xs">Additional Instructions:</span>
-                      <p className="m-1 text-amber-700 text-sm">{order.additionalDetails}</p>
+                    <div className="my-2 p-3 rounded-md border-l-4" style={{ background: 'rgba(217,119,6,0.15)', borderLeftColor: '#fbbf24' }}>
+                      <span className="font-semibold text-amber-300 text-xs">Additional Instructions:</span>
+                      <p className="m-1 text-amber-200 text-sm">{order.additionalDetails}</p>
                     </div>
                   )}
                   {coords && (
-                    <div className="mt-2">
+                    <div className="mt-3">
                       <button 
-                        className="bg-none border-none text-primary cursor-pointer text-xs p-0 underline"
+                        className="bg-secondary text-white border-none px-4 py-2 rounded-lg text-xs font-semibold cursor-pointer transition-all hover:brightness-110"
                         onClick={() => setShowRawLocation(!showRawLocation)}
                       >
                         {showRawLocation ? 'Hide Map' : 'Show on Map'}
                       </button>
                       {showRawLocation && (
-                        <div className="mt-2 rounded-lg overflow-hidden border border-slate-200">
+                        <div className="mt-3 rounded-lg overflow-hidden border border-white/10">
                           <iframe
                             title="Delivery Location"
                             width="100%"
@@ -540,12 +540,12 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
                             src={`https://www.openstreetmap.org/export/embed.html?bbox=${parseFloat(coords.lng) - 0.005},${parseFloat(coords.lat) - 0.005},${parseFloat(coords.lng) + 0.005},${parseFloat(coords.lat) + 0.005}&layer=mapnik&marker=${coords.lat},${coords.lng}`}
                             style={{ border: 0 }}
                           />
-                          <div className="text-xs text-center text-slate-400 p-1 bg-slate-50">
+                          <div className="text-xs text-center p-1" style={{ background: 'rgba(0,0,0,0.2)', color: '#94a3b8' }}>
                             <a 
                               href={`https://www.openstreetmap.org/?mlat=${coords.lat}&mlon=${coords.lng}&zoom=15`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-primary underline"
+                              className="text-secondary underline hover:text-white"
                             >
                               View Larger Map
                             </a>
