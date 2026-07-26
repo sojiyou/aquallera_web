@@ -531,25 +531,25 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
                       </button>
                       {showRawLocation && (
                         <div className="mt-3 rounded-lg overflow-hidden border border-white/10">
-                          <iframe
-                            title="Delivery Location"
-                            width="100%"
-                            height="250"
-                            frameBorder="0"
-                            scrolling="no"
-                            src={`https://www.openstreetmap.org/export/embed.html?bbox=${parseFloat(coords.lng) - 0.005},${parseFloat(coords.lat) - 0.005},${parseFloat(coords.lng) + 0.005},${parseFloat(coords.lat) + 0.005}&layer=mapnik&marker=${coords.lat},${coords.lng}`}
-                            style={{ border: 0 }}
-                          />
-                          <div className="text-xs text-center p-1" style={{ background: 'rgba(0,0,0,0.2)', color: '#94a3b8' }}>
-                            <a 
-                              href={`https://www.openstreetmap.org/?mlat=${coords.lat}&mlon=${coords.lng}&zoom=15`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-secondary underline hover:text-white"
-                            >
-                              View Larger Map
-                            </a>
+                          <div className="w-full" style={{ height: '250px', overflow: 'hidden' }}>
+                            <iframe
+                              title="Delivery Location"
+                              width="100%"
+                              height="280"
+                              frameBorder="0"
+                              scrolling="no"
+                              src={`https://www.openstreetmap.org/export/embed.html?bbox=${parseFloat(coords.lng) - 0.005},${parseFloat(coords.lat) - 0.005},${parseFloat(coords.lng) + 0.005},${parseFloat(coords.lat) + 0.005}&layer=mapnik&marker=${coords.lat},${coords.lng}`}
+                              style={{ border: 0, marginTop: '-30px', display: 'block' }}
+                            />
                           </div>
+                          <a 
+                            href={`https://www.openstreetmap.org/?mlat=${coords.lat}&mlon=${coords.lng}&zoom=15`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block w-full bg-secondary text-white text-center py-2 text-xs font-semibold no-underline transition-all hover:brightness-110"
+                          >
+                            View Larger Map
+                          </a>
                         </div>
                       )}
                     </div>
