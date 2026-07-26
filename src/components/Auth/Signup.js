@@ -767,14 +767,14 @@ const Signup = () => {
         </div>
 
         {/* Progress Steps */}
-        <div className="flex justify-between mb-8 relative">
+        <div className="flex justify-between gap-1 mb-8 relative">
           {[1, 2, 3, 4, 5, 6].map(step => (
             <div
               key={step}
               className={`flex flex-col items-center relative z-[2] flex-1 ${currentStep >= step ? 'active' : ''} ${currentStep === step ? 'current' : ''}`}
             >
               <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold mb-2 border-[3px] border-white transition-all duration-300 ${currentStep > step ? 'bg-secondary text-white border-secondary' : currentStep >= step ? 'bg-primary text-white border-primary' : 'bg-slate-200 text-slate-500'}`}>{step}</div>
-              <div className={`text-xs text-slate-500 font-medium text-center ${currentStep >= step ? 'text-primary font-semibold' : ''}`}>
+              <div className={`text-[11px] leading-tight text-slate-500 font-medium text-center ${currentStep >= step ? 'text-primary font-semibold' : ''}`}>
                 {step === 1 && 'Basic Info'}
                 {step === 2 && 'Location'}
                 {step === 3 && 'Services'}
