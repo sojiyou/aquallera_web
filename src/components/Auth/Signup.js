@@ -52,8 +52,13 @@ const Signup = () => {
 
     // Business Permit
     businessPermitNumber: '',
-    permitFile: null,
-    permitFileUrl: '',
+    permitDocuments: {
+      businessPermit:     { file: null, url: null },
+      dtiSecRegistration: { file: null, url: null },
+      sanitaryPermit:     { file: null, url: null },
+      fdaLto:             { file: null, url: null },
+      otherDocument:      { file: null, url: null, label: '' }
+    },
 
     // Login Credentials
     password: '',
@@ -69,6 +74,7 @@ const Signup = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const fileInputRef = useRef(null);
+  const currentSlotKeyRef = useRef(null);
 
   // ========== MAPBOX MAP STATES ==========
   const [mapboxSearch, setMapboxSearch] = useState('');
@@ -160,53 +166,82 @@ const Signup = () => {
     });
   };
 
-  const handleFileSelect = (e) => {
+  const DOCUMENT_LABELS = {
+    businessPermit:     'Business Permit (Mayor\'s Permit)',
+    dtiSecRegistration: 'DTI / SEC Registration',
+    sanitaryPermit:     'Sanitary Permit (DOH)',
+    fdaLto:             'FDA License to Operate (LTO)',
+    otherDocument:      'Other Document'
+  };
+
+  const DOCUMENT_REQUIRED = {
+    businessPermit:     true,
+    dtiSecRegistration: true,
+    sanitaryPermit:     true,
+    fdaLto:             true,
+    otherDocument:      false
+  };
+
+  const handleDocumentSelect = (slotKey) => {
+    currentSlotKeyRef.current = slotKey;
+    fileInputRef.current.click();
+  };
+
+  const processSelectedFile = (e) => {
     const file = e.target.files[0];
-    if (!file) return;
+    const slotKey = currentSlotKeyRef.current;
+    if (!file || !slotKey) return;
 
     const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
     if (!validTypes.includes(file.type)) {
-      setErrors(prev => ({ ...prev, permitFile: 'Only JPG, PNG, or PDF files allowed' }));
+      setErrors(prev => ({ ...prev, [slotKey]: 'Only JPG, PNG, or PDF files allowed' }));
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      setErrors(prev => ({ ...prev, permitFile: 'File size must be less than 5MB' }));
+      setErrors(prev => ({ ...prev, [slotKey]: 'File size must be less than 5MB' }));
       return;
     }
 
-    setErrors(prev => ({ ...prev, permitFile: '' }));
+    setErrors(prev => ({ ...prev, [slotKey]: '' }));
 
     if (file.type.startsWith('image/')) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFormData(prev => ({
-          ...prev,
-          permitFile: file,
-          permitFileUrl: reader.result
-        }));
+        setFormData(prev => {
+          const docs = { ...prev.permitDocuments };
+          docs[slotKey] = { ...docs[slotKey], file, url: reader.result };
+          return { ...prev, permitDocuments: docs };
+        });
       };
       reader.readAsDataURL(file);
     } else {
-      setFormData(prev => ({
-        ...prev,
-        permitFile: file,
-        permitFileUrl: null
-      }));
+      setFormData(prev => {
+        const docs = { ...prev.permitDocuments };
+        docs[slotKey] = { ...docs[slotKey], file, url: null };
+        return { ...prev, permitDocuments: docs };
+      });
     }
+
+    e.target.value = '';
   };
 
-  const triggerFileInput = () => {
-    fileInputRef.current.click();
+  const removeDocument = (slotKey) => {
+    setFormData(prev => {
+      const docs = { ...prev.permitDocuments };
+      docs[slotKey] = { ...docs[slotKey], file: null, url: null };
+      if (slotKey === 'otherDocument') docs[slotKey].label = '';
+      return { ...prev, permitDocuments: docs };
+    });
+    setErrors(prev => ({ ...prev, [slotKey]: '' }));
   };
 
-  const removeFile = () => {
-    setFormData(prev => ({
-      ...prev,
-      permitFile: null,
-      permitFileUrl: ''
-    }));
-    setErrors(prev => ({ ...prev, permitFile: '' }));
+  const handleOtherLabelChange = (value) => {
+    setFormData(prev => {
+      const docs = { ...prev.permitDocuments };
+      docs.otherDocument = { ...docs.otherDocument, label: value };
+      return { ...prev, permitDocuments: docs };
+    });
   };
 
   const fileToBase64 = (file) => {
@@ -595,8 +630,17 @@ const Signup = () => {
       if (!formData.businessPermitNumber.trim()) {
         newErrors.businessPermitNumber = 'Business permit number required';
       }
-      if (!formData.permitFile) {
-        newErrors.permitFile = 'Business permit file required';
+      if (!formData.permitDocuments.businessPermit.file) {
+        newErrors.businessPermit = 'Business Permit is required';
+      }
+      if (!formData.permitDocuments.dtiSecRegistration.file) {
+        newErrors.dtiSecRegistration = 'DTI/SEC Registration is required';
+      }
+      if (!formData.permitDocuments.sanitaryPermit.file) {
+        newErrors.sanitaryPermit = 'Sanitary Permit is required';
+      }
+      if (!formData.permitDocuments.fdaLto.file) {
+        newErrors.fdaLto = 'FDA License to Operate is required';
       }
     }
 
@@ -662,9 +706,17 @@ const Signup = () => {
         }
       }
 
-      let businessPermitBase64 = null;
-      if (formData.permitFile) {
-        businessPermitBase64 = await compressImage(formData.permitFile);
+      const businessPermitDocuments = {};
+      for (const [key, slot] of Object.entries(formData.permitDocuments)) {
+        if (slot.file) {
+          businessPermitDocuments[key] = {
+            base64: await compressImage(slot.file),
+            filename: slot.file.name,
+            fileType: slot.file.type,
+            fileSize: slot.file.size,
+            ...(key === 'otherDocument' && slot.label ? { label: slot.label } : {})
+          };
+        }
       }
 
       const stationData = {
@@ -688,10 +740,7 @@ const Signup = () => {
         pricing_gallon_mineral: formData.pricing_gallon_mineral ? parseFloat(formData.pricing_gallon_mineral) : null,
         pricing_delivery_fee: formData.pricing_delivery_fee ? parseFloat(formData.pricing_delivery_fee) : null,
         businessPermitNumber: formData.businessPermitNumber,
-        businessPermitBase64: businessPermitBase64,
-        businessPermitFilename: formData.permitFile?.name || null,
-        businessPermitFileType: formData.permitFile?.type || null,
-        businessPermitFileSize: formData.permitFile?.size || null,
+        businessPermitDocuments: businessPermitDocuments,
         businessPermitUploadedAt: new Date().toISOString(),
         password: formData.password,
         status: 'pending',
@@ -766,7 +815,7 @@ const Signup = () => {
                 {step === 2 && 'Location'}
                 {step === 3 && 'Services'}
                 {step === 4 && 'Pricing'}
-                {step === 5 && 'Permit'}
+                {step === 5 && 'Documents'}
                 {step === 6 && 'Account'}
               </div>
             </div>
@@ -1258,10 +1307,10 @@ const Signup = () => {
           {/* STEP 5: Permit */}
           {currentStep === 5 && (
             <div>
-              <h3 className="text-slate-800 mb-6 text-xl border-b-2 border-slate-100 pb-2">Business Permit Verification</h3>
+              <h3 className="text-slate-800 mb-6 text-xl border-b-2 border-slate-100 pb-2">Business Documents</h3>
               <p className="text-slate-500 text-sm mb-6 p-3 bg-slate-50 rounded-md border-l-4 border-amber-500">
-                Upload a clear photo or scan of your valid business permit.
-                This is required for approval to operate on our platform.
+                Upload clear photos or scans of your required business documents.
+                These are required for approval to operate on our platform.
               </p>
 
               <div className="mb-6">
@@ -1283,88 +1332,98 @@ const Signup = () => {
                 </small>
               </div>
 
-              <div className="mb-6">
-                <label className="block mb-2 text-gray-700 font-medium text-sm">Upload Business Permit *</label>
-                <div className="mt-2">
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleFileSelect}
-                    accept=".jpg,.jpeg,.png,.pdf"
-                    style={{ display: 'none' }}
-                  />
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={processSelectedFile}
+                accept=".jpg,.jpeg,.png,.pdf"
+                style={{ display: 'none' }}
+              />
 
-                  {!formData.permitFile ? (
-                    <div className="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center cursor-pointer transition-all bg-slate-50 hover:border-primary hover:bg-primary/5" onClick={triggerFileInput}>
-                      <div className="text-4xl mb-3 text-slate-500"></div>
-                      <div>
-                        <p className="font-semibold text-slate-800 mb-1">Click to upload business permit</p>
-                        <p className="text-slate-500 text-sm">
-                          Supports JPG, PNG, or PDF (max 5MB)
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="border-2 border-slate-200 rounded-lg p-4 bg-white">
-                      {formData.permitFileUrl && formData.permitFile.type.startsWith('image/') ? (
-                        <div className="flex items-center gap-4 mb-4">
-                          <img src={formData.permitFileUrl} alt="Business permit preview" className="w-[100px] h-[100px] object-cover rounded border border-slate-200" />
-                          <div className="flex-1">
-                            <p className="font-semibold text-slate-800 mb-1 break-all">{formData.permitFile.name}</p>
-                            <p className="text-slate-500 text-sm mb-1">
-                              {(formData.permitFile.size / 1024 / 1024).toFixed(2)} MB
-                            </p>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-4 mb-4">
-                          <div className="text-4xl text-primary"></div>
-                          <div className="flex-1">
-                            <p className="font-semibold text-slate-800 mb-1 break-all">{formData.permitFile.name}</p>
-                            <p className="text-slate-500 text-sm mb-1">
-                              {(formData.permitFile.size / 1024 / 1024).toFixed(2)} MB
-                            </p>
-                            <p className="text-slate-500 text-xs bg-slate-100 px-2 py-0.5 rounded inline-block">PDF Document</p>
-                          </div>
-                        </div>
+              {Object.entries(DOCUMENT_LABELS).map(([slotKey, label]) => {
+                const slot = formData.permitDocuments[slotKey];
+                const isRequired = DOCUMENT_REQUIRED[slotKey];
+                const hasFile = slot && slot.file;
+                const error = errors[slotKey];
+
+                return (
+                  <div key={slotKey} className="mb-5 p-4 border border-slate-200 rounded-lg bg-white">
+                    <div className="flex items-center justify-between mb-3">
+                      <label className="text-gray-700 font-medium text-sm">
+                        {label}
+                        {isRequired && <span className="text-red-500 ml-1">*</span>}
+                      </label>
+                      {slotKey === 'otherDocument' && (
+                        <span className="text-xs text-slate-400">Optional</span>
                       )}
-                      <button
-                        type="button"
-                        className="bg-red-50 text-red-600 border border-red-200 rounded px-4 py-2 text-sm font-medium cursor-pointer transition-all hover:bg-red-200 block ml-auto"
-                        onClick={removeFile}
+                    </div>
+
+                    {slotKey === 'otherDocument' && (
+                      <input
+                        type="text"
+                        value={slot.label || ''}
+                        onChange={(e) => handleOtherLabelChange(e.target.value)}
+                        placeholder="Specify document type (e.g., Water Potability, CWO Cert)"
+                        className="w-full px-3 py-2 mb-3 border-2 border-slate-200 rounded-lg text-sm focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)]"
+                      />
+                    )}
+
+                    {!hasFile ? (
+                      <div
+                        className="border-2 border-dashed border-slate-300 rounded-lg p-5 text-center cursor-pointer transition-all bg-slate-50 hover:border-primary hover:bg-primary/5"
+                        onClick={() => handleDocumentSelect(slotKey)}
                       >
-                        Remove
-                      </button>
-                    </div>
-                  )}
-
-                  {errors.permitFile && (
-                    <span className="text-red-500 text-sm mt-1 block">{errors.permitFile}</span>
-                  )}
-
-                  {isUploading && (
-                    <div className="mt-4 p-3 bg-slate-50 rounded-md">
-                      <div className="h-1.5 bg-slate-200 rounded overflow-hidden mb-2">
-                        <div
-                          className="h-full bg-secondary transition-all duration-300"
-                          style={{ width: `${uploadProgress}%` }}
-                        ></div>
+                        <svg className="w-8 h-8 mx-auto mb-2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                        <p className="font-semibold text-slate-700 text-sm mb-1">Click to upload</p>
+                        <p className="text-slate-400 text-xs">JPG, PNG, or PDF (max 5MB)</p>
                       </div>
-                      <span className="text-sm text-slate-500 text-center block">Processing... {uploadProgress}%</span>
-                    </div>
-                  )}
-                </div>
-              </div>
+                    ) : (
+                      <div className="border border-slate-200 rounded-lg p-3 bg-white">
+                        {slot.url && slot.file.type.startsWith('image/') ? (
+                          <div className="flex items-center gap-3">
+                            <img src={slot.url} alt={label} className="w-16 h-16 object-cover rounded border border-slate-200" />
+                            <div className="flex-1 min-w-0">
+                              <p className="font-semibold text-slate-800 text-sm truncate">{slot.file.name}</p>
+                              <p className="text-slate-500 text-xs">{(slot.file.size / 1024 / 1024).toFixed(2)} MB</p>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-14 bg-red-50 rounded flex items-center justify-center text-red-500 text-xs font-bold shrink-0">PDF</div>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-semibold text-slate-800 text-sm truncate">{slot.file.name}</p>
+                              <p className="text-slate-500 text-xs">PDF Document &middot; {(slot.file.size / 1024 / 1024).toFixed(2)} MB</p>
+                            </div>
+                          </div>
+                        )}
+                        <button
+                          type="button"
+                          className="mt-2 bg-red-50 text-red-600 border border-red-200 rounded px-3 py-1.5 text-xs font-medium cursor-pointer transition-all hover:bg-red-200"
+                          onClick={() => removeDocument(slotKey)}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    )}
 
-              <div className="mt-6 p-4 bg-surface rounded-lg border border-secondary/20">
-                <h4 className="text-primary-dark mb-3 text-sm font-semibold">Requirements:</h4>
-                <ul className="list-none p-0 m-0">
-                  <li className="text-slate-500 text-xs py-1 pl-6 relative">Document must be valid and not expired</li>
-                  <li className="text-slate-500 text-xs py-1 pl-6 relative">Clear photo/scan with all text readable</li>
-                  <li className="text-slate-500 text-xs py-1 pl-6 relative">Permit number must match the one entered above</li>
-                  <li className="text-slate-500 text-xs py-1 pl-6 relative">File must be less than 5MB</li>
-                </ul>
-              </div>
+                    {error && <span className="text-red-500 text-xs mt-1 block">{error}</span>}
+                  </div>
+                );
+              })}
+
+              {isUploading && (
+                <div className="mt-4 p-3 bg-slate-50 rounded-md">
+                  <div className="h-1.5 bg-slate-200 rounded overflow-hidden mb-2">
+                    <div
+                      className="h-full bg-secondary transition-all duration-300"
+                      style={{ width: `${uploadProgress}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-sm text-slate-500 text-center block">Processing... {uploadProgress}%</span>
+                </div>
+              )}
             </div>
           )}
 

@@ -820,33 +820,14 @@ const AdminPage = () => {
                 </div>
               </div>
 
+              {/* Business Documents */}
               <div className="mb-8 pb-6 border-b border-gray-200 last:border-b-0">
-                <h3 className="text-slate-800 m-0 mb-4 text-xl flex items-center gap-2">Business Permit Details</h3>
-                <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4">
+                <h3 className="text-slate-800 m-0 mb-4 text-xl flex items-center gap-2">Business Documents</h3>
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4 mb-4">
                   <div className="flex flex-col gap-1">
                     <span className="font-semibold text-gray-600 text-sm">Permit Number:</span>
                     <span className="text-gray-800 text-base break-words p-2 bg-gray-50 rounded-md border border-gray-200">{selectedStation.businessPermitNumber || 'N/A'}</span>
                   </div>
-                  {selectedStation.businessPermitFilename && (
-                    <div className="flex flex-col gap-1">
-                      <span className="font-semibold text-gray-600 text-sm">File Name:</span>
-                      <span className="text-gray-800 text-base break-words p-2 bg-gray-50 rounded-md border border-gray-200">{selectedStation.businessPermitFilename}</span>
-                    </div>
-                  )}
-                  {selectedStation.businessPermitFileType && (
-                    <div className="flex flex-col gap-1">
-                      <span className="font-semibold text-gray-600 text-sm">File Type:</span>
-                      <span className="text-gray-800 text-base break-words p-2 bg-gray-50 rounded-md border border-gray-200">{selectedStation.businessPermitFileType}</span>
-                    </div>
-                  )}
-                  {selectedStation.businessPermitFileSize && (
-                    <div className="flex flex-col gap-1">
-                      <span className="font-semibold text-gray-600 text-sm">File Size:</span>
-                      <span className="text-gray-800 text-base break-words p-2 bg-gray-50 rounded-md border border-gray-200">
-                        {Math.round(selectedStation.businessPermitFileSize / 1024)} KB
-                      </span>
-                    </div>
-                  )}
                   {selectedStation.businessPermitUploadedAt && (
                     <div className="flex flex-col gap-1">
                       <span className="font-semibold text-gray-600 text-sm">Uploaded:</span>
@@ -856,49 +837,98 @@ const AdminPage = () => {
                     </div>
                   )}
                 </div>
-              </div>
 
-              {/* Business Permit Image */}
-              {selectedStation.businessPermitBase64 && (
-                <div className="bg-slate-50 rounded-xl p-6 my-6 border-2 border-dashed border-gray-300">
-                  <h3 className="mt-0 text-gray-700">Business Permit Image</h3>
-                  <div className="flex justify-center my-4">
-                    <img
-                      src={selectedStation.businessPermitBase64}
-                      alt="Business Permit"
-                      className="max-w-full max-h-[300px] border border-gray-200 rounded-lg shadow-md object-contain bg-white"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9IiNGNUY1RjUiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSIjNjY2Ij5CdXNpbmVzcyBQZXJtaXQgSW1hZ2UgKEVycm9yIGxvYWRpbmcpPC90ZXh0Pjwvc3ZnPg==';
-                      }}
-                    />
-                  </div>
-                  <div className="flex gap-2 justify-center mt-4 flex-wrap">
-                    <button
-                      onClick={() => {
-                        const win = window.open();
-                        win.document.write(`<img src="${selectedStation.businessPermitBase64}" style="max-width:100%;" />`);
-                      }}
-                      className="bg-primary text-white px-4 py-2 rounded-md cursor-pointer text-sm font-medium transition-all hover:bg-primary-dark"
-                    >
-                      View Full Image
-                    </button>
-                    <button
-                      onClick={() => {
-                        const link = document.createElement('a');
-                        link.href = selectedStation.businessPermitBase64;
-                        link.download = selectedStation.businessPermitFilename || 'business-permit.png';
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                      }}
-                      className="bg-secondary text-white px-4 py-2 rounded-md cursor-pointer text-sm font-medium transition-all hover:bg-primary-dark"
-                    >
-                      Download Image
-                    </button>
-                  </div>
-                </div>
-              )}
+                {/* Document Gallery */}
+                {(() => {
+                  const DOCUMENT_LABELS = {
+                    businessPermit:     'Business Permit (Mayor\'s Permit)',
+                    dtiSecRegistration: 'DTI / SEC Registration',
+                    sanitaryPermit:     'Sanitary Permit (DOH)',
+                    fdaLto:             'FDA License to Operate (LTO)',
+                    otherDocument:      'Other Document'
+                  };
+                  const docs = selectedStation.businessPermitDocuments || {};
+                  const entries = Object.entries(DOCUMENT_LABELS);
+                  const hasAnyDoc = entries.some(([key]) => docs[key]);
+
+                  if (!hasAnyDoc) {
+                    return (
+                      <div className="text-center p-6 bg-slate-50 rounded-lg border border-dashed border-slate-300">
+                        <p className="text-slate-400 text-sm">No documents uploaded</p>
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {entries.map(([key, label]) => {
+                        const doc = docs[key];
+                        if (!doc) return null;
+                        const isImage = doc.fileType && doc.fileType.startsWith('image/');
+                        const customLabel = key === 'otherDocument' && doc.label ? doc.label : null;
+
+                        return (
+                          <div key={key} className="border border-slate-200 rounded-lg p-4 bg-white">
+                            <div className="flex items-start justify-between mb-3">
+                              <div className="flex-1 min-w-0">
+                                <h4 className="text-sm font-semibold text-slate-800 m-0 truncate">
+                                  {customLabel || label}
+                                </h4>
+                                <p className="text-xs text-slate-400 m-0 mt-0.5 truncate">{doc.filename}</p>
+                              </div>
+                              <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ml-2 ${isImage ? 'bg-blue-50 text-blue-600' : 'bg-red-50 text-red-600'}`}>
+                                {isImage ? 'Image' : 'PDF'}
+                              </span>
+                            </div>
+                            {isImage && doc.base64 && (
+                              <div className="mb-3">
+                                <img
+                                  src={doc.base64}
+                                  alt={label}
+                                  className="w-full h-32 object-cover rounded border border-slate-200"
+                                  onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.style.display = 'none';
+                                  }}
+                                />
+                              </div>
+                            )}
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => {
+                                  if (isImage && doc.base64) {
+                                    const win = window.open();
+                                    win.document.write(`<img src="${doc.base64}" style="max-width:100%;" />`);
+                                  } else if (doc.base64) {
+                                    const win = window.open();
+                                    win.document.write(`<iframe src="${doc.base64}" style="width:100%;height:100vh;" />`);
+                                  }
+                                }}
+                                className="flex-1 bg-primary text-white px-3 py-1.5 rounded text-xs font-medium cursor-pointer transition-all hover:bg-primary-dark"
+                              >
+                                View
+                              </button>
+                              <button
+                                onClick={() => {
+                                  const link = document.createElement('a');
+                                  link.href = doc.base64;
+                                  link.download = doc.filename || `${key}.png`;
+                                  document.body.appendChild(link);
+                                  link.click();
+                                  document.body.removeChild(link);
+                                }}
+                                className="flex-1 bg-secondary text-white px-3 py-1.5 rounded text-xs font-medium cursor-pointer transition-all hover:bg-primary-dark"
+                              >
+                                Download
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })()}
+              </div>
 
               {/* System Information */}
               <div className="mb-8 pb-6 border-b border-gray-200 last:border-b-0">
