@@ -1253,7 +1253,7 @@ const Signup = () => {
                 </div>
               </div>
 
-              <div className="mt-8 p-3 bg-slate-100 rounded-md text-center text-slate-500 text-xs border border-dashed border-slate-300">
+              <div className="mt-8 p-3 rounded-md text-center text-xs" style={{ background: '#1B3B6F', color: '#e2e8f0' }}>
                 <small>Note: You can update these prices anytime in your station settings dashboard.</small>
               </div>
             </div>
