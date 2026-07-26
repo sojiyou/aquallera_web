@@ -854,7 +854,7 @@ const Signup = () => {
           {currentStep === 2 && (
             <div>
               <h3 className="text-slate-800 mb-6 text-xl border-b-2 border-slate-100 pb-2">Station Location</h3>
-              <p className="bg-amber-50 border-l-4 border-l-amber-500 p-3 mb-6 rounded text-sm text-amber-800 leading-relaxed">
+              <p className="bg-amber-50 border-l-4 border-l-amber-500 p-3 mb-6 rounded text-sm text-amber-600 leading-relaxed">
                 Use the map below to pinpoint your exact station location.
                 You can search for an address or click/drag the marker on the map.
               </p>
@@ -1096,7 +1096,7 @@ const Signup = () => {
                             <svg className="w-4 h-4 mr-3 text-secondary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span className="flex-1 font-semibold text-slate-800 text-base">{convertTo12Hour(time)}</span>
+                            <span className="flex-1 font-semibold text-slate-700 text-base">{convertTo12Hour(time)}</span>
                             <button
                               type="button"
                               onClick={() => removeDeliveryHour(time)}
@@ -1498,27 +1498,27 @@ const Signup = () => {
                   </div>
 
                   <div className="mb-3 p-3 rounded-md bg-primary/5 border border-primary/20">
-                    <h5 className="text-[0.82rem] font-bold m-0 mb-1.5">Location Requirements:</h5>
+                    <h5 className="text-[0.82rem] font-bold m-0 mb-1.5 text-slate-600">Location Requirements:</h5>
                     <ul className="list-none p-0 m-0">
-                      <li className="text-[0.8rem] py-0.5 pl-5 relative leading-relaxed">Valid commercial address</li>
-                      <li className="text-[0.8rem] py-0.5 pl-5 relative leading-relaxed">Properly zoned for water station</li>
-                      <li className="text-[0.8rem] py-0.5 pl-5 relative leading-relaxed">Accurate coordinates on map</li>
-                      <li className="text-[0.8rem] py-0.5 pl-5 relative leading-relaxed">No duplicate at same location</li>
+                      <li className="text-[0.8rem] py-0.5 pl-5 relative leading-relaxed text-slate-500">Valid commercial address</li>
+                      <li className="text-[0.8rem] py-0.5 pl-5 relative leading-relaxed text-slate-500">Properly zoned for water station</li>
+                      <li className="text-[0.8rem] py-0.5 pl-5 relative leading-relaxed text-slate-500">Accurate coordinates on map</li>
+                      <li className="text-[0.8rem] py-0.5 pl-5 relative leading-relaxed text-slate-500">No duplicate at same location</li>
                     </ul>
                   </div>
 
                   <div className="mb-3 p-3 rounded-md bg-secondary/5 border border-secondary/20">
-                    <h5 className="text-[0.82rem] font-bold m-0 mb-1.5">Legal Compliance:</h5>
+                    <h5 className="text-[0.82rem] font-bold m-0 mb-1.5 text-slate-600">Legal Compliance:</h5>
                     <p className="text-slate-500 text-[0.8rem]">Your station must comply with:</p>
                     <ul className="list-none p-0 m-0 mt-1">
-                      <li className="text-[0.8rem] py-0.5 pl-5 relative leading-relaxed">DOH Admin Order 2017-0010</li>
-                      <li className="text-[0.8rem] py-0.5 pl-5 relative leading-relaxed">Philippine National Standards (PNS)</li>
-                      <li className="text-[0.8rem] py-0.5 pl-5 relative leading-relaxed">Data Privacy Act (RA 10173)</li>
-                      <li className="text-[0.8rem] py-0.5 pl-5 relative leading-relaxed">Local sanitation codes</li>
+                      <li className="text-[0.8rem] py-0.5 pl-5 relative leading-relaxed text-slate-500">DOH Admin Order 2017-0010</li>
+                      <li className="text-[0.8rem] py-0.5 pl-5 relative leading-relaxed text-slate-500">Philippine National Standards (PNS)</li>
+                      <li className="text-[0.8rem] py-0.5 pl-5 relative leading-relaxed text-slate-500">Data Privacy Act (RA 10173)</li>
+                      <li className="text-[0.8rem] py-0.5 pl-5 relative leading-relaxed text-slate-500">Local sanitation codes</li>
                     </ul>
                   </div>
 
-                  <div className="bg-amber-50 border border-amber-200 border-l-4 border-l-amber-500 rounded-md p-2.5 text-amber-800 text-[0.78rem] leading-relaxed mt-2">
+                  <div className="bg-amber-50 border border-amber-200 border-l-4 border-l-amber-500 rounded-md p-2.5 text-amber-600 text-[0.78rem] leading-relaxed mt-2">
                     <strong className="block mb-0.5">Important:</strong> Providing false information or missing documents will result in immediate rejection. Please double-check everything before submitting.
                   </div>
 

@@ -329,22 +329,22 @@ const Login = () => {
               <div className="bg-red-600 text-white w-9 h-9 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
               </div>
               <div className="flex-1">
-                <h3 className="text-red-900 m-0 mb-2 text-lg font-semibold">Application Rejected</h3>
-                <p className="text-red-800 m-0 mb-2 font-medium">
+                <h3 className="text-red-800 m-0 mb-2 text-lg font-semibold">Application Rejected</h3>
+                <p className="text-red-700 m-0 mb-2 font-medium">
                   Your station "<strong>{rejectionData.stationName}</strong>" has been rejected.
                 </p>
               </div>
             </div>
 
             <div className="bg-[rgba(220,38,38,0.05)] border-l-4 border-l-red-600 p-3 mb-4 rounded-r">
-              <p className="m-0 mb-1 text-red-900 font-semibold">Rejection Reason:</p>
-              <p className="m-0 text-red-800 leading-relaxed">{rejectionData.reason}</p>
+              <p className="m-0 mb-1 text-red-800 font-semibold">Rejection Reason:</p>
+              <p className="m-0 text-red-700 leading-relaxed">{rejectionData.reason}</p>
             </div>
 
             {rejectionData.cleanupComplete && (
               <div className="bg-emerald-100 border border-emerald-500 rounded-md p-3 mb-4 flex items-center gap-2">
-                <span className="text-emerald-700"></span>
-                <span className="text-emerald-800 text-sm">
+                <span className="text-emerald-600"></span>
+                <span className="text-emerald-600 text-sm">
                   Your station data has been removed from our system.
                 </span>
               </div>
@@ -366,64 +366,64 @@ const Login = () => {
                 <h4 className="text-slate-800 text-base font-semibold mb-3">Common Rejection Reasons</h4>
 
                 <div className="mb-4 p-3 bg-slate-50 rounded-md border border-slate-100">
-                  <h5 className="text-red-700 text-sm font-bold mb-2">Business Permit Issues:</h5>
+                  <h5 className="text-red-600 text-sm font-bold mb-2">Business Permit Issues:</h5>
                   <ul className="list-none p-0 m-0">
-                    <li className="text-slate-600 text-sm py-1">Expired business permit (must be current year)</li>
-                    <li className="text-slate-600 text-sm py-1">Permit issued to different business name</li>
-                    <li className="text-slate-600 text-sm py-1">Illegible or unclear permit image</li>
-                    <li className="text-slate-600 text-sm py-1">Permit number doesn't match document</li>
-                    <li className="text-slate-600 text-sm py-1">Not specifically for water refilling business</li>
+                    <li className="text-slate-500 text-sm py-1">Expired business permit (must be current year)</li>
+                    <li className="text-slate-500 text-sm py-1">Permit issued to different business name</li>
+                    <li className="text-slate-500 text-sm py-1">Illegible or unclear permit image</li>
+                    <li className="text-slate-500 text-sm py-1">Permit number doesn't match document</li>
+                    <li className="text-slate-500 text-sm py-1">Not specifically for water refilling business</li>
                   </ul>
                 </div>
 
                 <div className="mb-4 p-3 bg-slate-50 rounded-md border border-slate-100">
-                  <h5 className="text-red-700 text-sm font-bold mb-2">Missing Requirements:</h5>
+                  <h5 className="text-red-600 text-sm font-bold mb-2">Missing Requirements:</h5>
                   <ul className="list-none p-0 m-0">
-                    <li className="text-slate-600 text-sm py-1">No FDA License to Operate (LTO) for water products</li>
-                    <li className="text-slate-600 text-sm py-1">Missing sanitation permit from local health office</li>
-                    <li className="text-slate-600 text-sm py-1">No proof of water quality testing</li>
-                    <li className="text-slate-600 text-sm py-1">Incomplete or poor quality document scans</li>
+                    <li className="text-slate-500 text-sm py-1">No FDA License to Operate (LTO) for water products</li>
+                    <li className="text-slate-500 text-sm py-1">Missing sanitation permit from local health office</li>
+                    <li className="text-slate-500 text-sm py-1">No proof of water quality testing</li>
+                    <li className="text-slate-500 text-sm py-1">Incomplete or poor quality document scans</li>
                   </ul>
                 </div>
 
                 <div className="mb-4 p-3 bg-slate-50 rounded-md border border-slate-100">
-                  <h5 className="text-red-700 text-sm font-bold mb-2">Location Problems:</h5>
+                  <h5 className="text-red-600 text-sm font-bold mb-2">Location Problems:</h5>
                   <ul className="list-none p-0 m-0">
-                    <li className="text-slate-600 text-sm py-1">Coordinates point to residential area</li>
-                    <li className="text-slate-600 text-sm py-1">Address doesn't match coordinates</li>
-                    <li className="text-slate-600 text-sm py-1">Location not properly zoned for commercial use</li>
-                    <li className="text-slate-600 text-sm py-1">Duplicate station at same address</li>
+                    <li className="text-slate-500 text-sm py-1">Coordinates point to residential area</li>
+                    <li className="text-slate-500 text-sm py-1">Address doesn't match coordinates</li>
+                    <li className="text-slate-500 text-sm py-1">Location not properly zoned for commercial use</li>
+                    <li className="text-slate-500 text-sm py-1">Duplicate station at same address</li>
                   </ul>
                 </div>
 
                 <div className="mb-4 p-3 bg-slate-50 rounded-md border border-slate-100">
-                  <h5 className="text-red-700 text-sm font-bold mb-2">Data Privacy Violations:</h5>
+                  <h5 className="text-red-600 text-sm font-bold mb-2">Data Privacy Violations:</h5>
                   <ul className="list-none p-0 m-0">
-                    <li className="text-slate-600 text-sm py-1">Terms and conditions not accepted</li>
-                    <li className="text-slate-600 text-sm py-1">Non-compliance with Data Privacy Act (RA 10173)</li>
-                    <li className="text-slate-600 text-sm py-1">Inadequate data protection measures</li>
+                    <li className="text-slate-500 text-sm py-1">Terms and conditions not accepted</li>
+                    <li className="text-slate-500 text-sm py-1">Non-compliance with Data Privacy Act (RA 10173)</li>
+                    <li className="text-slate-500 text-sm py-1">Inadequate data protection measures</li>
                   </ul>
                 </div>
 
                 <div className="mb-4 p-3 bg-emerald-50 rounded-md border border-emerald-200">
-                  <h4 className="text-emerald-800 text-sm font-bold mb-2">Required Documents Before Reapplying:</h4>
+                  <h4 className="text-emerald-600 text-sm font-bold mb-2">Required Documents Before Reapplying:</h4>
                   <ul className="list-none p-0 m-0">
-                    <li className="text-slate-600 text-sm py-1">Valid Business Permit (Mayor's Permit) - Current year</li>
-                    <li className="text-slate-600 text-sm py-1">Sanitation Permit from Local Health Office</li>
-                    <li className="text-slate-600 text-sm py-1">FDA License to Operate (LTO) for water products</li>
-                    <li className="text-slate-600 text-sm py-1">Latest water quality testing results</li>
-                    <li className="text-slate-600 text-sm py-1">Clear, high-quality scans/photos of all documents</li>
-                    <li className="text-slate-600 text-sm py-1">Accurate business information and location</li>
+                    <li className="text-slate-500 text-sm py-1">Valid Business Permit (Mayor's Permit) - Current year</li>
+                    <li className="text-slate-500 text-sm py-1">Sanitation Permit from Local Health Office</li>
+                    <li className="text-slate-500 text-sm py-1">FDA License to Operate (LTO) for water products</li>
+                    <li className="text-slate-500 text-sm py-1">Latest water quality testing results</li>
+                    <li className="text-slate-500 text-sm py-1">Clear, high-quality scans/photos of all documents</li>
+                    <li className="text-slate-500 text-sm py-1">Accurate business information and location</li>
                   </ul>
                 </div>
 
                 <div className="bg-purple-50 border border-purple-200 rounded-md p-3 mb-2">
-                  <strong className="block mb-1 text-purple-900">Important:</strong> All water stations must comply with:
+                  <strong className="block mb-1 text-purple-700">Important:</strong> All water stations must comply with:
                   <ul className="list-none p-0 m-0 mt-2">
-                    <li className="text-slate-600 text-sm py-1">• DOH Administrative Order 2017-0010 (Water Refilling Standards)</li>
-                    <li className="text-slate-600 text-sm py-1">• Philippine National Standards (PNS) for drinking water</li>
-                    <li className="text-slate-600 text-sm py-1">• Data Privacy Act of 2012 (Republic Act 10173)</li>
-                    <li className="text-slate-600 text-sm py-1">• Local government health and sanitation codes</li>
+                    <li className="text-slate-500 text-sm py-1">• DOH Administrative Order 2017-0010 (Water Refilling Standards)</li>
+                    <li className="text-slate-500 text-sm py-1">• Philippine National Standards (PNS) for drinking water</li>
+                    <li className="text-slate-500 text-sm py-1">• Data Privacy Act of 2012 (Republic Act 10173)</li>
+                    <li className="text-slate-500 text-sm py-1">• Local government health and sanitation codes</li>
                   </ul>
                 </div>
               </div>
