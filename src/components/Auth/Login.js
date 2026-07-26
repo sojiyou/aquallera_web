@@ -558,6 +558,7 @@ const Login = () => {
             <small style={{ color: '#e2e8f0', display: 'block', marginBottom: '0.25rem' }}>
               <strong>Note:</strong> New stations require admin approval before full access.
             </small>
+            <hr style={{ border: 'none', borderTop: '1px solid rgba(255,255,255,0.2)', margin: '0.5rem 0' }} />
             <small style={{ color: '#cbd5e1' }}>
               Check your email for approval notifications or contact support if waiting more than 48 hours.
             </small>
