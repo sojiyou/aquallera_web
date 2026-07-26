@@ -1003,23 +1003,33 @@ const Signup = () => {
               {/* SERVICE TYPES */}
               <div className="mb-6">
                 <label className="block mb-2 text-gray-700 font-medium text-sm">Services Offered *</label>
-                <div className="flex gap-4 mt-2">
-                  <label className="flex items-center gap-2 cursor-pointer p-2 rounded-lg transition-colors hover:bg-slate-50">
-                    <input
-                      type="checkbox"
-                      checked={formData.serviceTypes.includes('delivery')}
-                      onChange={() => handleServiceTypeChange('delivery')}
-                    />
-                    <span>Delivery</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer p-2 rounded-lg transition-colors hover:bg-slate-50">
-                    <input
-                      type="checkbox"
-                      checked={formData.serviceTypes.includes('pickup')}
-                      onChange={() => handleServiceTypeChange('pickup')}
-                    />
-                    <span>Pickup</span>
-                  </label>
+                <div className="flex gap-3 mt-2">
+                  {['delivery', 'pickup'].map(type => {
+                    const selected = formData.serviceTypes.includes(type);
+                    return (
+                      <button
+                        key={type}
+                        type="button"
+                        onClick={() => handleServiceTypeChange(type)}
+                        className={`flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-semibold border-2 cursor-pointer transition-all flex-1 justify-center ${
+                          selected
+                            ? 'bg-primary text-white border-primary shadow-md'
+                            : 'bg-white text-slate-600 border-slate-200 hover:border-primary hover:text-primary'
+                        }`}
+                      >
+                        {selected ? (
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                          </svg>
+                        ) : (
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                          </svg>
+                        )}
+                        {type === 'delivery' ? 'Delivery' : 'Pickup'}
+                      </button>
+                    );
+                  })}
                 </div>
                 {errors.serviceTypes && <span className="text-red-500 text-sm mt-1 block">{errors.serviceTypes}</span>}
               </div>
