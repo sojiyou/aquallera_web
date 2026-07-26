@@ -31,9 +31,9 @@ const Signup = () => {
 
     // Location Details
     address: '',
-    city: '',
-    state: '',
-    zipCode: '',
+    city: 'Baguio',
+    state: 'Benguet',
+    zipCode: '2600',
     latitude: null,
     longitude: null,
 
@@ -50,8 +50,7 @@ const Signup = () => {
     pricing_gallon_mineral: '',
     pricing_delivery_fee: '',
 
-    // Business Permit
-    businessPermitNumber: '',
+    // Business Documents
     permitDocuments: {
       businessPermit:     { file: null, url: null },
       dtiSecRegistration: { file: null, url: null },
@@ -360,7 +359,7 @@ const Signup = () => {
       const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
       window.mapboxgl.accessToken = MAPBOX_TOKEN;
 
-      const defaultCenter = [121.0244, 14.5547];
+      const defaultCenter = [120.5960, 16.4023];
 
       const center = formData.latitude && formData.longitude
         ? [formData.longitude, formData.latitude]
@@ -370,7 +369,7 @@ const Signup = () => {
         container: mapContainerRef.current,
         style: 'mapbox://styles/mapbox/streets-v12',
         center: center,
-        zoom: formData.latitude ? 15 : 11
+        zoom: formData.latitude ? 15 : 13
       });
 
       mapInstance.addControl(new window.mapboxgl.NavigationControl());
@@ -425,33 +424,13 @@ const Signup = () => {
       if (data.features && data.features.length > 0) {
         const place = data.features[0];
 
-        let address = '';
-        let city = '';
-        let state = '';
-        let zipCode = '';
-
-        if (place.context) {
-          place.context.forEach(item => {
-            if (item.id.includes('place')) {
-              city = item.text;
-            } else if (item.id.includes('region')) {
-              state = item.text;
-            } else if (item.id.includes('postcode')) {
-              zipCode = item.text;
-            }
-          });
-        }
-
-        address = place.text || place.place_name.split(',')[0];
+        let address = place.text || place.place_name.split(',')[0];
 
         setFormData(prev => ({
           ...prev,
           latitude: parseFloat(lat.toFixed(8)),
           longitude: parseFloat(lng.toFixed(8)),
-          address: address,
-          city: city || prev.city,
-          state: state || prev.state,
-          zipCode: zipCode || prev.zipCode
+          address: address
         }));
 
         setLocationStatus(`✓ Location set: ${place.place_name}`);
@@ -558,14 +537,6 @@ const Signup = () => {
         return value.trim() ? '' : 'Phone number required';
       case 'address':
         return value.trim() ? '' : 'Address required';
-      case 'city':
-        return value.trim() ? '' : 'City required';
-      case 'state':
-        return value.trim() ? '' : 'State required';
-      case 'zipCode':
-        return value.trim() ? '' : 'ZIP code required';
-      case 'businessPermitNumber':
-        return value.trim() ? '' : 'Business permit number required';
       case 'password':
         if (!value) return 'Password required';
         return value.length >= 6 ? '' : 'Password must be at least 6 characters';
@@ -605,9 +576,6 @@ const Signup = () => {
         newErrors.location = 'Please set your station location on the map';
       }
       if (!formData.address.trim()) newErrors.address = 'Address required';
-      if (!formData.city.trim()) newErrors.city = 'City required';
-      if (!formData.state.trim()) newErrors.state = 'State required';
-      if (!formData.zipCode.trim()) newErrors.zipCode = 'ZIP code required';
     }
 
     if (step === 3) {
@@ -627,9 +595,6 @@ const Signup = () => {
     }
 
     if (step === 5) {
-      if (!formData.businessPermitNumber.trim()) {
-        newErrors.businessPermitNumber = 'Business permit number required';
-      }
       if (!formData.permitDocuments.businessPermit.file) {
         newErrors.businessPermit = 'Business Permit is required';
       }
@@ -739,7 +704,6 @@ const Signup = () => {
         pricing_gallon_spring: formData.pricing_gallon_spring ? parseFloat(formData.pricing_gallon_spring) : null,
         pricing_gallon_mineral: formData.pricing_gallon_mineral ? parseFloat(formData.pricing_gallon_mineral) : null,
         pricing_delivery_fee: formData.pricing_delivery_fee ? parseFloat(formData.pricing_delivery_fee) : null,
-        businessPermitNumber: formData.businessPermitNumber,
         businessPermitDocuments: businessPermitDocuments,
         businessPermitUploadedAt: new Date().toISOString(),
         password: formData.password,
@@ -816,7 +780,7 @@ const Signup = () => {
                 {step === 3 && 'Services'}
                 {step === 4 && 'Pricing'}
                 {step === 5 && 'Documents'}
-                {step === 6 && 'Account'}
+                {step === 6 && 'Password'}
               </div>
             </div>
           ))}
@@ -1001,12 +965,9 @@ const Signup = () => {
                     type="text"
                     name="city"
                     value={formData.city}
-                    onChange={handleInputChange}
-                    onBlur={handleBlur}
-                    placeholder="City (auto-filled from map)"
-                    className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.city ? 'border-red-500' : 'border-slate-200'}`}
+                    readOnly
+                    className="w-full px-4 py-3 border-2 rounded-lg text-base font-sans box-border bg-slate-100 text-slate-600 border-slate-200 cursor-not-allowed"
                   />
-                  {errors.city && <span className="text-red-500 text-sm mt-1 block">{errors.city}</span>}
                 </div>
 
                 <div className="mb-6">
@@ -1015,12 +976,9 @@ const Signup = () => {
                     type="text"
                     name="state"
                     value={formData.state}
-                    onChange={handleInputChange}
-                    onBlur={handleBlur}
-                    placeholder="State/Province (auto-filled from map)"
-                    className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.state ? 'border-red-500' : 'border-slate-200'}`}
+                    readOnly
+                    className="w-full px-4 py-3 border-2 rounded-lg text-base font-sans box-border bg-slate-100 text-slate-600 border-slate-200 cursor-not-allowed"
                   />
-                  {errors.state && <span className="text-red-500 text-sm mt-1 block">{errors.state}</span>}
                 </div>
               </div>
 
@@ -1030,12 +988,9 @@ const Signup = () => {
                   type="text"
                   name="zipCode"
                   value={formData.zipCode}
-                  onChange={handleInputChange}
-                  onBlur={handleBlur}
-                  placeholder="12345"
-                  className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.zipCode ? 'border-red-500' : 'border-slate-200'}`}
+                  readOnly
+                  className="w-full px-4 py-3 border-2 rounded-lg text-base font-sans box-border bg-slate-100 text-slate-600 border-slate-200 cursor-not-allowed"
                 />
-                {errors.zipCode && <span className="text-red-500 text-sm mt-1 block">{errors.zipCode}</span>}
               </div>
             </div>
           )}
@@ -1312,25 +1267,6 @@ const Signup = () => {
                 Upload clear photos or scans of your required business documents.
                 These are required for approval to operate on our platform.
               </p>
-
-              <div className="mb-6">
-                <label className="block mb-2 text-gray-700 font-medium text-sm">Business Permit Number *</label>
-                <input
-                  type="text"
-                  name="businessPermitNumber"
-                  value={formData.businessPermitNumber}
-                  onChange={handleInputChange}
-                  onBlur={handleBlur}
-                  placeholder="Enter your official permit number"
-                  className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.businessPermitNumber ? 'border-red-500' : 'border-slate-200'}`}
-                />
-                {errors.businessPermitNumber && (
-                  <span className="text-red-500 text-sm mt-1 block">{errors.businessPermitNumber}</span>
-                )}
-                <small className="block text-slate-400 text-xs mt-1 italic">
-                  This should match the number on your business permit document
-                </small>
-              </div>
 
               <input
                 type="file"

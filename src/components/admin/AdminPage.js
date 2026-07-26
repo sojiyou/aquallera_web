@@ -824,10 +824,6 @@ const AdminPage = () => {
               <div className="mb-8 pb-6 border-b border-gray-200 last:border-b-0">
                 <h3 className="text-slate-800 m-0 mb-4 text-xl flex items-center gap-2">Business Documents</h3>
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4 mb-4">
-                  <div className="flex flex-col gap-1">
-                    <span className="font-semibold text-gray-600 text-sm">Permit Number:</span>
-                    <span className="text-gray-800 text-base break-words p-2 bg-gray-50 rounded-md border border-gray-200">{selectedStation.businessPermitNumber || 'N/A'}</span>
-                  </div>
                   {selectedStation.businessPermitUploadedAt && (
                     <div className="flex flex-col gap-1">
                       <span className="font-semibold text-gray-600 text-sm">Uploaded:</span>
