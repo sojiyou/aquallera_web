@@ -108,6 +108,7 @@ const Stock = () => {
 
   // ===== Toggle States =====
   const [showConsumptionAnalytics, setShowConsumptionAnalytics] = useState(false);
+  const [showRevenueAnalytics, setShowRevenueAnalytics] = useState(true);
 
   // ===== Predictive Revenue State =====
   const [revenueProjection, setRevenueProjection] = useState(null);
@@ -124,6 +125,10 @@ const Stock = () => {
   // ===== Toggle Functions =====
   const toggleConsumptionAnalytics = () => {
     setShowConsumptionAnalytics(!showConsumptionAnalytics);
+  };
+
+  const toggleRevenueAnalytics = () => {
+    setShowRevenueAnalytics(!showRevenueAnalytics);
   };
 
   // Extract coordinates from location string
@@ -698,189 +703,201 @@ const Stock = () => {
         </div>
       </section>
 
-      {/* Annual Performance Reports Section with Toggle */}
+      {/* Annual Performance Reports Section */}
       <section className="bg-white rounded-xl p-4 sm:p-8 mb-8 shadow-sm">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 pb-4 border-b-2 border-slate-200 gap-4">
-          <h2 className="text-slate-800 text-xl sm:text-2xl m-0">Performance Reports</h2>
-          <div className="flex gap-2 bg-slate-100 p-1 rounded-full">
-            <div className="relative group">
-              <button 
-                className={`px-5 py-2 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${dataViewMode === 'monthly' ? 'bg-white text-primary shadow-sm' : ''}`}
-                onClick={() => setDataViewMode('monthly')}
-              >
-                Monthly View
-              </button>
-              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                Historical performance by month
-              </span>
+        <h2 className="text-slate-800 text-xl sm:text-2xl m-0 mb-6">Performance Reports</h2>
+
+        {/* Revenue Analytics Collapsible */}
+        <div className="bg-white rounded-xl mb-6 shadow-sm overflow-hidden transition-all border border-slate-200">
+          <div className={`flex justify-between items-center px-6 py-5 cursor-pointer transition-all bg-gradient-to-r from-slate-50 to-slate-100 border-l-4 border-l-blue-500 hover:bg-gradient-to-r hover:from-slate-100 hover:to-slate-200 hover:translate-x-1`} onClick={toggleRevenueAnalytics}>
+            <div className="flex items-center gap-4 flex-wrap">
+              <h3 className="text-slate-800 text-xl m-0 font-semibold">Revenue Analytics</h3>
+              <span className="bg-slate-200 text-slate-600 px-3 py-1 rounded-full text-[0.7rem] font-semibold tracking-wider">Revenue tracking</span>
             </div>
-            <div className="relative group">
-              <button 
-                className={`px-5 py-2 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${dataViewMode === 'annual' ? 'bg-white text-primary shadow-sm' : ''}`}
-                onClick={() => setDataViewMode('annual')}
-              >
-                Annual View
-              </button>
-              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                Yearly revenue reports &amp; summaries
-              </span>
-            </div>
+            <div className={`text-sm text-slate-500 transition-transform bg-white w-7 h-7 flex items-center justify-center rounded-full shadow-sm ${showRevenueAnalytics ? 'rotate-90 text-blue-500 bg-blue-500/10' : ''}`}>&rsaquo;</div>
           </div>
-        </div>
+          {showRevenueAnalytics && (
+            <div className="p-6 border-t border-slate-200 animate-[toggleSlideDown_0.3s_ease-out]">
+              {/* Monthly/Annual Toggle */}
+              <div className="flex gap-2 bg-slate-100 p-1 rounded-full mb-6 w-fit">
+                <div className="relative group">
+                  <button 
+                    className={`px-5 py-2 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${dataViewMode === 'monthly' ? 'bg-white text-primary shadow-sm' : ''}`}
+                    onClick={() => setDataViewMode('monthly')}
+                  >
+                    Monthly View
+                  </button>
+                  <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                    Historical performance by month
+                  </span>
+                </div>
+                <div className="relative group">
+                  <button 
+                    className={`px-5 py-2 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${dataViewMode === 'annual' ? 'bg-white text-primary shadow-sm' : ''}`}
+                    onClick={() => setDataViewMode('annual')}
+                  >
+                    Annual View
+                  </button>
+                  <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                    Yearly revenue reports &amp; summaries
+                  </span>
+                </div>
+              </div>
 
-        {/* Revenue Projection Card - ALWAYS VISIBLE */}
-        {!projectionLoading && revenueProjection && yearForecast?.hasMinimumData ? (
-          <div className="bg-gradient-to-br from-primary-dark to-primary-dark rounded-2xl p-4 sm:p-8 mb-8 text-white shadow-lg border border-white/10">
-            <div className="flex flex-col lg:flex-row justify-between items-start mb-8 gap-4">
-              <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
-                <span className="text-4xl"></span>
-                <div>
-                  <h3 className="text-2xl m-0 mb-1 text-white">{revenueProjection.monthName} {revenueProjection.year} Revenue Projection</h3>
-                  <p className="text-white m-0 text-sm">Based on {revenueProjection.daysPassed} days of actual data • {revenueProjection.daysRemaining} days remaining</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-1 sm:gap-3 justify-end flex-shrink-0 min-w-0">
-                {projectionConfidence && (
-                  <div className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1 sm:py-2 rounded-full text-[11px] sm:text-sm font-semibold whitespace-nowrap" style={{ backgroundColor: `${projectionConfidence.color}20`, color: projectionConfidence.color }}>
-                    <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full inline-block flex-shrink-0" style={{ backgroundColor: projectionConfidence.color }}></span>
-                    {projectionConfidence.level} Confidence
-                  </div>
-                )}
-                <div className="flex items-center gap-1 sm:gap-2">
-                  <div className="relative group">
-                    <button className={`flex items-center gap-1 sm:gap-2 bg-white/10 text-white border border-white/20 px-2 sm:px-4 py-1 sm:py-2 rounded-full text-[11px] sm:text-sm font-semibold cursor-pointer transition-all backdrop-blur hover:bg-blue-500/30 hover:border-blue-500 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed ${isRefreshing ? 'refreshing' : ''}`} onClick={handleRefreshProjections} disabled={isRefreshing}>
-                      <span className={`text-sm sm:text-lg inline-block leading-none ${isRefreshing ? 'spin' : ''}`}></span>
-                      {isRefreshing ? 'Refreshing...' : 'Refresh'}
-                    </button>
-                    <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                      Recalculate revenue &amp; consumption projections
-                    </span>
-                  </div>
-                  {lastRefreshed && !isRefreshing && <span className="text-slate-500 text-[0.6rem] sm:text-[0.75rem] whitespace-nowrap">Updated {formatLastRefreshed(lastRefreshed)}</span>}
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 mb-8">
-              <div className="bg-white/10 rounded-xl p-3 sm:p-5 backdrop-blur border border-white/10">
-                <span className="block text-xs sm:text-base uppercase tracking-wider mb-2">Revenue to Date</span>
-                <span className="block text-xl sm:text-3xl font-bold mb-1 text-white">₱{revenueProjection.currentRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
-                <span className="block text-slate-400 text-xs">{revenueProjection.daysPassed} days</span>
-              </div>
-              <div className="bg-white/10 rounded-xl p-3 sm:p-5 backdrop-blur border border-white/10">
-                <span className="block text-xs sm:text-base uppercase tracking-wider mb-2">Projected End of Month</span>
-                <span className="block text-xl sm:text-3xl font-bold mb-1 text-white">₱{revenueProjection.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
-                <span className="block text-slate-400 text-xs">Target</span>
-              </div>
-              <div className="bg-white/10 rounded-xl p-3 sm:p-5 backdrop-blur border border-white/10">
-                <span className="block text-xs sm:text-base uppercase tracking-wider mb-2">Daily Average</span>
-                <span className="block text-xl sm:text-3xl font-bold mb-1 text-white">₱{revenueProjection.dailyAverage?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
-                <span className="block text-slate-400 text-xs">per day</span>
-              </div>
-              <div className="bg-white/10 rounded-xl p-3 sm:p-5 backdrop-blur border border-white/10">
-                <span className="block text-xs sm:text-base uppercase tracking-wider mb-2">Remaining Potential</span>
-                <span className="block text-xl sm:text-3xl font-bold mb-1 text-white">₱{(revenueProjection.projectedRevenue - revenueProjection.currentRevenue)?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
-                <span className="block text-slate-400 text-xs">{revenueProjection.daysRemaining} days left</span>
-              </div>
-            </div>
-
-            {chartData.length > 0 && (
-              <div className="bg-white rounded-xl p-4 sm:p-6 mb-8">
-                <h4 className="text-slate-800 text-sm m-0 mb-4 font-semibold hidden md:block">Daily Revenue vs Projection</h4>
-                <div className="hidden md:block">
-                  <ResponsiveContainer width="100%" height={250}>
-                    <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                      <XAxis dataKey="day" tickFormatter={(day) => `Day ${day}`} stroke="#64748b" />
-                      <YAxis tickFormatter={(value) => `₱${(value/1000).toFixed(0)}k`} stroke="#64748b" />
-                      <Tooltip formatter={(value) => [`₱${value?.toLocaleString() || 0}`, 'Revenue']} labelFormatter={(label) => `Day ${label}`} />
-                      <Legend />
-                      <Line type="monotone" dataKey="actual" stroke="#065A82" strokeWidth={3} dot={{ r: 4, fill: "#065A82" }} name="Actual Revenue" />
-                      <Line type="monotone" dataKey="projected" stroke="#94a3b8" strokeWidth={3} strokeDasharray="5 5" dot={{ r: 3, fill: "#94a3b8" }} name="Projected Revenue" />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="block md:hidden text-center py-6 px-4 bg-slate-50 rounded-lg border border-slate-200">
-                  <span className="text-slate-400 mb-2 block">Charts are available on tablet and desktop views</span>
-                </div>
-              </div>
-            )}
-
-            {yearForecast?.futureMonths?.length > 0 && (
-              <div className="bg-white/5 rounded-xl p-4 sm:p-6 mb-6">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2">
-                  <h4 className="text-white m-0 text-base sm:text-lg">{yearForecast.year} Year Forecast</h4>
-                  <span className="text-yellow-500 font-bold text-xl sm:text-2xl">Total: ₱{yearForecast.totalYearProjection?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-4">
-                  <div className="bg-primary/20 border border-primary rounded-lg p-4 text-center relative">
-                    <span className="block text-white text-base font-semibold mb-2">{revenueProjection.monthName}</span>
-  <span className="block text-white font-bold text-lg sm:text-2xl">₱{revenueProjection.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
-                    <span className="absolute -top-2 right-2 bg-primary text-white text-[0.7rem] px-2 py-1 rounded-full">Current</span>
-                  </div>
-                  {yearForecast.futureMonths.map((month, index) => (
-                    <div key={index} className="bg-white/3 rounded-lg p-4 text-center relative">
-                      <span className="block text-white text-base font-semibold mb-2">{month.monthName}</span>
-                      <span className="block text-white font-bold text-lg sm:text-2xl">₱{month.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+              {/* Revenue Projection Card */}
+              {!projectionLoading && revenueProjection && yearForecast?.hasMinimumData ? (
+                <div className="bg-gradient-to-br from-primary-dark to-primary-dark rounded-2xl p-4 sm:p-8 mb-8 text-white shadow-lg border border-white/10">
+                  <div className="flex flex-col lg:flex-row justify-between items-start mb-8 gap-4">
+                    <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
+                      <div>
+                        <h3 className="text-2xl m-0 mb-1 text-white">{revenueProjection.monthName} {revenueProjection.year} Revenue Projection</h3>
+                        <p className="text-white m-0 text-sm">Based on {revenueProjection.daysPassed} days of actual data • {revenueProjection.daysRemaining} days remaining</p>
+                      </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {yearComparison && yearComparison.hasPreviousYearData && (
-              <div className="bg-white/5 rounded-xl p-4 sm:p-6">
-                <div>
-                  <h4 className="text-white m-0 mb-6 text-lg">{yearComparison.previousYear} vs {yearComparison.currentYear}</h4>
-                </div>
-                <div>
-                  <div className="flex items-center gap-4 mb-4">
-                    <span className="min-w-[60px] text-slate-400 font-semibold">{yearComparison.previousYear}</span>
-                    <div className="flex-1 h-10 bg-white/10 rounded-full overflow-hidden">
-                      <div className="h-full flex items-center px-4 text-white font-semibold text-sm transition-all bg-gradient-to-r from-slate-500 to-slate-600" style={{ width: `${Math.min((yearComparison.previousYearTotal / (yearComparison.currentYearTotal || 1)) * 100, 100)}%` }}>
-                        ₱{yearComparison.previousYearTotal?.toLocaleString()}
+                    <div className="flex items-center gap-1 sm:gap-3 justify-end flex-shrink-0 min-w-0">
+                      {projectionConfidence && (
+                        <div className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1 sm:py-2 rounded-full text-[11px] sm:text-sm font-semibold whitespace-nowrap" style={{ backgroundColor: `${projectionConfidence.color}20`, color: projectionConfidence.color }}>
+                          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full inline-block flex-shrink-0" style={{ backgroundColor: projectionConfidence.color }}></span>
+                          {projectionConfidence.level} Confidence
+                        </div>
+                      )}
+                      <div className="flex items-center gap-1 sm:gap-2">
+                        <div className="relative group">
+                          <button className={`flex items-center gap-1 sm:gap-2 bg-white/10 text-white border border-white/20 px-2 sm:px-4 py-1 sm:py-2 rounded-full text-[11px] sm:text-sm font-semibold cursor-pointer transition-all backdrop-blur hover:bg-blue-500/30 hover:border-blue-500 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed ${isRefreshing ? 'refreshing' : ''}`} onClick={handleRefreshProjections} disabled={isRefreshing}>
+                            <span className={`text-sm sm:text-lg inline-block leading-none ${isRefreshing ? 'spin' : ''}`}></span>
+                            {isRefreshing ? 'Refreshing...' : 'Refresh'}
+                          </button>
+                          <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                            Recalculate revenue &amp; consumption projections
+                          </span>
+                        </div>
+                        {lastRefreshed && !isRefreshing && <span className="text-slate-500 text-[0.6rem] sm:text-[0.75rem] whitespace-nowrap">Updated {formatLastRefreshed(lastRefreshed)}</span>}
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4 mb-4">
-                    <span className="min-w-[60px] text-slate-400 font-semibold">{yearComparison.currentYear}</span>
-                    <div className="flex-1 h-10 bg-white/10 rounded-full overflow-hidden">
-                      <div className="h-full flex items-center px-4 text-white font-semibold text-sm transition-all bg-gradient-to-r from-blue-500 to-blue-600" style={{ width: '100%' }}>₱{yearComparison.currentYearTotal?.toLocaleString()}</div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 mb-8">
+                    <div className="bg-white/10 rounded-xl p-3 sm:p-5 backdrop-blur border border-white/10">
+                      <span className="block text-xs sm:text-base uppercase tracking-wider mb-2">Revenue to Date</span>
+                      <span className="block text-xl sm:text-3xl font-bold mb-1 text-white">₱{revenueProjection.currentRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                      <span className="block text-slate-400 text-xs">{revenueProjection.daysPassed} days</span>
+                    </div>
+                    <div className="bg-white/10 rounded-xl p-3 sm:p-5 backdrop-blur border border-white/10">
+                      <span className="block text-xs sm:text-base uppercase tracking-wider mb-2">Projected End of Month</span>
+                      <span className="block text-xl sm:text-3xl font-bold mb-1 text-white">₱{revenueProjection.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                      <span className="block text-slate-400 text-xs">Target</span>
+                    </div>
+                    <div className="bg-white/10 rounded-xl p-3 sm:p-5 backdrop-blur border border-white/10">
+                      <span className="block text-xs sm:text-base uppercase tracking-wider mb-2">Daily Average</span>
+                      <span className="block text-xl sm:text-3xl font-bold mb-1 text-white">₱{revenueProjection.dailyAverage?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                      <span className="block text-slate-400 text-xs">per day</span>
+                    </div>
+                    <div className="bg-white/10 rounded-xl p-3 sm:p-5 backdrop-blur border border-white/10">
+                      <span className="block text-xs sm:text-base uppercase tracking-wider mb-2">Remaining Potential</span>
+                      <span className="block text-xl sm:text-3xl font-bold mb-1 text-white">₱{(revenueProjection.projectedRevenue - revenueProjection.currentRevenue)?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                      <span className="block text-slate-400 text-xs">{revenueProjection.daysRemaining} days left</span>
                     </div>
                   </div>
-                  {yearComparison.growthPercentage !== null && (
-                    <div className="mt-4 pt-4 border-t border-white/10 text-slate-400 flex items-center gap-2">
-                      {Math.abs(yearComparison.growthPercentage).toFixed(1)}% {yearComparison.growthPercentage > 0 ? 'growth' : 'decline'} from last year
+
+                  {chartData.length > 0 && (
+                    <div className="bg-white rounded-xl p-4 sm:p-6 mb-8">
+                      <h4 className="text-slate-800 text-sm m-0 mb-4 font-semibold hidden md:block">Daily Revenue vs Projection</h4>
+                      <div className="hidden md:block">
+                        <ResponsiveContainer width="100%" height={250}>
+                          <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                            <XAxis dataKey="day" tickFormatter={(day) => `Day ${day}`} stroke="#64748b" />
+                            <YAxis tickFormatter={(value) => `₱${(value/1000).toFixed(0)}k`} stroke="#64748b" />
+                            <Tooltip formatter={(value) => [`₱${value?.toLocaleString() || 0}`, 'Revenue']} labelFormatter={(label) => `Day ${label}`} />
+                            <Legend />
+                            <Line type="monotone" dataKey="actual" stroke="#065A82" strokeWidth={3} dot={{ r: 4, fill: "#065A82" }} name="Actual Revenue" />
+                            <Line type="monotone" dataKey="projected" stroke="#94a3b8" strokeWidth={3} strokeDasharray="5 5" dot={{ r: 3, fill: "#94a3b8" }} name="Projected Revenue" />
+                          </LineChart>
+                        </ResponsiveContainer>
+                      </div>
+                      <div className="block md:hidden text-center py-6 px-4 bg-slate-50 rounded-lg border border-slate-200">
+                        <span className="text-slate-400 mb-2 block">Charts are available on tablet and desktop views</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {yearForecast?.futureMonths?.length > 0 && (
+                    <div className="bg-white/5 rounded-xl p-4 sm:p-6 mb-6">
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2">
+                        <h4 className="text-white m-0 text-base sm:text-lg">{yearForecast.year} Year Forecast</h4>
+                        <span className="text-yellow-500 font-bold text-xl sm:text-2xl">Total: ₱{yearForecast.totalYearProjection?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-4">
+                        <div className="bg-primary/20 border border-primary rounded-lg p-4 text-center relative">
+                          <span className="block text-white text-base font-semibold mb-2">{revenueProjection.monthName}</span>
+                          <span className="block text-white font-bold text-lg sm:text-2xl">₱{revenueProjection.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                          <span className="absolute -top-2 right-2 bg-primary text-white text-[0.7rem] px-2 py-1 rounded-full">Current</span>
+                        </div>
+                        {yearForecast.futureMonths.map((month, index) => (
+                          <div key={index} className="bg-white/3 rounded-lg p-4 text-center relative">
+                            <span className="block text-white text-base font-semibold mb-2">{month.monthName}</span>
+                            <span className="block text-white font-bold text-lg sm:text-2xl">₱{month.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {yearComparison && yearComparison.hasPreviousYearData && (
+                    <div className="bg-white/5 rounded-xl p-4 sm:p-6">
+                      <div>
+                        <h4 className="text-white m-0 mb-6 text-lg">{yearComparison.previousYear} vs {yearComparison.currentYear}</h4>
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-4 mb-4">
+                          <span className="min-w-[60px] text-slate-400 font-semibold">{yearComparison.previousYear}</span>
+                          <div className="flex-1 h-10 bg-white/10 rounded-full overflow-hidden">
+                            <div className="h-full flex items-center px-4 text-white font-semibold text-sm transition-all bg-gradient-to-r from-slate-500 to-slate-600" style={{ width: `${Math.min((yearComparison.previousYearTotal / (yearComparison.currentYearTotal || 1)) * 100, 100)}%` }}>
+                              ₱{yearComparison.previousYearTotal?.toLocaleString()}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-4 mb-4">
+                          <span className="min-w-[60px] text-slate-400 font-semibold">{yearComparison.currentYear}</span>
+                          <div className="flex-1 h-10 bg-white/10 rounded-full overflow-hidden">
+                            <div className="h-full flex items-center px-4 text-white font-semibold text-sm transition-all bg-gradient-to-r from-blue-500 to-blue-600" style={{ width: '100%' }}>₱{yearComparison.currentYearTotal?.toLocaleString()}</div>
+                          </div>
+                        </div>
+                        {yearComparison.growthPercentage !== null && (
+                          <div className="mt-4 pt-4 border-t border-white/10 text-slate-400 flex items-center gap-2">
+                            {Math.abs(yearComparison.growthPercentage).toFixed(1)}% {yearComparison.growthPercentage > 0 ? 'growth' : 'decline'} from last year
+                          </div>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="bg-gradient-to-br from-primary-dark to-primary-dark rounded-2xl p-6 sm:p-12 text-center text-white mb-8">
-            <div className="text-4xl sm:text-6xl mb-4 opacity-50"></div>
-            <h3 className="text-white mb-2">Monthly Revenue Prediction</h3>
-            <p className="text-slate-400 mb-6">{projectionLoading ? 'Loading revenue projections...' : `Predictions will be available on ${new Date(new Date().getFullYear(), new Date().getMonth(), 4).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}.`}</p>
-            {!projectionLoading && (
-              <div className="flex flex-col items-center gap-4">
-                <div className="flex gap-2">
-                  <span className="w-2 h-2 bg-primary rounded-full animate-[pulse_1.5s_infinite]"></span>
-                  <span className="w-2 h-2 bg-primary rounded-full animate-[pulse_1.5s_infinite]"></span>
-                  <span className="w-2 h-2 bg-primary rounded-full animate-[pulse_1.5s_infinite]"></span>
+              ) : (
+                <div className="bg-gradient-to-br from-primary-dark to-primary-dark rounded-2xl p-6 sm:p-12 text-center text-white mb-8">
+                  <h3 className="text-white mb-2">Monthly Revenue Prediction</h3>
+                  <p className="text-slate-400 mb-6">{projectionLoading ? 'Loading revenue projections...' : `Predictions will be available on ${new Date(new Date().getFullYear(), new Date().getMonth(), 4).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}.`}</p>
+                  {!projectionLoading && (
+                    <div className="flex flex-col items-center gap-4">
+                      <div className="flex gap-2">
+                        <span className="w-2 h-2 bg-primary rounded-full animate-[pulse_1.5s_infinite]"></span>
+                        <span className="w-2 h-2 bg-primary rounded-full animate-[pulse_1.5s_infinite]"></span>
+                        <span className="w-2 h-2 bg-primary rounded-full animate-[pulse_1.5s_infinite]"></span>
+                      </div>
+                      <span>We're calibrating the prediction system. Check back in {4 - new Date().getDate()} day{4 - new Date().getDate() !== 1 ? 's' : ''}!</span>
+                    </div>
+                  )}
                 </div>
-                <span>We're calibrating the prediction system. Check back in {4 - new Date().getDate()} day{4 - new Date().getDate() !== 1 ? 's' : ''}!</span>
-              </div>
-            )}
-          </div>
-        )}
+              )}
 
-        {/* Conditional: Monthly View vs Annual View */}
-        {dataViewMode === 'monthly' ? (
-          <HistoricalPerformance stationId={auth.currentUser?.uid} />
-        ) : (
-          <AnnualReports stationId={auth.currentUser?.uid} />
-        )}
+              {/* Conditional: Monthly View vs Annual View */}
+              {dataViewMode === 'monthly' ? (
+                <HistoricalPerformance stationId={auth.currentUser?.uid} />
+              ) : (
+                <AnnualReports stationId={auth.currentUser?.uid} />
+              )}
+            </div>
+          )}
+        </div>
 
         {/* Water Consumption Analytics Section */}
         <div className="bg-white rounded-xl mb-6 shadow-sm overflow-hidden transition-all border border-slate-200">
