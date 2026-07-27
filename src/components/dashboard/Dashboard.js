@@ -856,6 +856,7 @@ const Dashboard = () => {
       if (!user) {
         setOrders([]);
         setLoading(false);
+        navigate('/login', { replace: true });
         return;
       }
 
@@ -941,12 +942,12 @@ const Dashboard = () => {
   useEffect(() => {
     const handlePageShow = (e) => {
       if (e.persisted && !auth.currentUser) {
-        navigate('/login', { replace: true });
+        window.location.replace('/login');
       }
     };
     window.addEventListener('pageshow', handlePageShow);
     return () => window.removeEventListener('pageshow', handlePageShow);
-  }, [navigate]);
+  }, []);
 
   const handleLogout = async () => {
     try {
