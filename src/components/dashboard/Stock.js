@@ -730,7 +730,7 @@ const Stock = () => {
               <h3 className="text-slate-800 text-xl m-0 font-semibold">Revenue Analytics
                 <InfoTooltip
                   description="Tracks your daily, monthly, and yearly earnings with future predictions and comparisons to previous years."
-                  formula="Predicted monthly earnings = what you've earned so far + (daily average × remaining days). Daily average = total earned so far ÷ days passed. Yearly comparison shows growth or decline vs. last year. Confidence grows as the month progresses — Low in first 6 days, Medium by day 14, High by day 24, Very High after that."
+                  formula="We use a daily run-rate approach — your average daily earnings so far this month is calculated, then projected forward across the remaining days. The more days of data we have, the more reliable the prediction becomes. For year-over-year comparisons, we simply take the difference in total revenue between the two years."
                 />
               </h3>
               <span className="bg-slate-200 text-slate-600 px-3 py-1 rounded-full text-[0.7rem] font-semibold tracking-wider">Revenue tracking</span>
@@ -927,7 +927,7 @@ const Stock = () => {
               <h3 className="text-slate-800 text-xl m-0 font-semibold">Water Consumption
                 <InfoTooltip
                   description="Tracks how much water (Pure, Spring, Mineral) your customers are consuming, with daily averages, stock run-out estimates, and monthly comparisons."
-                  formula="Consumption = total gallons from completed orders. Predicted consumption = current total + (daily average × remaining days). Days until stock runs out = current stock ÷ daily average (rounded down). Monthly change = how much more or less was consumed vs. the previous month."
+                  formula="We use the same run-rate method — your average daily water consumption is calculated and extended across the remaining days of the month. Stock depletion is estimated by dividing your current stock by the daily consumption rate. Monthly comparisons show the percentage change from the previous month."
                 />
               </h3>
               <span className="bg-slate-200 text-slate-600 px-3 py-1 rounded-full text-[0.7rem] font-semibold tracking-wider">Volume tracking</span>
