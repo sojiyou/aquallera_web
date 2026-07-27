@@ -941,7 +941,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const handlePageShow = (e) => {
-      if (e.persisted && !auth.currentUser) {
+      if (e.persisted) {
         window.location.replace('/login');
       }
     };

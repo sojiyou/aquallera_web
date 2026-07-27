@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import AlertCard, { useAlert } from '../admin/AlertCard';
 
-import { signInWithEmailAndPassword, deleteUser } from 'firebase/auth';
+import { signInWithEmailAndPassword, deleteUser, onAuthStateChanged } from 'firebase/auth';
 import { ref, get, remove } from 'firebase/database';
 import { auth, database } from '../config/Firebase';
 import { useNavigate } from 'react-router-dom';
@@ -26,6 +26,16 @@ const Login = () => {
   });
   const [alertProps, showAlert, closeAlert] = useAlert();
   const navigate = useNavigate();
+
+  // Auto-redirect if already authenticated
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigate('/dashboard', { replace: true });
+      }
+    });
+    return () => unsub();
+  }, [navigate]);
 
   // Check for remembered email on component mount
   useEffect(() => {
