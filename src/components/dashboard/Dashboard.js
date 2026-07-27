@@ -1,6 +1,6 @@
 // src/components/Dashboard/Dashboard.js
 import React, { useState, useEffect, useRef } from 'react';
-import { ref, onValue, update, set, onDisconnect, push } from 'firebase/database';
+import { ref, onValue, update, set, onDisconnect, push, get } from 'firebase/database';
 import { database, auth } from '../config/Firebase';
 import AlertCard, { useAlert } from '../admin/AlertCard';
 import Settings from './Settings';
@@ -431,6 +431,25 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
         status: newStatus,
         updatedAt: new Date().toISOString()
       });
+
+      if (newStatus === 'completed' && order.stationId) {
+        const stationRef = ref(database, `waterStations/${order.stationId}`);
+        const snapshot = await get(stationRef);
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          const pureQty = parseInt(order.pureWaterQty) || 0;
+          const springQty = parseInt(order.springWaterQty) || 0;
+          const mineralQty = parseInt(order.mineralWaterQty) || 0;
+          const updates = {};
+          if (pureQty > 0) updates.stock_pureWater = Math.max(0, (data.stock_pureWater || 0) - pureQty);
+          if (springQty > 0) updates.stock_springWater = Math.max(0, (data.stock_springWater || 0) - springQty);
+          if (mineralQty > 0) updates.stock_mineralWater = Math.max(0, (data.stock_mineralWater || 0) - mineralQty);
+          if (Object.keys(updates).length > 0) {
+            updates.stockUpdatedAt = new Date().toISOString();
+            await update(stationRef, updates);
+          }
+        }
+      }
       
       if (onStatusUpdate) {
         onStatusUpdate(order.orderId || order.id, newStatus);

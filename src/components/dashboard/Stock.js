@@ -1,6 +1,6 @@
 // src/components/dashboard/Stock.js
 import React, { useState, useEffect, useRef } from 'react';
-import { ref, onValue, update } from 'firebase/database';
+import { ref, onValue, update, push as dbPush, set as dbSet } from 'firebase/database';
 import { database, auth } from '../config/Firebase';
 import AlertCard, { useAlert } from '../admin/AlertCard';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -121,6 +121,40 @@ const Stock = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastRefreshed, setLastRefreshed] = useState(null);
   const cacheRef = useRef(null);
+  const lastStockNotifiedRef = useRef({ pureWater: 0, springWater: 0, mineralWater: 0 });
+
+  const checkLowStock = (stockData) => {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const thresholds = [
+      { key: 'pureWater', label: 'Pure Water' },
+      { key: 'springWater', label: 'Spring Water' },
+      { key: 'mineralWater', label: 'Mineral Water' },
+    ];
+
+    thresholds.forEach(({ key, label }) => {
+      const level = stockData[key];
+      if (level === undefined || level === null) return;
+      const prevNotified = lastStockNotifiedRef.current[key];
+      if (level > 0 && level <= 10 && prevNotified !== level) {
+        lastStockNotifiedRef.current[key] = level;
+        const notifRef = ref(database, `waterStations/${user.uid}/notifications`);
+        const newNotifRef = dbPush(notifRef);
+        dbSet(newNotifRef, {
+          customerName: 'Stock Alert',
+          orderType: `Low on ${label}`,
+          message: `Only ${level} gallon${level !== 1 ? 's' : ''} left`,
+          orderId: `stock-${key}-${Date.now()}`,
+          createdAt: new Date().toISOString(),
+          read: false,
+          type: 'stock'
+        });
+      } else if (level > 10) {
+        lastStockNotifiedRef.current[key] = 0;
+      }
+    });
+  };
   // =====================================
 
   // ===== Toggle Functions =====
@@ -465,6 +499,7 @@ const Stock = () => {
 
           setStock(stockData);
           setTempStock(stockData);
+          checkLowStock(stockData);
         } else {
           setStationData(null);
         }
@@ -547,6 +582,7 @@ const Stock = () => {
 
       setStock(saveStock);
       setEditingStock(false);
+      checkLowStock(saveStock);
       showAlert({ type: 'success', message: 'Stock updated successfully!' });
     } catch (error) {
       console.error('Error updating stock:', error);
@@ -828,7 +864,7 @@ const Stock = () => {
                           <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                             <XAxis dataKey="day" tickFormatter={(day) => `Day ${day}`} stroke="#64748b" />
-                            <YAxis tickFormatter={(value) => `₱${(value/1000).toFixed(0)}k`} stroke="#64748b" />
+                            <YAxis tickFormatter={(value) => { if (value >= 1000000) return `₱${(value/1000000).toFixed(1)}M`; if (value >= 1000) return `₱${(value/1000).toFixed(0)}k`; return `₱${value}`; }} stroke="#64748b" />
                             <Tooltip formatter={(value) => [`₱${value?.toLocaleString() || 0}`, 'Revenue']} labelFormatter={(label) => `Day ${label}`} />
                             <Legend />
                             <Line type="monotone" dataKey="actual" stroke="#065A82" strokeWidth={3} dot={{ r: 4, fill: "#065A82" }} name="Actual Revenue" />

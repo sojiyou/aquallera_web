@@ -27,6 +27,7 @@ const TITLES = {
  *   onClose     – called when the user dismisses (OK / Cancel / backdrop)
  *   onConfirm   – (confirm/prompt) called with (true) or (inputValue)
  *   placeholder – (prompt) input placeholder text
+ *   inputType   – (prompt) 'text' (default) or 'password'
  */
 const AlertCard = ({
   type = 'success',
@@ -35,6 +36,7 @@ const AlertCard = ({
   onClose,
   onConfirm,
   placeholder = 'Type here...',
+  inputType,
 }) => {
   const [inputValue, setInputValue] = useState('');
 
@@ -80,13 +82,24 @@ const AlertCard = ({
           <p className="text-gray-700 text-sm leading-relaxed m-0 mb-1 whitespace-pre-line">{message}</p>
 
           {type === 'prompt' && (
-            <textarea
-              className="w-full mt-3.5 p-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none transition-all resize-y min-h-[80px] font-sans box-border focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.15)]"
-              placeholder={placeholder}
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              autoFocus
-            />
+            inputType === 'password' ? (
+              <input
+                type="password"
+                className="w-full mt-3.5 p-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none transition-all font-sans box-border focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.15)]"
+                placeholder={placeholder}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                autoFocus
+              />
+            ) : (
+              <textarea
+                className="w-full mt-3.5 p-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none transition-all resize-y min-h-[80px] font-sans box-border focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.15)]"
+                placeholder={placeholder}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                autoFocus
+              />
+            )
           )}
         </div>
 

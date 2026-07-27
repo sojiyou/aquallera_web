@@ -30,6 +30,8 @@ const AdminPage = () => {
   const [inviting, setInviting] = useState(false);
   const [admins, setAdmins] = useState([]);
   const [removingAdminId, setRemovingAdminId] = useState(null);
+  const [changingPasswordId, setChangingPasswordId] = useState(null);
+  const [changePasswordEmail, setChangePasswordEmail] = useState('');
   const unsubscribeRef = useRef(null);
 
   // Admin credentials (you should change these and keep them secure)
@@ -157,6 +159,34 @@ const AdminPage = () => {
           showAlert({ type: 'error', message: 'Failed to remove admin. Please try again.' });
         } finally {
           setRemovingAdminId(null);
+        }
+      }
+    });
+  };
+
+  const handleChangePassword = async (adminId) => {
+    showAlert({
+      type: 'prompt',
+      title: 'Change Password',
+      message: `Enter new password for ${changePasswordEmail}:`,
+      placeholder: 'New password...',
+      inputType: 'password',
+      onConfirm: async (newPassword) => {
+        closeAlert();
+        if (!newPassword || newPassword.trim().length < 4) {
+          showAlert({ type: 'error', message: 'Password must be at least 4 characters.' });
+          return;
+        }
+        setChangingPasswordId(adminId);
+        try {
+          const adminRef = ref(database, `admins/${adminId}`);
+          await update(adminRef, { password: newPassword });
+          showAlert({ type: 'success', message: 'Password updated successfully!' });
+        } catch (error) {
+          console.error('Error changing password:', error);
+          showAlert({ type: 'error', message: 'Failed to change password.' });
+        } finally {
+          setChangingPasswordId(null);
         }
       }
     });
@@ -386,16 +416,6 @@ const AdminPage = () => {
     return activeTab === 'pending' ? pendingStations : approvedStations;
   };
 
-  // Function to mask phone number
-  const maskPhone = (phone) => {
-    if (!phone) return 'N/A';
-    if (phone.length < 7) return phone;
-    const visibleDigits = 4;
-    const maskedPart = '*'.repeat(phone.length - visibleDigits);
-    const visiblePart = phone.slice(-visibleDigits);
-    return maskedPart + visiblePart;
-  };
-
   if (!isAuthenticated) {
     return (
       <>
@@ -586,13 +606,22 @@ const AdminPage = () => {
                             <span className="text-sm text-slate-600">{admin.createdAt ? formatDate(admin.createdAt) : 'N/A'}</span>
                           </td>
                           <td className="px-6 py-4 text-right">
-                            <button
-                              onClick={() => handleRemoveAdmin(admin.id, admin.email)}
-                              disabled={removingAdminId === admin.id}
-                              className="px-3 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium transition-all bg-red-50 text-red-600 hover:bg-red-600 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                              {removingAdminId === admin.id ? 'Removing...' : 'Remove'}
-                            </button>
+                            <div className="flex gap-2 justify-end">
+                              <button
+                                onClick={() => { setChangePasswordEmail(admin.email); handleChangePassword(admin.id); }}
+                                disabled={changingPasswordId === admin.id}
+                                className="px-3 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium transition-all bg-primary/10 text-primary hover:bg-primary hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                {changingPasswordId === admin.id ? 'Changing...' : 'Change Password'}
+                              </button>
+                              <button
+                                onClick={() => handleRemoveAdmin(admin.id, admin.email)}
+                                disabled={removingAdminId === admin.id}
+                                className="px-3 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium transition-all bg-red-50 text-red-600 hover:bg-red-600 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                {removingAdminId === admin.id ? 'Removing...' : 'Remove'}
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -609,6 +638,13 @@ const AdminPage = () => {
                           <div className="font-semibold text-slate-800 text-[15px] leading-tight truncate">{admin.email}</div>
                           <div className="text-slate-400 text-xs mt-0.5">Invited by: {admin.invitedBy || 'N/A'}</div>
                         </div>
+                        <button
+                          onClick={() => { setChangePasswordEmail(admin.email); handleChangePassword(admin.id); }}
+                          disabled={changingPasswordId === admin.id}
+                          className="flex-shrink-0 px-3 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium transition-all bg-primary/10 text-primary hover:bg-primary hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {changingPasswordId === admin.id ? 'Changing...' : 'Change Password'}
+                        </button>
                         <button
                           onClick={() => handleRemoveAdmin(admin.id, admin.email)}
                           disabled={removingAdminId === admin.id}
@@ -627,12 +663,9 @@ const AdminPage = () => {
             )}
           </div>
         ) : (
-          <div className="grid gap-4 sm:gap-6 grid-cols-[repeat(auto-fill,minmax(min(100%,500px),1fr))]">
+          <div className="bg-white rounded-xl shadow-sm">
             {getFilteredStations().length === 0 ? (
-              <div className="text-center py-16 bg-white rounded-xl shadow-sm">
-                <div className="text-5xl mb-4 opacity-50">
-                  {activeTab === 'pending' ? '' : ''}
-                </div>
+              <div className="text-center py-16">
                 <h3 className="text-slate-800 m-0 mb-2">No stations found</h3>
                 <p className="text-slate-500 m-0">
                   {activeTab === 'pending'
@@ -641,128 +674,107 @@ const AdminPage = () => {
                 </p>
               </div>
             ) : (
-              getFilteredStations().map(station => (
-                <div key={station.id} className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border-l-4 border-l-primary">
-                  <div className="flex justify-between items-start mb-4 pb-4 border-b border-slate-200">
-                    <div>
-                      <h3 className="m-0 text-slate-800 text-xl">{station.stationName || 'Unnamed Station'}</h3>
-                      <div className="flex flex-col gap-1 mt-2">
-                        <span className="font-mono text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded inline-block max-w-fit">ID: {station.id.substring(0, 8)}...</span>
-                        <span className="text-xs text-slate-400">
-                          Registered: {formatDate(station.createdAt || station.timestamp)}
+              <>
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full text-left">
+                    <thead>
+                      <tr className="border-b border-slate-200 bg-slate-50">
+                        <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Station Name</th>
+                        <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Owner</th>
+                        <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Email</th>
+                        <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+                        <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Registered</th>
+                        <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {getFilteredStations().map((station) => (
+                        <tr key={station.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                          <td className="px-6 py-4">
+                            <span className="text-sm font-semibold text-slate-800">{station.stationName || 'Unnamed Station'}</span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="text-sm text-slate-600">{station.ownerName || 'N/A'}</span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="text-sm text-slate-600 font-mono">{station.email || 'N/A'}</span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className={`inline-block px-3 py-1 rounded-full text-[0.7rem] font-semibold uppercase tracking-wider ${station.status === 'pending' || !station.status ? 'bg-amber-50 text-amber-600' : station.status === 'approved' ? 'bg-secondary/10 text-secondary' : 'bg-red-100 text-red-600'}`}>
+                              {station.status || 'pending'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="text-sm text-slate-600">{formatDate(station.createdAt || station.timestamp)}</span>
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            <div className="flex gap-2 justify-end">
+                              {activeTab === 'pending' ? (
+                                <>
+                                  <button
+                                    onClick={() => handleApproveStation(station.id)}
+                                    className="px-3 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium transition-all bg-secondary text-white hover:bg-primary-dark"
+                                    disabled={rejectingStationId === station.id}
+                                  >
+                                    Approve
+                                  </button>
+                                  <button
+                                    onClick={() => handleRejectStation(station.id)}
+                                    className="px-3 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium transition-all bg-red-500 text-white hover:bg-red-600"
+                                    disabled={rejectingStationId === station.id}
+                                  >
+                                    {rejectingStationId === station.id ? 'Sending...' : 'Reject'}
+                                  </button>
+                                </>
+                              ) : (
+                                <button
+                                  onClick={() => handleRevokeApproval(station.id)}
+                                  className="px-3 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium transition-all bg-amber-500 text-white hover:bg-amber-600"
+                                >
+                                  Revoke
+                                </button>
+                              )}
+                              <button
+                                onClick={() => handleViewDetails(station)}
+                                className="px-3 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium transition-all bg-primary text-white hover:bg-primary-dark"
+                              >
+                                View Details
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="md:hidden divide-y divide-slate-200">
+                  {getFilteredStations().map((station) => (
+                    <div key={station.id} className="px-4 py-4">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1 min-w-0 mr-3">
+                          <div className="font-semibold text-slate-800 text-[15px] leading-tight truncate">{station.stationName || 'Unnamed Station'}</div>
+                          <div className="text-slate-400 text-xs mt-0.5">{station.ownerName || 'N/A'}</div>
+                        </div>
+                        <span className={`shrink-0 px-2 py-0.5 rounded-full text-[0.65rem] font-semibold uppercase tracking-wider ${station.status === 'pending' || !station.status ? 'bg-amber-50 text-amber-600' : station.status === 'approved' ? 'bg-secondary/10 text-secondary' : 'bg-red-100 text-red-600'}`}>
+                          {station.status || 'pending'}
                         </span>
                       </div>
-                    </div>
-                    <div className={`px-3 py-1 rounded-full text-[0.75rem] font-semibold uppercase tracking-wider ${station.status === 'pending' || !station.status ? 'bg-amber-50 text-amber-600' : station.status === 'approved' ? 'bg-secondary/10 text-secondary' : station.status === 'rejected' || station.status === 'deletion_pending' ? 'bg-red-100 text-red-600' : ''}`}>
-                      {station.status || 'pending'}
-                    </div>
-                  </div>
-
-                  <div className="mb-6">
-                    <div className="flex py-2 text-sm border-b border-slate-100 last:border-b-0">
-                        <span className="min-w-[90px] sm:min-w-[120px] text-slate-500 font-medium">Location:</span>
-                      <span className="flex-1 text-slate-800 break-words">
-                        {station.address || 'N/A'}, {station.city || 'N/A'}
-                      </span>
-                    </div>
-
-                    <div className="flex py-2 text-sm border-b border-slate-100 last:border-b-0">
-                        <span className="min-w-[90px] sm:min-w-[120px] text-slate-500 font-medium">Owner:</span>
-                      <span className="flex-1 text-slate-800 break-words">{station.ownerName || 'N/A'}</span>
-                    </div>
-
-                    <div className="flex py-2 text-sm border-b border-slate-100 last:border-b-0">
-                        <span className="min-w-[90px] sm:min-w-[120px] text-slate-500 font-medium">Email:</span>
-                      <span className="flex-1 text-slate-800 break-words font-mono">{station.email || 'N/A'}</span>
-                    </div>
-
-                    {station.password && (
-                      <div className="flex py-2 text-sm border-b border-slate-100 last:border-b-0">
-                        <span className="min-w-[90px] sm:min-w-[120px] text-slate-500 font-medium">Password:</span>
-                        <span className="flex-1 text-slate-800 break-words font-mono">{station.password}</span>
+                      <div className="flex gap-1.5 flex-wrap">
+                        {activeTab === 'pending' ? (
+                          <>
+                            <button onClick={() => handleApproveStation(station.id)} disabled={rejectingStationId === station.id} className="flex-1 min-w-[80px] px-2 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium bg-secondary text-white hover:bg-primary-dark disabled:opacity-50">Approve</button>
+                            <button onClick={() => handleRejectStation(station.id)} disabled={rejectingStationId === station.id} className="flex-1 min-w-[80px] px-2 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-50">{rejectingStationId === station.id ? 'Sending...' : 'Reject'}</button>
+                          </>
+                        ) : (
+                          <button onClick={() => handleRevokeApproval(station.id)} className="flex-1 min-w-[80px] px-2 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium bg-amber-500 text-white hover:bg-amber-600">Revoke</button>
+                        )}
+                        <button onClick={() => handleViewDetails(station)} className="flex-1 min-w-[80px] px-2 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium bg-primary text-white hover:bg-primary-dark">View Details</button>
                       </div>
-                    )}
-
-                    <div className="flex py-2 text-sm border-b border-slate-100 last:border-b-0">
-                        <span className="min-w-[90px] sm:min-w-[120px] text-slate-500 font-medium">Contact:</span>
-                      <span className="flex-1 text-slate-800 break-words">{station.phone ? maskPhone(station.phone) : 'N/A'}</span>
                     </div>
-
-                    {station.businessPermitNumber && (
-                      <div className="flex py-2 text-sm border-b border-slate-100 last:border-b-0">
-                        <span className="min-w-[90px] sm:min-w-[120px] text-slate-500 font-medium">Permit #:</span>
-                        <span className="flex-1 text-slate-800 break-words">{station.businessPermitNumber}</span>
-                      </div>
-                    )}
-
-                    {station.rejectionReason && (
-                      <div className="bg-red-50 p-3 rounded-md mt-2 border border-red-200 flex py-2 text-sm">
-                        <span className="min-w-[90px] sm:min-w-[120px] text-red-600 font-medium">Rejection Reason:</span>
-                        <span className="flex-1 text-slate-800 break-words">{station.rejectionReason}</span>
-                      </div>
-                    )}
-
-                    {station.approvedAt && (
-                      <div className="bg-secondary/5 p-3 rounded-md mt-2 border border-secondary/20 flex py-2 text-sm">
-                        <span className="min-w-[90px] sm:min-w-[120px] text-secondary font-medium">Approved On:</span>
-                        <span className="flex-1 text-slate-800 break-words">{formatDate(station.approvedAt)}</span>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex gap-2 flex-wrap">
-                    {activeTab === 'pending' ? (
-                      <>
-                        <button
-                          onClick={() => handleApproveStation(station.id)}
-                          className="px-3 sm:px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[100px] sm:min-w-[140px] bg-secondary text-white hover:bg-primary-dark"
-                          disabled={rejectingStationId === station.id}
-                        >
-                          Approve Station
-                        </button>
-                        <button
-                          onClick={() => handleRejectStation(station.id)}
-                          className="px-3 sm:px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[100px] sm:min-w-[140px] bg-red-500 text-white hover:bg-red-600"
-                          disabled={rejectingStationId === station.id}
-                        >
-                          {rejectingStationId === station.id ? 'Sending Email...' : 'Reject Station'}
-                        </button>
-                        <button
-                          onClick={() => handleViewDetails(station)}
-                          className="px-3 sm:px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[100px] sm:min-w-[140px] bg-primary text-white hover:bg-primary-dark"
-                          disabled={rejectingStationId === station.id}
-                        >
-                          View Details
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <button
-                          onClick={() => handleRevokeApproval(station.id)}
-                          className="px-3 sm:px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[100px] sm:min-w-[140px] bg-amber-500 text-white hover:bg-amber-600"
-                        >
-                          Revoke Approval
-                        </button>
-                        <button
-                          onClick={() => handleViewDetails(station)}
-                          className="px-3 sm:px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[100px] sm:min-w-[140px] bg-primary text-white hover:bg-primary-dark"
-                        >
-                          View Details
-                        </button>
-                        <button
-                          onClick={() => {
-                            navigator.clipboard.writeText(station.id);
-                            showAlert({ type: 'success', message: 'Station ID copied to clipboard!' });
-                          }}
-                          className="px-3 sm:px-4 py-2 border-none rounded-md cursor-pointer text-xs font-medium transition-all flex-1 min-w-[100px] sm:min-w-[140px] bg-primary text-white hover:bg-primary-dark"
-                        >
-                          Copy ID
-                        </button>
-                      </>
-                    )}
-                  </div>
+                  ))}
                 </div>
-              ))
+              </>
             )}
           </div>
         )}
