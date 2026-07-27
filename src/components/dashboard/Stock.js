@@ -1,6 +1,6 @@
 // src/components/dashboard/Stock.js
 import React, { useState, useEffect, useRef } from 'react';
-import { ref, onValue, update, push as dbPush, set as dbSet } from 'firebase/database';
+import { ref, onValue, update, set as dbSet } from 'firebase/database';
 import { database, auth } from '../config/Firebase';
 import AlertCard, { useAlert } from '../admin/AlertCard';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -121,7 +121,6 @@ const Stock = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastRefreshed, setLastRefreshed] = useState(null);
   const cacheRef = useRef(null);
-  const lastStockNotifiedRef = useRef({ pureWater: 0, springWater: 0, mineralWater: 0 });
 
   const checkLowStock = (stockData) => {
     const user = auth.currentUser;
@@ -136,22 +135,20 @@ const Stock = () => {
     thresholds.forEach(({ key, label }) => {
       const level = stockData[key];
       if (level === undefined || level === null) return;
-      const prevNotified = lastStockNotifiedRef.current[key];
-      if (level > 0 && level <= 10 && prevNotified !== level) {
-        lastStockNotifiedRef.current[key] = level;
-        const notifRef = ref(database, `waterStations/${user.uid}/notifications`);
-        const newNotifRef = dbPush(notifRef);
-        dbSet(newNotifRef, {
+      if (level > 0 && level <= 10) {
+        const notifRef = ref(database, `waterStations/${user.uid}/notifications/lowStock-${key}`);
+        dbSet(notifRef, {
           customerName: 'Stock Alert',
           orderType: `Low on ${label}`,
           message: `Only ${level} gallon${level !== 1 ? 's' : ''} left`,
-          orderId: `stock-${key}-${Date.now()}`,
+          orderId: `stock-${key}`,
           createdAt: new Date().toISOString(),
           read: false,
           type: 'stock'
         });
-      } else if (level > 10) {
-        lastStockNotifiedRef.current[key] = 0;
+      } else {
+        const notifRef = ref(database, `waterStations/${user.uid}/notifications/lowStock-${key}`);
+        dbSet(notifRef, null);
       }
     });
   };

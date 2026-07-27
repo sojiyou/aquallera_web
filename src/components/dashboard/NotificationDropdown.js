@@ -130,11 +130,13 @@ const NotificationDropdown = () => {
           {notifications.length === 0 ? (
             <div className="p-6 text-center text-sm text-slate-500">No new notifications</div>
           ) : (
-            notifications.map(n => (
-              <div key={n.id} className="flex items-start gap-3 p-3 border-b border-slate-50 hover:bg-slate-50 group">
+            notifications.map(n => {
+              const isStock = n.type === 'stock';
+              return (
+              <div key={n.id} className={`flex items-start gap-3 p-3 border-b border-slate-50 hover:bg-slate-50 group ${isStock ? 'border-l-4 border-l-red-500 bg-red-50/30' : ''}`}>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-slate-800 truncate">{n.customerName}</p>
-                  <p className="text-xs text-slate-500">{n.orderType} order</p>
+                  <p className={`text-sm font-medium truncate ${isStock ? 'text-red-700' : 'text-slate-800'}`}>{n.customerName}</p>
+                  <p className={`text-xs ${isStock ? 'text-red-600' : 'text-slate-500'}`}>{n.orderType}{!isStock ? ' order' : ''}</p>
                   <p className="text-[10px] text-slate-400 mt-0.5">{getTimeAgo(n.createdAt)}</p>
                 </div>
                 <button
@@ -147,7 +149,8 @@ const NotificationDropdown = () => {
                   </svg>
                 </button>
               </div>
-            ))
+            );
+            })
           )}
         </div>
       )}
