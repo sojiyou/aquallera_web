@@ -938,6 +938,16 @@ const Dashboard = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    const handlePageShow = (e) => {
+      if (e.persisted && !auth.currentUser) {
+        navigate('/login', { replace: true });
+      }
+    };
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
+  }, [navigate]);
+
   const handleLogout = async () => {
     try {
       const user = auth.currentUser;
@@ -948,7 +958,7 @@ const Dashboard = () => {
       }
 
       await auth.signOut();
-      navigate('/login');
+      navigate('/login', { replace: true });
 
     } catch (error) {
       console.error('Logout error:', error);
