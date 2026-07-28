@@ -55,7 +55,7 @@ const Home = () => {
               Get Started Today
             </button>
             <a
-              href="https://aquallera-pwa.vercel.app/main"
+              href="https://aquallera-pwa.vercel.app/install"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 px-3.5 py-2 rounded-lg font-semibold text-xs cursor-pointer transition-all border-2 border-primary text-primary hover:bg-primary hover:text-white hover:-translate-y-0.5 max-[480px]:w-full no-underline justify-center"
