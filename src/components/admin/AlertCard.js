@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 
 // ─── Icons per type ───────────────────────────────────────────────────────────
 const ICONS = {
-  success: '',
-  error:   '',
-  warning: '',
-  confirm: '',
-  prompt:  '',
+  success: <img src="/info.svg" alt="" className="w-5 h-5 select-none" draggable={false} />,
+  error:   <img src="/info.svg" alt="" className="w-5 h-5 select-none" draggable={false} />,
+  warning: <img src="/info.svg" alt="" className="w-5 h-5 select-none" draggable={false} />,
+  confirm: <img src="/info.svg" alt="" className="w-5 h-5 select-none" draggable={false} />,
+  prompt:  <img src="/info.svg" alt="" className="w-5 h-5 select-none" draggable={false} />,
 };
 
 const TITLES = {
