@@ -31,4 +31,16 @@ root.render(
   </React.StrictMode>
 );
 
+window.addEventListener('pageshow', async (e) => {
+  if (e.persisted) {
+    try {
+      const res = await fetch(`/version.json?t=${Date.now()}`);
+      const data = await res.json();
+      if (data.version !== BUILD_VERSION) {
+        window.location.href = window.location.href.split('?')[0] + '?v=' + Date.now();
+      }
+    } catch (err) {}
+  }
+});
+
 reportWebVitals();
