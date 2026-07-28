@@ -1202,21 +1202,27 @@ const Dashboard = () => {
                     </button>
                   </div>
                 </div>
-                <div className="relative">
-                  <select
-                    className="appearance-none bg-white border-2 border-slate-200 rounded-xl px-4 py-3 pr-10 text-sm font-medium text-slate-800 cursor-pointer min-w-[200px] transition-all hover:border-primary focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.15)]"
-                    value={activeTab}
-                    onChange={(e) => setActiveTab(e.target.value)}
-                  >
-                    <option value="all">All Orders</option>
-                    <option value="pending">Pending</option>
-                    <option value="confirmed">Confirmed</option>
-                    <option value="preparing">Preparing</option>
-                    <option value="for_pickup">For Pickup</option>
-                    <option value="for_delivery">For Delivery</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-slate-700 whitespace-nowrap">Sort:</span>
+                  <div className="relative">
+                    <select
+                      className="appearance-none bg-white border-2 border-slate-200 rounded-xl px-4 py-3 pr-10 text-sm font-medium text-slate-700 cursor-pointer min-w-[180px] transition-all hover:border-primary focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.15)]"
+                      value={activeTab}
+                      onChange={(e) => setActiveTab(e.target.value)}
+                    >
+                      <option value="all">All Orders</option>
+                      <option value="pending">Pending</option>
+                      <option value="confirmed">Confirmed</option>
+                      <option value="preparing">Preparing</option>
+                      <option value="for_pickup">For Pickup</option>
+                      <option value="for_delivery">For Delivery</option>
+                      <option value="completed">Completed</option>
+                      <option value="cancelled">Cancelled</option>
+                    </select>
+                    <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
                 </div>
               </div>
 
