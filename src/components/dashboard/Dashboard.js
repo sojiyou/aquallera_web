@@ -1203,10 +1203,10 @@ const Dashboard = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold text-slate-700 whitespace-nowrap">Sort:</span>
+                  <span className="text-sm font-semibold text-white whitespace-nowrap">Sort:</span>
                   <div className="relative">
                     <select
-                      className="appearance-none bg-white border-2 border-slate-200 rounded-xl px-4 py-3 pr-10 text-sm font-medium text-slate-700 cursor-pointer min-w-[180px] transition-all hover:border-primary focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.15)]"
+                      className="appearance-none bg-white border-2 border-slate-200 rounded-xl px-3.5 py-2.5 pr-10 text-sm font-medium text-slate-700 cursor-pointer min-w-[180px] transition-all hover:border-primary focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.15)]"
                       value={activeTab}
                       onChange={(e) => setActiveTab(e.target.value)}
                     >
