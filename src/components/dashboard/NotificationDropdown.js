@@ -108,7 +108,7 @@ const NotificationDropdown = () => {
           }}
           className="relative border-none p-1.5 rounded cursor-pointer hover:bg-slate-100 transition-colors"
         >
-          <img src="/notification.png" alt="Notifications" className="w-6 h-6 sm:w-7 sm:h-7" />
+          <img src="/notification.svg" alt="Notifications" className="w-5 h-5 sm:w-6 sm:h-6" />
           {hasUnread && notifications.length > 0 && (
             <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] sm:text-[10px] font-bold rounded-full w-4 h-4 sm:w-4.5 sm:h-4.5 flex items-center justify-center">
               {notifications.length > 9 ? '9+' : notifications.length}

@@ -986,14 +986,15 @@ const Dashboard = () => {
               </div>
               <div className="relative group ml-auto">
                 <button onClick={handleLogout} className="border-none p-1.5 rounded cursor-pointer hover:bg-slate-100 transition-colors">
-                  <img src="/log-out.png" alt="Logout" className="w-6 h-6 sm:w-7 sm:h-7" />
-                </button>
-                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-                  Logout
-                </span>
-              </div>
+                <img src="/log-out.svg" alt="Logout" className="w-5 h-5 sm:w-6 sm:h-6" />
+              </button>
+              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                Logout
+              </span>
             </div>
-          </header>
+          </div>
+        </div>
+      </header>
 
         <div className="max-w-[800px] mx-auto my-8 p-6 sm:p-12 bg-white rounded-xl shadow-sm text-center">
           <div className="text-4xl md:text-6xl mb-6 opacity-70"></div>
@@ -1043,14 +1044,15 @@ const Dashboard = () => {
               </div>
               <div className="relative group ml-auto">
                 <button onClick={handleLogout} className="border-none p-1.5 rounded cursor-pointer hover:bg-slate-100 transition-colors">
-                  <img src="/log-out.png" alt="Logout" className="w-6 h-6 sm:w-7 sm:h-7" />
-                </button>
-                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-                  Logout
-                </span>
-              </div>
+                <img src="/log-out.svg" alt="Logout" className="w-5 h-5 sm:w-6 sm:h-6" />
+              </button>
+              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                Logout
+              </span>
             </div>
-          </header>
+          </div>
+        </div>
+      </header>
 
         <div className="max-w-[800px] mx-auto my-8 p-6 sm:p-12 bg-white rounded-xl shadow-sm text-center">
           <div className="text-4xl md:text-6xl mb-6 text-red-600"></div>
@@ -1110,13 +1112,17 @@ const Dashboard = () => {
             )}
           </div>
           <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
+            <div className="flex items-center gap-2 bg-secondary/5 px-2 sm:px-4 py-1 sm:py-2 rounded-full border border-secondary/20 text-[10px] sm:text-sm text-primary-dark">
+              <div className="w-2 h-2 rounded-full bg-secondary animate-[pulse_2s_infinite]"></div>
+              <span>Online</span>
+            </div>
             <div className="flex gap-1 sm:gap-2">
               <div className="relative group">
                 <button 
                   className={`p-1.5 rounded-lg cursor-pointer transition-all flex items-center justify-center ${activeSection === 'orders' ? 'bg-slate-100 ring-1 ring-slate-300' : 'hover:bg-slate-100'}`}
                   onClick={() => setActiveSection('orders')}
                 >
-                  <img src="/orders.png" alt="Orders" className="w-6 h-6 sm:w-7 sm:h-7" />
+                  <img src="/orders.svg" alt="Orders" className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
                 <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                   Orders
@@ -1127,10 +1133,10 @@ const Dashboard = () => {
                   className={`p-1.5 rounded-lg cursor-pointer transition-all flex items-center justify-center ${activeSection === 'stock' ? 'bg-slate-100 ring-1 ring-slate-300' : 'hover:bg-slate-100'}`}
                   onClick={() => setActiveSection('stock')}
                 >
-                  <img src="/analytics.png" alt="Stock & Analytics" className="w-6 h-6 sm:w-7 sm:h-7" />
+                  <img src="/analytics.svg" alt="Analytics" className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
                 <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-                  Stock & Analytics
+                  Analytics
                 </span>
               </div>
               <div className="relative group">
@@ -1138,21 +1144,17 @@ const Dashboard = () => {
                   className={`p-1.5 rounded-lg cursor-pointer transition-all flex items-center justify-center ${activeSection === 'settings' ? 'bg-slate-100 ring-1 ring-slate-300' : 'hover:bg-slate-100'}`}
                   onClick={() => setActiveSection('settings')}
                 >
-                  <img src="/settings.png" alt="Settings" className="w-6 h-6 sm:w-7 sm:h-7" />
+                  <img src="/settings.svg" alt="Settings" className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
                 <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                   Settings
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-2 bg-secondary/5 px-2 sm:px-4 py-1 sm:py-2 rounded-full border border-secondary/20 text-[10px] sm:text-sm text-primary-dark">
-              <div className="w-2 h-2 rounded-full bg-secondary animate-[pulse_2s_infinite]"></div>
-              <span>Online</span>
-            </div>
             <NotificationDropdown />
             <div className="relative group ml-auto">
               <button onClick={handleLogout} className="border-none p-1.5 rounded cursor-pointer hover:bg-slate-100 transition-colors">
-                <img src="/log-out.png" alt="Logout" className="w-6 h-6 sm:w-7 sm:h-7" />
+                <img src="/log-out.svg" alt="Logout" className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
               <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                 Logout
