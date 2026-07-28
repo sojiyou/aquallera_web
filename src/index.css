@@ -2,8 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
+* {
   cursor: default;
+}
+
+html {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+input, textarea, [contenteditable] {
+  user-select: auto;
+  -webkit-user-select: auto;
+  cursor: text;
 }
 
 /* Smooth scroll wheel behavior on iOS */
