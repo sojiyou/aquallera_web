@@ -50,21 +50,21 @@ const Home = () => {
             Streamline your water delivery business with our comprehensive management system. 
             Handle orders, track deliveries, and grow your customer base all in one place.
           </p>
-          <div className="flex gap-2 flex-wrap justify-center md:justify-start max-[480px]:flex-col items-stretch">
-            <button className="px-5 py-3 rounded-lg font-semibold text-sm cursor-pointer transition-all bg-primary text-white hover:bg-primary-dark hover:-translate-y-0.5 max-[480px]:w-full" onClick={() => window.location.href = '/signup'}>
+          <div className="flex gap-1.5 flex-wrap justify-center md:justify-start max-[480px]:flex-col items-stretch">
+            <button className="px-3.5 py-2 rounded-lg font-semibold text-xs cursor-pointer transition-all bg-primary text-white hover:bg-primary-dark hover:-translate-y-0.5 max-[480px]:w-full" onClick={() => window.location.href = '/signup'}>
               Get Started Today
             </button>
             <a
               href="https://aquallera-pwa.vercel.app/main"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-5 py-3 rounded-lg font-semibold text-sm cursor-pointer transition-all border-2 border-primary text-primary hover:bg-primary hover:text-white hover:-translate-y-0.5 max-[480px]:w-full no-underline justify-center"
+              className="inline-flex items-center gap-1 px-3.5 py-2 rounded-lg font-semibold text-xs cursor-pointer transition-all border-2 border-primary text-primary hover:bg-primary hover:text-white hover:-translate-y-0.5 max-[480px]:w-full no-underline justify-center"
             >
-              <img src="/download.svg" alt="" className="w-4 h-4 select-none" draggable={false} />
+              <img src="/download.svg" alt="" className="w-3.5 h-3.5 select-none" draggable={false} />
               Download App
             </a>
             <button
-              className={`inline-flex items-center gap-1.5 px-5 py-3 rounded-lg font-semibold text-sm cursor-pointer transition-all border-2 max-[480px]:w-full justify-center ${
+              className={`inline-flex items-center gap-1 px-3.5 py-2 rounded-lg font-semibold text-xs cursor-pointer transition-all border-2 max-[480px]:w-full justify-center ${
                 isInstalled || !deferredPrompt
                   ? 'border-slate-300 text-slate-400 cursor-not-allowed'
                   : 'border-primary text-primary hover:bg-primary hover:text-white hover:-translate-y-0.5'
@@ -72,7 +72,7 @@ const Home = () => {
               onClick={handleInstallWebsite}
               disabled={isInstalled || !deferredPrompt}
             >
-              <img src="/download.svg" alt="" className="w-4 h-4 select-none" draggable={false} />
+              <img src="/download.svg" alt="" className="w-3.5 h-3.5 select-none" draggable={false} />
               {isInstalled ? 'Installed' : 'Download Website'}
             </button>
           </div>
