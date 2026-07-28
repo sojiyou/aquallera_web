@@ -322,10 +322,11 @@ const Login = () => {
         {/* BACK TO HOME BUTTON */}
         <button
           type="button"
-          className="bg-primary text-white p-2 rounded-md border-none text-base text-sm cursor-pointer mb-3 text-left hover:bg-dark cursor:pointer"
+          className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors mb-3"
           onClick={() => navigate('/')}
+          title="Back to Home"
         >
-          ← Back to Home
+          <img src="/back.svg" alt="Back to Home" className="w-5 h-5 sm:w-6 sm:h-6 select-none" draggable={false} />
         </button>
         <div className="text-center mb-8">
           <h2 className="text-slate-800 text-3xl mb-2">Station Login</h2>
