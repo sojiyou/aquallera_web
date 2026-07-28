@@ -991,10 +991,10 @@ const Dashboard = () => {
               <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                 Logout
               </span>
+              </div>
             </div>
-          </div>
+          </header>
         </div>
-      </header>
 
         <div className="max-w-[800px] mx-auto my-8 p-6 sm:p-12 bg-white rounded-xl shadow-sm text-center">
           <div className="text-4xl md:text-6xl mb-6 opacity-70"></div>
@@ -1020,7 +1020,6 @@ const Dashboard = () => {
             </button>
           </div>
         </div>
-      </div>
       </div>
     );
   }
@@ -1049,10 +1048,10 @@ const Dashboard = () => {
               <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                 Logout
               </span>
+              </div>
             </div>
-          </div>
+          </header>
         </div>
-      </header>
 
         <div className="max-w-[800px] mx-auto my-8 p-6 sm:p-12 bg-white rounded-xl shadow-sm text-center">
           <div className="text-4xl md:text-6xl mb-6 text-red-600"></div>
@@ -1080,7 +1079,6 @@ const Dashboard = () => {
             </button>
           </div>
         </div>
-      </div>
       </div>
     );
   }
