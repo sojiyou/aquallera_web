@@ -135,9 +135,9 @@ const OrdersTable = ({ orders, onOrderClick }) => {
             <tr className="bg-slate-100">
               <th className="w-[110px] px-4 py-3 border-r border-slate-200 text-left text-slate-700 font-semibold text-xs uppercase tracking-wider">Order #</th>
               <th className="w-[260px] px-4 py-3 border-r border-slate-200 text-left text-slate-700 font-semibold text-xs uppercase tracking-wider">Customer</th>
-              <th className="w-[90px] px-4 py-3 border-r border-slate-200 text-left text-slate-700 font-semibold text-xs uppercase tracking-wider">Type</th>
-              <th className="w-[100px] px-4 py-3 border-r border-slate-200 text-left text-slate-700 font-semibold text-xs uppercase tracking-wider">Amount</th>
-              <th className="w-[120px] px-4 py-3 border-r border-slate-200 text-left text-slate-700 font-semibold text-xs uppercase tracking-wider">Status</th>
+              <th className="w-[60px] px-4 py-3 border-r border-slate-200 text-center text-slate-700 font-semibold text-xs uppercase tracking-wider">Type</th>
+              <th className="w-[60px] px-4 py-3 border-r border-slate-200 text-center text-slate-700 font-semibold text-xs uppercase tracking-wider">Amount</th>
+              <th className="w-[70px] px-4 py-3 border-r border-slate-200 text-center text-slate-700 font-semibold text-xs uppercase tracking-wider">Status</th>
               <th className="w-[70px] text-center px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Action</th>
             </tr>
           </thead>
@@ -167,15 +167,15 @@ const OrdersTable = ({ orders, onOrderClick }) => {
                       <span className="text-slate-500 text-sm">{order.customerPhone || ''}</span>
                     </div>
                   </td>
-                  <td className="w-[90px] px-4 py-3 border-r border-slate-200">
+                  <td className="w-[60px] px-4 py-3 border-r border-slate-200 text-center">
                     <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${orderType === 'Delivery' ? 'bg-primary/15 text-primary-dark' : 'bg-emerald-100 text-emerald-800'}`}>
                       {orderType}
                     </span>
                   </td>
-                  <td className="w-[100px] px-4 py-3 border-r border-slate-200">
+                  <td className="w-[60px] px-4 py-3 border-r border-slate-200 text-center">
                     <span className="font-bold text-slate-800 text-sm">{formatCurrency(grandTotal)}</span>
                   </td>
-                  <td className="w-[120px] px-4 py-3 border-r border-slate-200">
+                  <td className="w-[70px] px-4 py-3 border-r border-slate-200 text-center">
                     <span 
                       className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap shadow-sm"
                       style={{ backgroundColor: statusInfo.bg, color: statusInfo.color }}
