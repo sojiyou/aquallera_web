@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  cursor: default;
+}
+
 /* Smooth scroll wheel behavior on iOS */
 .snap-y {
   -webkit-overflow-scrolling: touch;
