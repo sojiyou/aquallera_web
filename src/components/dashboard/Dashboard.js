@@ -955,6 +955,15 @@ const Dashboard = () => {
     return () => window.removeEventListener('pageshow', handlePageShow);
   }, []);
 
+  useEffect(() => {
+    const handlePopState = () => {
+      window.location.replace('/login');
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   const handleLogout = async () => {
     try {
       const user = auth.currentUser;
