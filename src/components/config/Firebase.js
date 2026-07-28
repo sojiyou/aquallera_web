@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { getAuth, setPersistence, browserSessionPersistence } from 'firebase/auth';
 import { getDatabase } from 'firebase/database';
 
 // Your web app's Firebase configuration
@@ -18,6 +18,7 @@ const app = initializeApp(firebaseConfig);
 
 // Initialize Firebase services
 const auth = getAuth(app);
+setPersistence(auth, browserSessionPersistence);
 const database = getDatabase(
   app,
   "https://aquallera-default-rtdb.asia-southeast1.firebasedatabase.app"

@@ -940,8 +940,13 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    const handlePageShow = (e) => {
+    const handlePageShow = async (e) => {
       if (e.persisted) {
+        try {
+          await auth.signOut();
+        } catch (err) {
+          console.error('Sign out on bfcache restore failed:', err);
+        }
         window.location.replace('/login');
       }
     };
