@@ -957,7 +957,9 @@ const Dashboard = () => {
 
   useEffect(() => {
     const handlePopState = () => {
-      window.location.replace('/login');
+      auth.signOut().finally(() => {
+        window.location.replace('/login');
+      });
     };
 
     window.addEventListener('popstate', handlePopState);
