@@ -130,14 +130,14 @@ const OrdersTable = ({ orders, onOrderClick }) => {
     <div className="bg-white rounded-xl shadow-sm border border-slate-200">
       {/* Desktop Table - hidden below md */}
       <div className="hidden md:block overflow-x-auto">
-        <table className="w-full border-collapse text-sm min-w-[700px]">
+        <table className="w-full border-collapse text-sm min-w-[700px] [table-layout:fixed]">
           <thead>
             <tr className="bg-slate-100">
-              <th className="w-[120px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Order #</th>
-              <th className="w-[180px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Customer</th>
-              <th className="w-[110px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Type</th>
-              <th className="w-[120px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Amount</th>
-              <th className="w-[140px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Status</th>
+              <th className="w-[120px] px-4 py-3 border-r border-slate-200 text-slate-700 font-semibold text-xs uppercase tracking-wider">Order #</th>
+              <th className="w-[180px] px-4 py-3 border-r border-slate-200 text-slate-700 font-semibold text-xs uppercase tracking-wider">Customer</th>
+              <th className="w-[110px] px-4 py-3 border-r border-slate-200 text-slate-700 font-semibold text-xs uppercase tracking-wider">Type</th>
+              <th className="w-[120px] px-4 py-3 border-r border-slate-200 text-slate-700 font-semibold text-xs uppercase tracking-wider">Amount</th>
+              <th className="w-[140px] px-4 py-3 border-r border-slate-200 text-slate-700 font-semibold text-xs uppercase tracking-wider">Status</th>
               <th className="w-[80px] text-center px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Action</th>
             </tr>
           </thead>
@@ -155,27 +155,27 @@ const OrdersTable = ({ orders, onOrderClick }) => {
                   className={`border-b border-slate-200 cursor-pointer transition-all hover:bg-primary/5 last:border-b-0 ${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}`}
                   onClick={() => onOrderClick(order)}
                 >
-                  <td className="w-[120px] px-4 py-3">
+                  <td className="w-[120px] px-4 py-3 border-r border-slate-200">
                     <div className="flex flex-col">
                       <span className="font-semibold text-primary font-mono text-xs">#{orderId}</span>
                       <span className="text-slate-400 text-[10px] mt-0.5">Created {new Date(order.createdAt || order.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
                     </div>
                   </td>
-                  <td className="w-[180px] px-4 py-3">
+                  <td className="w-[180px] px-4 py-3 border-r border-slate-200">
                     <div className="flex flex-col gap-0.5">
                       <span className="font-semibold text-slate-800 text-base">{customerName}</span>
                       <span className="text-slate-500 text-sm">{order.customerPhone || ''}</span>
                     </div>
                   </td>
-                  <td className="w-[110px] px-4 py-3">
+                  <td className="w-[110px] px-4 py-3 border-r border-slate-200">
                     <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${orderType === 'Delivery' ? 'bg-primary/15 text-primary-dark' : 'bg-emerald-100 text-emerald-800'}`}>
                       {orderType}
                     </span>
                   </td>
-                  <td className="w-[120px] px-4 py-3">
+                  <td className="w-[120px] px-4 py-3 border-r border-slate-200">
                     <span className="font-bold text-slate-800 text-sm">{formatCurrency(grandTotal)}</span>
                   </td>
-                  <td className="w-[140px] px-4 py-3">
+                  <td className="w-[140px] px-4 py-3 border-r border-slate-200">
                     <span 
                       className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap shadow-sm"
                       style={{ backgroundColor: statusInfo.bg, color: statusInfo.color }}
