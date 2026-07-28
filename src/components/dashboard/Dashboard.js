@@ -940,14 +940,15 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    const handlePageShow = async (e) => {
-      if (e.persisted) {
-        try {
-          await auth.signOut();
-        } catch (err) {
-          console.error('Sign out on bfcache restore failed:', err);
+    const handlePageShow = (event) => {
+      if (event.persisted) {
+        const user = auth.currentUser;
+        if (!user) {
+          window.location.replace('/login');
+          return;
         }
-        window.location.replace('/login');
+        user.getIdToken(true)
+          .catch(() => window.location.replace('/login'));
       }
     };
     window.addEventListener('pageshow', handlePageShow);
@@ -964,7 +965,7 @@ const Dashboard = () => {
       }
 
       await auth.signOut();
-      navigate('/login', { replace: true });
+      window.location.replace('/login');
 
     } catch (error) {
       console.error('Logout error:', error);
