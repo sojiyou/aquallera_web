@@ -985,12 +985,10 @@ const Dashboard = () => {
                 </p>
               </div>
               <div className="relative group ml-auto">
-                <button onClick={handleLogout} className="bg-primary-darkest text-white border-none p-2.5 rounded-md cursor-pointer hover:brightness-110">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
+                <button onClick={handleLogout} className="border-none p-1.5 rounded cursor-pointer hover:bg-slate-100 transition-colors">
+                  <img src="/log-out.png" alt="Logout" className="w-6 h-6 sm:w-7 sm:h-7" />
                 </button>
-                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                   Logout
                 </span>
               </div>
@@ -1044,12 +1042,10 @@ const Dashboard = () => {
                 </p>
               </div>
               <div className="relative group ml-auto">
-                <button onClick={handleLogout} className="bg-primary-darkest text-white border-none p-2.5 rounded-md cursor-pointer hover:brightness-110">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
+                <button onClick={handleLogout} className="border-none p-1.5 rounded cursor-pointer hover:bg-slate-100 transition-colors">
+                  <img src="/log-out.png" alt="Logout" className="w-6 h-6 sm:w-7 sm:h-7" />
                 </button>
-                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                   Logout
                 </span>
               </div>
@@ -1115,37 +1111,50 @@ const Dashboard = () => {
           </div>
           <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
             <div className="flex gap-1 sm:gap-2">
-              <button 
-                className={`px-2 sm:px-6 py-1.5 sm:py-3 border-2 rounded-lg cursor-pointer transition-all font-medium flex items-center gap-2 text-[11px] sm:text-sm ${activeSection === 'orders' ? 'border-primary bg-primary text-white' : 'border-slate-200 bg-white text-gray-700 hover:border-primary hover:bg-slate-50'}`}
-                onClick={() => setActiveSection('orders')}
-              >
-                Orders
-              </button>
-              <button 
-                className={`px-2 sm:px-6 py-1.5 sm:py-3 border-2 rounded-lg cursor-pointer transition-all font-medium flex items-center gap-2 text-[11px] sm:text-sm ${activeSection === 'stock' ? 'border-primary bg-primary text-white' : 'border-slate-200 bg-white text-gray-700 hover:border-primary hover:bg-slate-50'}`}
-                onClick={() => setActiveSection('stock')}
-              >
-                Stock & Analytics
-              </button>
-              <button 
-                className={`px-2 sm:px-6 py-1.5 sm:py-3 border-2 rounded-lg cursor-pointer transition-all font-medium flex items-center gap-2 text-[11px] sm:text-sm ${activeSection === 'settings' ? 'border-primary bg-primary text-white' : 'border-slate-200 bg-white text-gray-700 hover:border-primary hover:bg-slate-50'}`}
-                onClick={() => setActiveSection('settings')}
-              >
-                Settings
-              </button>
+              <div className="relative group">
+                <button 
+                  className={`p-1.5 rounded-lg cursor-pointer transition-all flex items-center justify-center ${activeSection === 'orders' ? 'bg-slate-100 ring-1 ring-slate-300' : 'hover:bg-slate-100'}`}
+                  onClick={() => setActiveSection('orders')}
+                >
+                  <img src="/orders.png" alt="Orders" className="w-6 h-6 sm:w-7 sm:h-7" />
+                </button>
+                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                  Orders
+                </span>
+              </div>
+              <div className="relative group">
+                <button 
+                  className={`p-1.5 rounded-lg cursor-pointer transition-all flex items-center justify-center ${activeSection === 'stock' ? 'bg-slate-100 ring-1 ring-slate-300' : 'hover:bg-slate-100'}`}
+                  onClick={() => setActiveSection('stock')}
+                >
+                  <img src="/analytics.png" alt="Stock & Analytics" className="w-6 h-6 sm:w-7 sm:h-7" />
+                </button>
+                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                  Stock & Analytics
+                </span>
+              </div>
+              <div className="relative group">
+                <button 
+                  className={`p-1.5 rounded-lg cursor-pointer transition-all flex items-center justify-center ${activeSection === 'settings' ? 'bg-slate-100 ring-1 ring-slate-300' : 'hover:bg-slate-100'}`}
+                  onClick={() => setActiveSection('settings')}
+                >
+                  <img src="/settings.png" alt="Settings" className="w-6 h-6 sm:w-7 sm:h-7" />
+                </button>
+                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                  Settings
+                </span>
+              </div>
             </div>
             <div className="flex items-center gap-2 bg-secondary/5 px-2 sm:px-4 py-1 sm:py-2 rounded-full border border-secondary/20 text-[10px] sm:text-sm text-primary-dark">
               <div className="w-2 h-2 rounded-full bg-secondary animate-[pulse_2s_infinite]"></div>
               <span>Online</span>
             </div>
             <NotificationDropdown />
-            <div className="relative group">
-              <button onClick={handleLogout} className="bg-primary-darkest text-white border-none p-2 rounded cursor-pointer hover:brightness-110">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
+            <div className="relative group ml-auto">
+              <button onClick={handleLogout} className="border-none p-1.5 rounded cursor-pointer hover:bg-slate-100 transition-colors">
+                <img src="/log-out.png" alt="Logout" className="w-6 h-6 sm:w-7 sm:h-7" />
               </button>
-              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                 Logout
               </span>
             </div>

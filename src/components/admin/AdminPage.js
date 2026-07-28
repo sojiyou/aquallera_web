@@ -507,12 +507,17 @@ const AdminPage = () => {
               Refresh
             </button>
 
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 text-white px-4 py-2 rounded-md cursor-pointer font-medium text-sm transition-all hover:bg-red-600"
-            >
-              Logout
-            </button>
+            <div className="relative group">
+              <button
+                onClick={handleLogout}
+                className="border-none p-1.5 rounded cursor-pointer hover:bg-slate-100 transition-colors"
+              >
+                <img src="/log-out.png" alt="Logout" className="w-6 h-6 sm:w-7 sm:h-7" />
+              </button>
+              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                Logout
+              </span>
+            </div>
           </div>
         </div>
       </header>

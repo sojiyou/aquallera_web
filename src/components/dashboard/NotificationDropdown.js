@@ -106,11 +106,9 @@ const NotificationDropdown = () => {
             setIsOpen(prev => !prev);
             if (!isOpen) setHasUnread(false);
           }}
-          className="relative bg-primary-darkest text-white border-none p-2 rounded cursor-pointer hover:brightness-110"
+          className="relative border-none p-1.5 rounded cursor-pointer hover:bg-slate-100 transition-colors"
         >
-          <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-          </svg>
+          <img src="/notification.png" alt="Notifications" className="w-6 h-6 sm:w-7 sm:h-7" />
           {hasUnread && notifications.length > 0 && (
             <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] sm:text-[10px] font-bold rounded-full w-4 h-4 sm:w-4.5 sm:h-4.5 flex items-center justify-center">
               {notifications.length > 9 ? '9+' : notifications.length}
