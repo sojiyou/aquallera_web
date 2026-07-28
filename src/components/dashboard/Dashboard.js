@@ -985,8 +985,8 @@ const Dashboard = () => {
                 </p>
               </div>
               <div className="relative group ml-auto">
-                <button onClick={handleLogout} className="border-none p-1.5 rounded cursor-pointer hover:bg-slate-100 transition-colors">
-                <img src="/log-out.svg" alt="Logout" className="w-5 h-5 sm:w-6 sm:h-6" />
+                <button onClick={handleLogout} className="border-none p-1.5 rounded cursor-pointer select-none hover:bg-slate-100 transition-colors">
+                <img draggable={false} src="/log-out.svg" alt="Logout" className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
               <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                 Logout
@@ -1042,8 +1042,8 @@ const Dashboard = () => {
                 </p>
               </div>
               <div className="relative group ml-auto">
-                <button onClick={handleLogout} className="border-none p-1.5 rounded cursor-pointer hover:bg-slate-100 transition-colors">
-                <img src="/log-out.svg" alt="Logout" className="w-5 h-5 sm:w-6 sm:h-6" />
+                <button onClick={handleLogout} className="border-none p-1.5 rounded cursor-pointer select-none hover:bg-slate-100 transition-colors">
+                <img draggable={false} src="/log-out.svg" alt="Logout" className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
               <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                 Logout
@@ -1117,10 +1117,10 @@ const Dashboard = () => {
             <div className="flex gap-1 sm:gap-2">
               <div className="relative group">
                 <button 
-                  className={`p-1.5 rounded-lg cursor-pointer transition-all flex items-center justify-center ${activeSection === 'orders' ? 'bg-slate-100 ring-1 ring-slate-300' : 'hover:bg-slate-100'}`}
+                  className={`p-1.5 rounded-lg cursor-pointer select-none transition-all flex items-center justify-center ${activeSection === 'orders' ? 'bg-slate-100 ring-1 ring-slate-300' : 'hover:bg-slate-100'}`}
                   onClick={() => setActiveSection('orders')}
                 >
-                  <img src="/orders.svg" alt="Orders" className="w-5 h-5 sm:w-6 sm:h-6" />
+                  <img draggable={false} src="/orders.svg" alt="Orders" className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
                 <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                   Orders
@@ -1128,10 +1128,10 @@ const Dashboard = () => {
               </div>
               <div className="relative group">
                 <button 
-                  className={`p-1.5 rounded-lg cursor-pointer transition-all flex items-center justify-center ${activeSection === 'stock' ? 'bg-slate-100 ring-1 ring-slate-300' : 'hover:bg-slate-100'}`}
+                  className={`p-1.5 rounded-lg cursor-pointer select-none transition-all flex items-center justify-center ${activeSection === 'stock' ? 'bg-slate-100 ring-1 ring-slate-300' : 'hover:bg-slate-100'}`}
                   onClick={() => setActiveSection('stock')}
                 >
-                  <img src="/analytics.svg" alt="Analytics" className="w-5 h-5 sm:w-6 sm:h-6" />
+                  <img draggable={false} src="/analytics.svg" alt="Analytics" className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
                 <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                   Analytics
@@ -1139,10 +1139,10 @@ const Dashboard = () => {
               </div>
               <div className="relative group">
                 <button 
-                  className={`p-1.5 rounded-lg cursor-pointer transition-all flex items-center justify-center ${activeSection === 'settings' ? 'bg-slate-100 ring-1 ring-slate-300' : 'hover:bg-slate-100'}`}
+                  className={`p-1.5 rounded-lg cursor-pointer select-none transition-all flex items-center justify-center ${activeSection === 'settings' ? 'bg-slate-100 ring-1 ring-slate-300' : 'hover:bg-slate-100'}`}
                   onClick={() => setActiveSection('settings')}
                 >
-                  <img src="/settings.svg" alt="Settings" className="w-5 h-5 sm:w-6 sm:h-6" />
+                  <img draggable={false} src="/settings.svg" alt="Settings" className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
                 <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                   Settings
@@ -1151,8 +1151,8 @@ const Dashboard = () => {
             </div>
             <NotificationDropdown />
             <div className="relative group ml-auto">
-              <button onClick={handleLogout} className="border-none p-1.5 rounded cursor-pointer hover:bg-slate-100 transition-colors">
-                <img src="/log-out.svg" alt="Logout" className="w-5 h-5 sm:w-6 sm:h-6" />
+              <button onClick={handleLogout} className="border-none p-1.5 rounded cursor-pointer select-none hover:bg-slate-100 transition-colors">
+                <img draggable={false} src="/log-out.svg" alt="Logout" className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
               <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                 Logout

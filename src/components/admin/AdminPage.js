@@ -510,9 +510,9 @@ const AdminPage = () => {
             <div className="relative group">
               <button
                 onClick={handleLogout}
-                className="border-none p-1.5 rounded cursor-pointer hover:bg-slate-100 transition-colors"
+                className="border-none p-1.5 rounded cursor-pointer select-none hover:bg-slate-100 transition-colors"
               >
-                <img src="/log-out.svg" alt="Logout" className="w-5 h-5 sm:w-6 sm:h-6" />
+                <img draggable={false} src="/log-out.svg" alt="Logout" className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
               <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                 Logout
