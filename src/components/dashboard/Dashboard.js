@@ -134,7 +134,7 @@ const OrdersTable = ({ orders, onOrderClick }) => {
           <thead>
             <tr className="bg-slate-100">
               <th className="w-[120px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Order #</th>
-              <th className="min-w-[180px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Customer</th>
+              <th className="w-[180px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Customer</th>
               <th className="w-[110px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Type</th>
               <th className="w-[120px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Amount</th>
               <th className="w-[140px] px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Status</th>
@@ -161,7 +161,7 @@ const OrdersTable = ({ orders, onOrderClick }) => {
                       <span className="text-slate-400 text-[10px] mt-0.5">Created {new Date(order.createdAt || order.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
                     </div>
                   </td>
-                  <td className="min-w-[180px] px-4 py-3">
+                  <td className="w-[180px] px-4 py-3">
                     <div className="flex flex-col gap-0.5">
                       <span className="font-semibold text-slate-800 text-base">{customerName}</span>
                       <span className="text-slate-500 text-sm">{order.customerPhone || ''}</span>
