@@ -1,7 +1,27 @@
 // src/components/Home.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Home = () => {
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [isInstalled, setIsInstalled] = useState(false);
+
+  useEffect(() => {
+    const handler = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstallWebsite = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') setIsInstalled(true);
+    setDeferredPrompt(null);
+  };
+
   return (
     <div className="min-h-screen font-sans">
       {/* Navigation */}
@@ -30,9 +50,30 @@ const Home = () => {
             Streamline your water delivery business with our comprehensive management system. 
             Handle orders, track deliveries, and grow your customer base all in one place.
           </p>
-          <div className="flex gap-4 flex-wrap justify-center md:justify-start max-[480px]:flex-col">
+          <div className="flex gap-3 flex-wrap justify-center md:justify-start max-[480px]:flex-col items-stretch">
             <button className="px-8 py-4 rounded-lg font-semibold text-lg cursor-pointer transition-all bg-primary text-white hover:bg-primary-dark hover:-translate-y-0.5 max-[480px]:w-full" onClick={() => window.location.href = '/signup'}>
               Get Started Today
+            </button>
+            <a
+              href="https://aquallera-pwa.vercel.app/main"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-4 rounded-lg font-semibold text-lg cursor-pointer transition-all border-2 border-primary text-primary hover:bg-primary hover:text-white hover:-translate-y-0.5 max-[480px]:w-full no-underline justify-center"
+            >
+              <img src="/download.svg" alt="" className="w-5 h-5 select-none" draggable={false} />
+              Download App
+            </a>
+            <button
+              className={`inline-flex items-center gap-2 px-6 py-4 rounded-lg font-semibold text-lg cursor-pointer transition-all border-2 max-[480px]:w-full justify-center ${
+                isInstalled || !deferredPrompt
+                  ? 'border-slate-300 text-slate-400 cursor-not-allowed'
+                  : 'border-primary text-primary hover:bg-primary hover:text-white hover:-translate-y-0.5'
+              }`}
+              onClick={handleInstallWebsite}
+              disabled={isInstalled || !deferredPrompt}
+            >
+              <img src="/download.svg" alt="" className="w-5 h-5 select-none" draggable={false} />
+              {isInstalled ? 'Installed' : 'Download Website'}
             </button>
           </div>
         </div>

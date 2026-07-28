@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import BUILD_VERSION from './version';
+import { register as registerSW } from './serviceWorkerRegistration';
 
 (async () => {
   try {
@@ -16,6 +17,12 @@ import BUILD_VERSION from './version';
     // if version.json unreachable, just load normally
   }
 })();
+
+registerSW({
+  onUpdate: () => {
+    window.location.reload();
+  },
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
