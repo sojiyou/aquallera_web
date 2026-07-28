@@ -133,11 +133,11 @@ const OrdersTable = ({ orders, onOrderClick }) => {
         <table className="w-full border-collapse text-sm min-w-[700px] [table-layout:fixed]">
           <thead>
             <tr className="bg-slate-100">
-              <th className="w-[120px] px-4 py-3 border-r border-slate-200 text-slate-700 font-semibold text-xs uppercase tracking-wider">Order #</th>
-              <th className="w-[180px] px-4 py-3 border-r border-slate-200 text-slate-700 font-semibold text-xs uppercase tracking-wider">Customer</th>
-              <th className="w-[110px] px-4 py-3 border-r border-slate-200 text-slate-700 font-semibold text-xs uppercase tracking-wider">Type</th>
-              <th className="w-[120px] px-4 py-3 border-r border-slate-200 text-slate-700 font-semibold text-xs uppercase tracking-wider">Amount</th>
-              <th className="w-[140px] px-4 py-3 border-r border-slate-200 text-slate-700 font-semibold text-xs uppercase tracking-wider">Status</th>
+              <th className="w-[120px] px-4 py-3 border-r border-slate-200 text-left text-slate-700 font-semibold text-xs uppercase tracking-wider">Order #</th>
+              <th className="w-[180px] px-4 py-3 border-r border-slate-200 text-left text-slate-700 font-semibold text-xs uppercase tracking-wider">Customer</th>
+              <th className="w-[110px] px-4 py-3 border-r border-slate-200 text-left text-slate-700 font-semibold text-xs uppercase tracking-wider">Type</th>
+              <th className="w-[120px] px-4 py-3 border-r border-slate-200 text-left text-slate-700 font-semibold text-xs uppercase tracking-wider">Amount</th>
+              <th className="w-[140px] px-4 py-3 border-r border-slate-200 text-left text-slate-700 font-semibold text-xs uppercase tracking-wider">Status</th>
               <th className="w-[80px] text-center px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Action</th>
             </tr>
           </thead>
