@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 
 const Home = () => {
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [deferredPrompt, setDeferredPrompt] = useState(window.__deferredPrompt || null);
+  const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
 
   useEffect(() => {
     const handler = (e) => {
@@ -65,11 +66,15 @@ const Home = () => {
               Download App
             </a>
             <button
-              className="inline-flex items-center gap-1 px-3.5 py-2 rounded-lg font-semibold text-xs cursor-pointer transition-all border-2 border-primary text-primary hover:bg-primary hover:text-white hover:-translate-y-0.5 max-[480px]:w-full justify-center"
+              className={`inline-flex items-center gap-1 px-3.5 py-2 rounded-lg font-semibold text-xs cursor-pointer transition-all border-2 max-[480px]:w-full justify-center ${
+                isStandalone
+                  ? 'border-slate-300 text-slate-400'
+                  : 'border-primary text-primary hover:bg-primary hover:text-white hover:-translate-y-0.5'
+              }`}
               onClick={handleInstallWebsite}
             >
               <img src="/download.svg" alt="" className="w-3.5 h-3.5 select-none" draggable={false} />
-              Download Website
+              {isStandalone ? 'Installed' : 'Download Website'}
             </button>
           </div>
         </div>
