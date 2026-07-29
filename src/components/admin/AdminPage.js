@@ -175,6 +175,7 @@ const AdminPage = () => {
       if (pwNew.length < 6) errors.newPw = 'At least 6 characters';
       else if (!/[A-Z]/.test(pwNew)) errors.newPw = 'Needs an uppercase letter';
       else if (!/[a-z]/.test(pwNew)) errors.newPw = 'Needs a lowercase letter';
+      else if (!/\d/.test(pwNew)) errors.newPw = 'Needs a number';
       else if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(pwNew)) errors.newPw = 'Needs a special character (e.g. @)';
     }
     if (pwNew !== pwConfirm) errors.confirm = 'Passwords do not match';
@@ -1137,6 +1138,7 @@ const AdminPage = () => {
                       { met: pwNew.length >= 6, label: 'At least 6 characters' },
                       { met: /[A-Z]/.test(pwNew), label: 'At least one uppercase letter' },
                       { met: /[a-z]/.test(pwNew), label: 'At least one lowercase letter' },
+                      { met: /\d/.test(pwNew), label: 'At least one number' },
                       { met: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(pwNew), label: 'At least one special character (e.g. @)' },
                     ].map((rule, i) => (
                       <div key={i} className="flex items-center gap-1.5">

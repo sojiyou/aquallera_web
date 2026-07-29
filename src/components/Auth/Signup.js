@@ -542,6 +542,7 @@ const Signup = () => {
         if (value.length < 6) return 'At least 6 characters';
         if (!/[A-Z]/.test(value)) return 'Needs an uppercase letter';
         if (!/[a-z]/.test(value)) return 'Needs a lowercase letter';
+        if (!/\d/.test(value)) return 'Needs a number';
         if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(value)) return 'Needs a special character (e.g. @)';
         return '';
       case 'confirmPassword':
@@ -620,6 +621,7 @@ const Signup = () => {
         if (formData.password.length < 6) newErrors.password = 'At least 6 characters';
         else if (!/[A-Z]/.test(formData.password)) newErrors.password = 'Needs an uppercase letter';
         else if (!/[a-z]/.test(formData.password)) newErrors.password = 'Needs a lowercase letter';
+        else if (!/\d/.test(formData.password)) newErrors.password = 'Needs a number';
         else if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(formData.password)) newErrors.password = 'Needs a special character (e.g. @)';
       }
 
@@ -1430,6 +1432,7 @@ const Signup = () => {
                           { met: formData.password.length >= 6, label: 'At least 6 characters' },
                           { met: /[A-Z]/.test(formData.password), label: 'At least one uppercase letter' },
                           { met: /[a-z]/.test(formData.password), label: 'At least one lowercase letter' },
+                          { met: /\d/.test(formData.password), label: 'At least one number' },
                           { met: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(formData.password), label: 'At least one special character (e.g. @)' },
                         ].map((rule, i) => (
                           <div key={i} className="flex items-center gap-2">
