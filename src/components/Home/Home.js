@@ -15,9 +15,12 @@ const Home = () => {
 
   const handleInstallWebsite = async () => {
     if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-    setDeferredPrompt(null);
+    try {
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+    } catch (e) {
+      // Event already consumed, ignore
+    }
   };
 
   return (
