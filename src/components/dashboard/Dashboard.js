@@ -699,7 +699,7 @@ const Dashboard = () => {
     topLocation: 'N/A'
   });
   const [activeTab, setActiveTab] = useState('all');
-  const [, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [viewMode, setViewMode] = useState('list');
@@ -1036,6 +1036,48 @@ const Dashboard = () => {
               Contact Support
             </button>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (stationData === null && !loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary to-primary-dark font-sans relative overflow-hidden">
+        <svg className="absolute inset-0 w-full h-full opacity-15" viewBox="0 0 1440 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill="#9EB3C2" d="M0,200L48,213.3C96,226.7,192,253.3,288,250.7C384,248,480,216,576,213.3C672,210.7,768,237.3,864,245.3C960,253.3,1056,242.7,1152,224C1248,205.3,1344,178.7,1392,165.3L1440,152L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
+          <path fill="#ffffff" d="M0,350L48,338.7C96,327.3,192,304.7,288,320C384,335.3,480,388.7,576,396C672,403.3,768,364.7,864,346.7C960,328.7,1056,331.3,1152,352C1248,372.7,1344,411.3,1392,430.7L1440,450L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
+          <path fill="#9EB3C2" d="M0,550L48,565.3C96,580.7,192,611.3,288,608C384,604.7,480,568,576,554.7C672,541.3,768,552,864,578.7C960,605.3,1056,648,1152,632C1248,616,1344,541.3,1392,504L1440,466.7L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
+        </svg>
+        <div className="relative z-10">
+          <header className="bg-white border-b border-slate-200 px-4 sm:px-8 py-6 shadow-sm">
+            <div className="flex justify-between items-center max-w-[1200px] mx-auto flex-wrap gap-4">
+              <div className="header-info">
+                <h1 className="text-slate-800 m-0 mb-1 text-2xl md:text-3xl">Access Removed</h1>
+                <p className="text-slate-600 text-sm m-1 flex items-center gap-1">
+                  Your station is no longer registered
+                </p>
+              </div>
+              <div className="relative group ml-auto">
+                <button onClick={handleLogout} className="border-none p-1.5 rounded cursor-pointer select-none hover:bg-slate-100 transition-colors">
+                <img draggable={false} src="/log-out.svg" alt="Logout" className="w-5 h-5 sm:w-6 sm:h-6" />
+              </button>
+              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                Logout
+              </span>
+              </div>
+            </div>
+          </header>
+        </div>
+        <div className="max-w-[800px] mx-auto my-8 p-6 sm:p-12 bg-white rounded-xl shadow-sm text-center">
+          <h2 className="text-slate-800 mb-4">Station Registration Removed</h2>
+          <p className="text-slate-600 mb-8">Your station has been removed from the system by an administrator. Please contact support if you believe this is an error.</p>
+          <button 
+            className="bg-slate-500 text-white px-8 py-4 rounded-lg font-semibold cursor-pointer transition-all hover:bg-slate-600"
+            onClick={() => window.location.href = 'mailto:aquallera.main@gmail.com'}
+          >
+            Contact Support
+          </button>
         </div>
       </div>
     );

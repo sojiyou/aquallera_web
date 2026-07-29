@@ -1,7 +1,7 @@
 // src/components/Admin/AdminPage.js
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ref, onValue, update, push, set, get } from 'firebase/database';
+import { ref, onValue, update, push, set, get, remove } from 'firebase/database';
 import { database } from '../config/Firebase';
 import { sendRejectionEmail, sendAdminInvitation, sendApprovalEmail } from '../services/EmailService';
 import AlertCard, { useAlert } from './AlertCard';
@@ -320,14 +320,8 @@ const AdminPage = () => {
           try {
             await sendRejectionEmail(stationToReject, reason);
 
-              const stationRef = ref(database, `waterStations/${stationId}`);
-            await update(stationRef, {
-              status: 'rejected',
-              rejectionReason: reason,
-              rejectedAt: new Date().toISOString(),
-              rejectionEmailSent: true,
-              rejectionEmailSentAt: new Date().toISOString()
-            });
+            const stationRef = ref(database, `waterStations/${stationId}`);
+            await remove(stationRef);
 
             const rejectionRecordRef = ref(database, `rejectionRecords/${stationId}`);
             await set(rejectionRecordRef, {
@@ -339,7 +333,7 @@ const AdminPage = () => {
 
             showAlert({
               type: 'success',
-              message: `Station rejected successfully!\n\nRejection email has been sent to: ${stationToReject.email}\n\nNote: Their account will be permanently deleted when they try to login.`
+              message: `Station rejected successfully!\n\nRejection email sent to: ${stationToReject.email}\n\nStation data has been removed from the system.`
             });
           } catch (error) {
             console.error('Error in rejection process:', error);
@@ -384,6 +378,33 @@ const AdminPage = () => {
           } catch (error) {
             console.error('Error revoking approval:', error);
             showAlert({ type: 'error', message: 'Error revoking approval. Please try again.' });
+          }
+        })();
+      }
+    });
+  };
+
+  const handleDeleteStation = async (stationId) => {
+    const station = [...pendingStations, ...approvedStations].find(s => s.id === stationId);
+    if (!station) return;
+
+    showAlert({
+      type: 'confirm',
+      title: 'Delete Station',
+      message: `Are you sure you want to permanently delete "${station.stationName || 'this station'}" from the system? This action cannot be undone.`,
+      onConfirm: (confirmed) => {
+        closeAlert();
+        if (!confirmed) return;
+
+        (async () => {
+          try {
+            const stationRef = ref(database, `waterStations/${stationId}`);
+            await remove(stationRef);
+
+            showAlert({ type: 'success', message: 'Station deleted permanently.' });
+          } catch (error) {
+            console.error('Error deleting station:', error);
+            showAlert({ type: 'error', message: 'Error deleting station. Please try again.' });
           }
         })();
       }
@@ -705,8 +726,8 @@ const AdminPage = () => {
                             <span className="text-sm text-slate-600 font-mono">{station.email || 'N/A'}</span>
                           </td>
                           <td className="px-6 py-4">
-                            <span className={`inline-block px-3 py-1 rounded-full text-[0.7rem] font-semibold uppercase tracking-wider ${station.status === 'pending' || !station.status ? 'bg-amber-50 text-amber-600' : station.status === 'approved' ? 'bg-secondary/10 text-secondary' : 'bg-red-100 text-red-600'}`}>
-                              {station.status || 'pending'}
+                            <span className={`inline-block px-3 py-1 rounded-full text-[0.7rem] font-semibold uppercase tracking-wider ${station.revokedAt ? 'bg-red-100 text-red-600' : station.status === 'pending' || !station.status ? 'bg-amber-50 text-amber-600' : station.status === 'approved' ? 'bg-secondary/10 text-secondary' : 'bg-red-100 text-red-600'}`}>
+                              {station.revokedAt ? 'Revoked' : station.status || 'pending'}
                             </span>
                           </td>
                           <td className="px-6 py-4">
@@ -716,20 +737,31 @@ const AdminPage = () => {
                             <div className="flex gap-2 justify-end">
                               {activeTab === 'pending' ? (
                                 <>
-                                  <button
-                                    onClick={() => handleApproveStation(station.id)}
-                                    className="px-3 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium transition-all bg-secondary text-white hover:bg-primary-dark"
-                                    disabled={rejectingStationId === station.id}
-                                  >
-                                    Approve
-                                  </button>
-                                  <button
-                                    onClick={() => handleRejectStation(station.id)}
-                                    className="px-3 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium transition-all bg-red-500 text-white hover:bg-red-600"
-                                    disabled={rejectingStationId === station.id}
-                                  >
-                                    {rejectingStationId === station.id ? 'Sending...' : 'Reject'}
-                                  </button>
+                                  {station.revokedAt ? (
+                                    <button
+                                      onClick={() => handleDeleteStation(station.id)}
+                                      className="px-3 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium transition-all bg-red-600 text-white hover:bg-red-700"
+                                    >
+                                      Delete
+                                    </button>
+                                  ) : (
+                                    <>
+                                      <button
+                                        onClick={() => handleApproveStation(station.id)}
+                                        className="px-3 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium transition-all bg-secondary text-white hover:bg-primary-dark"
+                                        disabled={rejectingStationId === station.id}
+                                      >
+                                        Approve
+                                      </button>
+                                      <button
+                                        onClick={() => handleRejectStation(station.id)}
+                                        className="px-3 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium transition-all bg-red-500 text-white hover:bg-red-600"
+                                        disabled={rejectingStationId === station.id}
+                                      >
+                                        {rejectingStationId === station.id ? 'Sending...' : 'Reject'}
+                                      </button>
+                                    </>
+                                  )}
                                 </>
                               ) : (
                                 <button
@@ -761,15 +793,21 @@ const AdminPage = () => {
                           <div className="font-semibold text-slate-800 text-[15px] leading-tight truncate">{station.stationName || 'Unnamed Station'}</div>
                           <div className="text-slate-400 text-xs mt-0.5">{station.ownerName || 'N/A'}</div>
                         </div>
-                        <span className={`shrink-0 px-2 py-0.5 rounded-full text-[0.65rem] font-semibold uppercase tracking-wider ${station.status === 'pending' || !station.status ? 'bg-amber-50 text-amber-600' : station.status === 'approved' ? 'bg-secondary/10 text-secondary' : 'bg-red-100 text-red-600'}`}>
-                          {station.status || 'pending'}
+                        <span className={`shrink-0 px-2 py-0.5 rounded-full text-[0.65rem] font-semibold uppercase tracking-wider ${station.revokedAt ? 'bg-red-100 text-red-600' : station.status === 'pending' || !station.status ? 'bg-amber-50 text-amber-600' : station.status === 'approved' ? 'bg-secondary/10 text-secondary' : 'bg-red-100 text-red-600'}`}>
+                          {station.revokedAt ? 'Revoked' : station.status || 'pending'}
                         </span>
                       </div>
                       <div className="flex gap-1.5 flex-wrap">
                         {activeTab === 'pending' ? (
                           <>
-                            <button onClick={() => handleApproveStation(station.id)} disabled={rejectingStationId === station.id} className="flex-1 min-w-[80px] px-2 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium bg-secondary text-white hover:bg-primary-dark disabled:opacity-50">Approve</button>
-                            <button onClick={() => handleRejectStation(station.id)} disabled={rejectingStationId === station.id} className="flex-1 min-w-[80px] px-2 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-50">{rejectingStationId === station.id ? 'Sending...' : 'Reject'}</button>
+                            {station.revokedAt ? (
+                              <button onClick={() => handleDeleteStation(station.id)} className="flex-1 min-w-[80px] px-2 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium bg-red-600 text-white hover:bg-red-700">Delete</button>
+                            ) : (
+                              <>
+                                <button onClick={() => handleApproveStation(station.id)} disabled={rejectingStationId === station.id} className="flex-1 min-w-[80px] px-2 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium bg-secondary text-white hover:bg-primary-dark disabled:opacity-50">Approve</button>
+                                <button onClick={() => handleRejectStation(station.id)} disabled={rejectingStationId === station.id} className="flex-1 min-w-[80px] px-2 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-50">{rejectingStationId === station.id ? 'Sending...' : 'Reject'}</button>
+                              </>
+                            )}
                           </>
                         ) : (
                           <button onClick={() => handleRevokeApproval(station.id)} className="flex-1 min-w-[80px] px-2 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium bg-amber-500 text-white hover:bg-amber-600">Revoke</button>
