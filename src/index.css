@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-  cursor: default;
-}
-
 html {
   user-select: none;
   -webkit-user-select: none;
