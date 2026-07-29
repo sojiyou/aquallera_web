@@ -60,13 +60,13 @@ const Home = () => {
               href="https://aquallera-pwa.vercel.app/install"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 px-3.5 py-2 rounded-lg font-semibold text-xs cursor-pointer transition-all border-2 border-primary text-primary hover:bg-primary hover:text-white hover:-translate-y-0.5 max-[480px]:w-full no-underline justify-center"
+              className="hidden inline-flex items-center gap-1 px-3.5 py-2 rounded-lg font-semibold text-xs cursor-pointer transition-all border-2 border-primary text-primary hover:bg-primary hover:text-white hover:-translate-y-0.5 max-[480px]:w-full no-underline justify-center"
             >
               <img src="/download.svg" alt="" className="w-3.5 h-3.5 select-none" draggable={false} />
               Download App
             </a>
             <button
-              className={`inline-flex items-center gap-1 px-3.5 py-2 rounded-lg font-semibold text-xs cursor-pointer transition-all border-2 max-[480px]:w-full justify-center ${
+              className={`hidden inline-flex items-center gap-1 px-3.5 py-2 rounded-lg font-semibold text-xs cursor-pointer transition-all border-2 max-[480px]:w-full justify-center ${
                 isStandalone
                   ? 'border-slate-300 text-slate-400'
                   : 'border-primary text-primary hover:bg-primary hover:text-white hover:-translate-y-0.5'
