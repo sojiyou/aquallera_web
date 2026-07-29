@@ -30,8 +30,12 @@ const AdminPage = () => {
   const [inviting, setInviting] = useState(false);
   const [admins, setAdmins] = useState([]);
   const [removingAdminId, setRemovingAdminId] = useState(null);
-  const [changingPasswordId, setChangingPasswordId] = useState(null);
-  const [changePasswordEmail, setChangePasswordEmail] = useState('');
+  const [passwordModalAdmin, setPasswordModalAdmin] = useState(null); // { id, email } or null
+  const [pwCurrent, setPwCurrent] = useState('');
+  const [pwNew, setPwNew] = useState('');
+  const [pwConfirm, setPwConfirm] = useState('');
+  const [pwErrors, setPwErrors] = useState({});
+  const [pwSubmitting, setPwSubmitting] = useState(false);
   const unsubscribeRef = useRef(null);
 
   // Admin credentials (you should change these and keep them secure)
@@ -96,20 +100,7 @@ const AdminPage = () => {
       setLoading(false);
     });
 
-    // Fetch all orders for statistics
-    const ordersRef = ref(database, 'orders');
-    const ordersUnsubscribe = onValue(ordersRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        const ordersArray = Object.values(data);
-        setStats(prev => ({
-          ...prev,
-          totalOrders: ordersArray.length
-        }));
-      }
-    });
-
-    // Fetch all admins
+    // Fetch all admins from the database
     const adminsRef = ref(database, 'admins');
     const adminsUnsubscribe = onValue(adminsRef, (snapshot) => {
       const data = snapshot.val();
@@ -126,7 +117,6 @@ const AdminPage = () => {
 
     return () => {
       stationsUnsubscribe();
-      ordersUnsubscribe();
       adminsUnsubscribe();
     };
   };
@@ -140,7 +130,7 @@ const AdminPage = () => {
     }
     return result;
   };
-
+  // remove admin confirmation and deletion
   const handleRemoveAdmin = async (adminId, adminEmail) => {
     showAlert({
       type: 'confirm',
@@ -163,33 +153,46 @@ const AdminPage = () => {
       }
     });
   };
+  // change password modal
+  const openChangePassword = (adminId, adminEmail) => {
+    setPasswordModalAdmin({ id: adminId, email: adminEmail });
+    setPwCurrent('');
+    setPwNew('');
+    setPwConfirm('');
+    setPwErrors({});
+  };
 
-  const handleChangePassword = async (adminId) => {
-    showAlert({
-      type: 'prompt',
-      title: 'Change Password',
-      message: `Enter new password for ${changePasswordEmail}:`,
-      placeholder: 'New password...',
-      inputType: 'password',
-      onConfirm: async (newPassword) => {
-        closeAlert();
-        if (!newPassword || newPassword.trim().length < 4) {
-          showAlert({ type: 'error', message: 'Password must be at least 4 characters.' });
-          return;
-        }
-        setChangingPasswordId(adminId);
-        try {
-          const adminRef = ref(database, `admins/${adminId}`);
-          await update(adminRef, { password: newPassword });
-          showAlert({ type: 'success', message: 'Password updated successfully!' });
-        } catch (error) {
-          console.error('Error changing password:', error);
-          showAlert({ type: 'error', message: 'Failed to change password.' });
-        } finally {
-          setChangingPasswordId(null);
-        }
-      }
-    });
+  const handleClosePasswordModal = () => {
+    setPasswordModalAdmin(null);
+    setPwSubmitting(false);
+  };
+
+  const handleSubmitPassword = async () => {
+    const errors = {};
+    if (!pwCurrent) errors.current = 'Current password is required';
+    if (!pwNew) errors.newPw = 'New password is required';
+    else {
+      if (pwNew.length < 6) errors.newPw = 'At least 6 characters';
+      else if (!/[A-Z]/.test(pwNew)) errors.newPw = 'Needs an uppercase letter';
+      else if (!/[a-z]/.test(pwNew)) errors.newPw = 'Needs a lowercase letter';
+      else if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(pwNew)) errors.newPw = 'Needs a special character (e.g. @)';
+    }
+    if (pwNew !== pwConfirm) errors.confirm = 'Passwords do not match';
+    setPwErrors(errors);
+    if (Object.keys(errors).length > 0) return;
+
+    setPwSubmitting(true);
+    try {
+      const adminRef = ref(database, `admins/${passwordModalAdmin.id}`);
+      await update(adminRef, { password: pwNew });
+      showAlert({ type: 'success', message: 'Password updated successfully!' });
+      handleClosePasswordModal();
+    } catch (error) {
+      console.error('Error changing password:', error);
+      showAlert({ type: 'error', message: 'Failed to change password.' });
+    } finally {
+      setPwSubmitting(false);
+    }
   };
 
   const handleInviteAdmin = async (e) => {
@@ -634,11 +637,10 @@ const AdminPage = () => {
                           <td className="px-6 py-4 text-right">
                             <div className="flex gap-2 justify-end">
                               <button
-                                onClick={() => { setChangePasswordEmail(admin.email); handleChangePassword(admin.id); }}
-                                disabled={changingPasswordId === admin.id}
-                                className="px-3 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium transition-all bg-primary/10 text-primary hover:bg-primary hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                                onClick={() => openChangePassword(admin.id, admin.email)}
+                                className="px-3 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium transition-all bg-primary/10 text-primary hover:bg-primary hover:text-white"
                               >
-                                {changingPasswordId === admin.id ? 'Changing...' : 'Change Password'}
+                                Change Password
                               </button>
                               <button
                                 onClick={() => handleRemoveAdmin(admin.id, admin.email)}
@@ -665,11 +667,10 @@ const AdminPage = () => {
                           <div className="text-slate-400 text-xs mt-0.5">Invited by: {admin.invitedBy || 'N/A'}</div>
                         </div>
                         <button
-                          onClick={() => { setChangePasswordEmail(admin.email); handleChangePassword(admin.id); }}
-                          disabled={changingPasswordId === admin.id}
-                          className="flex-shrink-0 px-3 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium transition-all bg-primary/10 text-primary hover:bg-primary hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                          onClick={() => openChangePassword(admin.id, admin.email)}
+                          className="flex-shrink-0 px-3 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium transition-all bg-primary/10 text-primary hover:bg-primary hover:text-white"
                         >
-                          {changingPasswordId === admin.id ? 'Changing...' : 'Change Password'}
+                          Change Password
                         </button>
                         <button
                           onClick={() => handleRemoveAdmin(admin.id, admin.email)}
@@ -1088,6 +1089,96 @@ const AdminPage = () => {
       )}
 
       {alertProps && <AlertCard {...alertProps} onClose={() => { if (alertProps.onClose) alertProps.onClose(); closeAlert(); }} />}
+
+      {/* Change Password Modal */}
+      {passwordModalAdmin && (
+        <div className="fixed inset-0 bg-[rgba(10,20,50,0.55)] backdrop-blur-sm flex items-center justify-center z-[9999]" onClick={(e) => { if (e.target === e.currentTarget) handleClosePasswordModal(); }}>
+          <div className="bg-white rounded-2xl shadow-[0_24px_60px_rgba(0,0,0,0.22)] w-full max-w-[440px] mx-auto overflow-hidden border-t-4 border-t-primary">
+            <div className="flex items-center gap-3 px-6 py-5 pb-4 border-b border-gray-100">
+              <div className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 bg-primary/10">
+                <img src="/info.svg" alt="" className="w-5 h-5 select-none" draggable={false} />
+              </div>
+              <h3 className="text-lg font-bold m-0 leading-tight text-primary-dark">Change Password</h3>
+            </div>
+
+            <div className="px-6 py-5">
+              <p className="text-gray-700 text-sm leading-relaxed m-0 mb-4">
+                Update password for <strong>{passwordModalAdmin.email}</strong>
+              </p>
+
+              {/* Current Password */}
+              <div className="mb-4">
+                <label className="block mb-1.5 text-gray-700 font-medium text-sm">Current Password *</label>
+                <input
+                  type="password"
+                  className={`w-full p-2.5 border rounded-lg text-sm text-gray-900 outline-none transition-all box-border focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.15)] ${pwErrors.current ? 'border-red-500' : 'border-gray-300'}`}
+                  placeholder="Enter current password"
+                  value={pwCurrent}
+                  onChange={(e) => setPwCurrent(e.target.value)}
+                  autoFocus
+                />
+                {pwErrors.current && <span className="text-red-500 text-xs mt-1 block">{pwErrors.current}</span>}
+              </div>
+
+              {/* New Password */}
+              <div className="mb-4">
+                <label className="block mb-1.5 text-gray-700 font-medium text-sm">New Password *</label>
+                <input
+                  type="password"
+                  className={`w-full p-2.5 border rounded-lg text-sm text-gray-900 outline-none transition-all box-border focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.15)] ${pwErrors.newPw ? 'border-red-500' : 'border-gray-300'}`}
+                  placeholder="Minimum 6 characters"
+                  value={pwNew}
+                  onChange={(e) => setPwNew(e.target.value)}
+                />
+                {pwErrors.newPw && <span className="text-red-500 text-xs mt-1 block">{pwErrors.newPw}</span>}
+                {pwNew && (
+                  <div className="mt-1.5 space-y-0.5">
+                    {[
+                      { met: pwNew.length >= 6, label: 'At least 6 characters' },
+                      { met: /[A-Z]/.test(pwNew), label: 'At least one uppercase letter' },
+                      { met: /[a-z]/.test(pwNew), label: 'At least one lowercase letter' },
+                      { met: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(pwNew), label: 'At least one special character (e.g. @)' },
+                    ].map((rule, i) => (
+                      <div key={i} className="flex items-center gap-1.5">
+                        <span className={rule.met ? 'text-green-600' : 'text-slate-400'}>{rule.met ? '\u2713' : '\u25CB'}</span>
+                        <span className={`text-xs ${rule.met ? 'text-green-600' : 'text-slate-500'}`}>{rule.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Confirm Password */}
+              <div className="mb-4">
+                <label className="block mb-1.5 text-gray-700 font-medium text-sm">Confirm Password *</label>
+                <input
+                  type="password"
+                  className={`w-full p-2.5 border rounded-lg text-sm text-gray-900 outline-none transition-all box-border focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.15)] ${pwErrors.confirm ? 'border-red-500' : 'border-gray-300'}`}
+                  placeholder="Confirm your password"
+                  value={pwConfirm}
+                  onChange={(e) => setPwConfirm(e.target.value)}
+                />
+                {pwErrors.confirm && <span className="text-red-500 text-xs mt-1 block">{pwErrors.confirm}</span>}
+                {pwConfirm && (
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <span className={pwNew === pwConfirm ? 'text-green-600' : 'text-slate-400'}>{pwNew === pwConfirm ? '\u2713' : '\u25CB'}</span>
+                    <span className={`text-xs ${pwNew === pwConfirm ? 'text-green-600' : 'text-slate-500'}`}>Passwords match</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2.5 px-6 pb-5 pt-3.5">
+              <button className="px-5 py-2 border-none rounded-lg text-sm font-semibold cursor-pointer transition-all bg-gray-100 text-gray-700 hover:bg-gray-200" onClick={handleClosePasswordModal} disabled={pwSubmitting}>
+                Cancel
+              </button>
+              <button className="px-5 py-2 border-none rounded-lg text-sm font-semibold cursor-pointer transition-all bg-primary text-white hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed" onClick={handleSubmitPassword} disabled={pwSubmitting}>
+                {pwSubmitting ? 'Updating...' : 'Change Password'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -539,7 +539,11 @@ const Signup = () => {
         return value.trim() ? '' : 'Address required';
       case 'password':
         if (!value) return 'Password required';
-        return value.length >= 6 ? '' : 'Password must be at least 6 characters';
+        if (value.length < 6) return 'At least 6 characters';
+        if (!/[A-Z]/.test(value)) return 'Needs an uppercase letter';
+        if (!/[a-z]/.test(value)) return 'Needs a lowercase letter';
+        if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(value)) return 'Needs a special character (e.g. @)';
+        return '';
       case 'confirmPassword':
         return value === formData.password ? '' : 'Passwords do not match';
       case 'termsAccepted':
@@ -612,8 +616,11 @@ const Signup = () => {
     if (step === 6) {
       if (!formData.password) {
         newErrors.password = 'Password required';
-      } else if (formData.password.length < 6) {
-        newErrors.password = 'Password must be at least 6 characters';
+      } else {
+        if (formData.password.length < 6) newErrors.password = 'At least 6 characters';
+        else if (!/[A-Z]/.test(formData.password)) newErrors.password = 'Needs an uppercase letter';
+        else if (!/[a-z]/.test(formData.password)) newErrors.password = 'Needs a lowercase letter';
+        else if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(formData.password)) newErrors.password = 'Needs a special character (e.g. @)';
       }
 
       if (formData.password !== formData.confirmPassword) {
@@ -1418,13 +1425,22 @@ const Signup = () => {
                     </div>
                     {errors.password && <span className="text-red-500 text-sm mt-1 block">{errors.password}</span>}
                     {formData.password && (
-                      <div className="flex items-center gap-2 mt-1.5">
-                        <span className={formData.password.length >= 6 ? 'text-green-600' : 'text-slate-400'}>
-                          {formData.password.length >= 6 ? '✓' : '○'}
-                        </span>
-                        <span className={`text-xs ${formData.password.length >= 6 ? 'text-green-600' : 'text-slate-500'}`}>
-                          At least 6 characters
-                        </span>
+                      <div className="mt-1.5 space-y-0.5">
+                        {[
+                          { met: formData.password.length >= 6, label: 'At least 6 characters' },
+                          { met: /[A-Z]/.test(formData.password), label: 'At least one uppercase letter' },
+                          { met: /[a-z]/.test(formData.password), label: 'At least one lowercase letter' },
+                          { met: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(formData.password), label: 'At least one special character (e.g. @)' },
+                        ].map((rule, i) => (
+                          <div key={i} className="flex items-center gap-2">
+                            <span className={rule.met ? 'text-green-600' : 'text-slate-400'}>
+                              {rule.met ? '✓' : '○'}
+                            </span>
+                            <span className={`text-xs ${rule.met ? 'text-green-600' : 'text-slate-500'}`}>
+                              {rule.label}
+                            </span>
+                          </div>
+                        ))}
                       </div>
                     )}
                   </div>
