@@ -1185,6 +1185,7 @@ const Dashboard = () => {
                   Orders
                 </span>
               </div>
+              <span className="text-slate-300 text-xl sm:text-2xl font-light select-none">|</span>
               <div className="relative group">
                 <button 
                   className={`p-1.5 rounded-lg cursor-pointer select-none transition-all flex items-center justify-center ${activeSection === 'stock' ? 'bg-slate-100 ring-1 ring-slate-300' : 'hover:bg-slate-100'}`}
@@ -1196,6 +1197,7 @@ const Dashboard = () => {
                   Analytics
                 </span>
               </div>
+              <span className="text-slate-300 text-xl sm:text-2xl font-light select-none">|</span>
               <div className="relative group">
                 <button 
                   className={`p-1.5 rounded-lg cursor-pointer select-none transition-all flex items-center justify-center ${activeSection === 'settings' ? 'bg-slate-100 ring-1 ring-slate-300' : 'hover:bg-slate-100'}`}
@@ -1208,8 +1210,9 @@ const Dashboard = () => {
                 </span>
               </div>
             </div>
+            <span className="text-slate-300 text-xl sm:text-2xl font-light select-none">|</span>
             <NotificationDropdown />
-            <span className="text-slate-300 text-lg font-light mx-1 select-none">|</span>
+            <span className="text-slate-300 text-xl sm:text-2xl font-light select-none">|</span>
             <div className="relative group ml-auto">
               <button onClick={handleLogout} className="border-none p-1.5 rounded cursor-pointer select-none hover:bg-slate-100 transition-colors">
                 <img draggable={false} src="/log-out.svg" alt="Logout" className="w-5 h-5 sm:w-6 sm:h-6" />
