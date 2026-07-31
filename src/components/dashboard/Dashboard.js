@@ -1176,10 +1176,11 @@ const Dashboard = () => {
             <div className="flex gap-2 sm:gap-4">
               <div className="relative group">
                 <button 
-                  className={`p-1.5 rounded-lg cursor-pointer select-none transition-all flex items-center justify-center ${activeSection === 'orders' ? 'bg-slate-100 ring-1 ring-slate-300' : 'hover:bg-slate-100'}`}
+                  className={`relative p-1.5 rounded-lg cursor-pointer select-none transition-all flex items-center justify-center hover:bg-slate-100`}
                   onClick={() => setActiveSection('orders')}
                 >
                   <img draggable={false} src="/orders.svg" alt="Orders" className="w-5 h-5 sm:w-6 sm:h-6" />
+                  {activeSection === 'orders' && <span className="absolute left-1/2 -translate-x-1/2 bottom-0.5 w-5 sm:w-6 h-[3px] rounded-full bg-primary"></span>}
                 </button>
                 <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                   Orders
@@ -1188,10 +1189,11 @@ const Dashboard = () => {
               <span className="text-slate-300 text-xl sm:text-2xl font-light select-none">|</span>
               <div className="relative group">
                 <button 
-                  className={`p-1.5 rounded-lg cursor-pointer select-none transition-all flex items-center justify-center ${activeSection === 'stock' ? 'bg-slate-100 ring-1 ring-slate-300' : 'hover:bg-slate-100'}`}
+                  className={`relative p-1.5 rounded-lg cursor-pointer select-none transition-all flex items-center justify-center hover:bg-slate-100`}
                   onClick={() => setActiveSection('stock')}
                 >
                   <img draggable={false} src="/analytics.svg" alt="Analytics" className="w-5 h-5 sm:w-6 sm:h-6" />
+                  {activeSection === 'stock' && <span className="absolute left-1/2 -translate-x-1/2 bottom-0.5 w-5 sm:w-6 h-[3px] rounded-full bg-primary"></span>}
                 </button>
                 <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                   Analytics
@@ -1200,10 +1202,11 @@ const Dashboard = () => {
               <span className="text-slate-300 text-xl sm:text-2xl font-light select-none">|</span>
               <div className="relative group">
                 <button 
-                  className={`p-1.5 rounded-lg cursor-pointer select-none transition-all flex items-center justify-center ${activeSection === 'settings' ? 'bg-slate-100 ring-1 ring-slate-300' : 'hover:bg-slate-100'}`}
+                  className={`relative p-1.5 rounded-lg cursor-pointer select-none transition-all flex items-center justify-center hover:bg-slate-100`}
                   onClick={() => setActiveSection('settings')}
                 >
                   <img draggable={false} src="/settings.svg" alt="Settings" className="w-5 h-5 sm:w-6 sm:h-6" />
+                  {activeSection === 'settings' && <span className="absolute left-1/2 -translate-x-1/2 bottom-0.5 w-5 sm:w-6 h-[3px] rounded-full bg-primary"></span>}
                 </button>
                 <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                   Settings
