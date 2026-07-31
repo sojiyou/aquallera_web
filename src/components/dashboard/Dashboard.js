@@ -1180,7 +1180,7 @@ const Dashboard = () => {
                   onClick={() => setActiveSection('orders')}
                 >
                   <img draggable={false} src="/orders.svg" alt="Orders" className="w-5 h-5 sm:w-6 sm:h-6" />
-                  {activeSection === 'orders' && <span className="absolute left-1/2 -translate-x-1/2 bottom-0.5 w-5 sm:w-6 h-[3px] rounded-full bg-primary"></span>}
+                  {activeSection === 'orders' && <span className="absolute left-1/2 -translate-x-1/2 bottom-0 w-5 sm:w-6 h-[3px] rounded-full bg-primary"></span>}
                 </button>
                 <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                   Orders
@@ -1193,7 +1193,7 @@ const Dashboard = () => {
                   onClick={() => setActiveSection('stock')}
                 >
                   <img draggable={false} src="/analytics.svg" alt="Analytics" className="w-5 h-5 sm:w-6 sm:h-6" />
-                  {activeSection === 'stock' && <span className="absolute left-1/2 -translate-x-1/2 bottom-0.5 w-5 sm:w-6 h-[3px] rounded-full bg-primary"></span>}
+                  {activeSection === 'stock' && <span className="absolute left-1/2 -translate-x-1/2 bottom-0 w-5 sm:w-6 h-[3px] rounded-full bg-primary"></span>}
                 </button>
                 <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                   Analytics
@@ -1206,7 +1206,7 @@ const Dashboard = () => {
                   onClick={() => setActiveSection('settings')}
                 >
                   <img draggable={false} src="/settings.svg" alt="Settings" className="w-5 h-5 sm:w-6 sm:h-6" />
-                  {activeSection === 'settings' && <span className="absolute left-1/2 -translate-x-1/2 bottom-0.5 w-5 sm:w-6 h-[3px] rounded-full bg-primary"></span>}
+                  {activeSection === 'settings' && <span className="absolute left-1/2 -translate-x-1/2 bottom-0 w-5 sm:w-6 h-[3px] rounded-full bg-primary"></span>}
                 </button>
                 <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                   Settings
