@@ -149,7 +149,8 @@ const SAMPLE_DATA = {
   }
 };
 
-const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
+const WaterConsumptionAnalytics = ({ stationId, currentStock, waterTypes }) => {
+  const activeWaterTypes = waterTypes && waterTypes.length > 0 ? waterTypes : ['pure', 'spring', 'mineral'];
   const [loading, setLoading] = useState(true);
   const [projection, setProjection] = useState(null);
   const [stockDepletion, setStockDepletion] = useState(null);
@@ -358,71 +359,71 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
 
         {/* 3-Column Grid for Circular Progress Bars */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mt-4">
-          {/* Pure Water */}
-          <div className="bg-white rounded-2xl p-3 sm:p-5 text-center shadow-sm border border-slate-200 transition-all hover:-translate-y-0.5 hover:shadow-md">
-            {momComparison && (
-              <div className="mb-2">
-                <span className="text-xs sm:text-base font-medium bg-slate-100 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full inline-block text-slate-600">
-                  {formatChangeText(momComparison.changes.pureWater, momComparison.previousMonth.name)}
-                </span>
+          {[
+            {
+              waterKey: 'pure',
+              stockKey: 'pureWater',
+              momChange: momComparison?.changes?.pureWater,
+              percentage: (projection.currentConsumption.pureWater / projection.projectedConsumption.pureWater) * 100,
+              current: projection.currentConsumption.pureWater,
+              projected: projection.projectedConsumption.pureWater,
+              dailyAvg: projection.dailyAverages.pureWater,
+              depletionDays: stockDepletion?.pureWater || 999,
+            },
+            {
+              waterKey: 'spring',
+              stockKey: 'springWater',
+              momChange: momComparison?.changes?.springWater,
+              percentage: (projection.currentConsumption.springWater / projection.projectedConsumption.springWater) * 100,
+              current: projection.currentConsumption.springWater,
+              projected: projection.projectedConsumption.springWater,
+              dailyAvg: projection.dailyAverages.springWater,
+              depletionDays: stockDepletion?.springWater || 999,
+            },
+            {
+              waterKey: 'mineral',
+              stockKey: 'mineralWater',
+              momChange: momComparison?.changes?.mineralWater,
+              percentage: (projection.currentConsumption.mineralWater / projection.projectedConsumption.mineralWater) * 100,
+              current: projection.currentConsumption.mineralWater,
+              projected: projection.projectedConsumption.mineralWater,
+              dailyAvg: projection.dailyAverages.mineralWater,
+              depletionDays: stockDepletion?.mineralWater || 999,
+            },
+          ].map(entry => {
+            const active = activeWaterTypes.includes(entry.waterKey);
+            if (!active) {
+              return (
+                <div key={entry.waterKey} className="bg-slate-50 rounded-2xl p-3 sm:p-5 text-center shadow-sm border border-dashed border-slate-300 flex flex-col items-center justify-center min-h-[180px] opacity-70">
+                  <div className="text-4xl mb-3 text-slate-300"></div>
+                  <div className="font-bold text-slate-400 text-xl sm:text-2xl mb-1">{getDisplayName(entry.stockKey)}</div>
+                  <div className="text-xs text-slate-400 bg-slate-100 px-3 py-1 rounded-full mt-2">Water type unavailable</div>
+                </div>
+              );
+            }
+            return (
+              <div key={entry.waterKey} className="bg-white rounded-2xl p-3 sm:p-5 text-center shadow-sm border border-slate-200 transition-all hover:-translate-y-0.5 hover:shadow-md">
+                {momComparison && (
+                  <div className="mb-2">
+                    <span className="text-xs sm:text-base font-medium bg-slate-100 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full inline-block text-slate-600">
+                      {formatChangeText(entry.momChange, momComparison.previousMonth.name)}
+                    </span>
+                  </div>
+                )}
+                <CircularProgress
+                  percentage={entry.percentage}
+                  size={120}
+                  strokeWidth={8}
+                  waterType={entry.waterKey}
+                  current={entry.current}
+                  projected={entry.projected}
+                  unit="gal"
+                  dailyAvg={entry.dailyAvg}
+                  depletionDays={entry.depletionDays}
+                />
               </div>
-            )}
-            <CircularProgress
-              percentage={(projection.currentConsumption.pureWater / projection.projectedConsumption.pureWater) * 100}
-              size={120}
-              strokeWidth={8}
-              waterType="pure"
-              current={projection.currentConsumption.pureWater}
-              projected={projection.projectedConsumption.pureWater}
-              unit="gal"
-              dailyAvg={projection.dailyAverages.pureWater}
-              depletionDays={stockDepletion?.pureWater || 999}
-            />
-          </div>
-
-          {/* Spring Water */}
-          <div className="bg-white rounded-2xl p-3 sm:p-5 text-center shadow-sm border border-slate-200 transition-all hover:-translate-y-0.5 hover:shadow-md">
-            {momComparison && (
-              <div className="mb-2">
-                <span className="text-xs sm:text-base font-medium bg-slate-100 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full inline-block text-slate-600">
-                  {formatChangeText(momComparison.changes.springWater, momComparison.previousMonth.name)}
-                </span>
-              </div>
-            )}
-            <CircularProgress
-              percentage={(projection.currentConsumption.springWater / projection.projectedConsumption.springWater) * 100}
-              size={120}
-              strokeWidth={8}
-              waterType="spring"
-              current={projection.currentConsumption.springWater}
-              projected={projection.projectedConsumption.springWater}
-              unit="L"
-              dailyAvg={projection.dailyAverages.springWater}
-              depletionDays={stockDepletion?.springWater || 999}
-            />
-          </div>
-
-          {/* Mineral Water */}
-          <div className="bg-white rounded-2xl p-3 sm:p-5 text-center shadow-sm border border-slate-200 transition-all hover:-translate-y-0.5 hover:shadow-md">
-            {momComparison && (
-              <div className="mb-2">
-                <span className="text-xs sm:text-base font-medium bg-slate-100 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full inline-block text-slate-600">
-                  {formatChangeText(momComparison.changes.mineralWater, momComparison.previousMonth.name)}
-                </span>
-              </div>
-            )}
-            <CircularProgress
-              percentage={(projection.currentConsumption.mineralWater / projection.projectedConsumption.mineralWater) * 100}
-              size={120}
-              strokeWidth={8}
-              waterType="mineral"
-              current={projection.currentConsumption.mineralWater}
-              projected={projection.projectedConsumption.mineralWater}
-              unit="gal"
-              dailyAvg={projection.dailyAverages.mineralWater}
-              depletionDays={stockDepletion?.mineralWater || 999}
-            />
-          </div>
+            );
+          })}
         </div>
       </div>
 
@@ -532,6 +533,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
                                   fill="#065A82"
                                   radius={[0, 0, 0, 0]}
                                   name="Pure Water"
+                                  hide={!activeWaterTypes.includes('pure')}
                                 />
                                 <Bar
                                   dataKey="springWater"
@@ -539,6 +541,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
                                   fill="#1C7293"
                                   radius={[0, 0, 0, 0]}
                                   name="Spring Water"
+                                  hide={!activeWaterTypes.includes('spring')}
                                 />
                                 <Bar
                                   dataKey="mineralWater"
@@ -546,6 +549,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
                                   fill="#f59e0b"
                                   radius={[0, 0, 4, 4]}
                                   name="Mineral Water"
+                                  hide={!activeWaterTypes.includes('mineral')}
                                 />
                               </BarChart>
                             </ResponsiveContainer>
@@ -557,21 +561,27 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
 
                         {/* Water Type Stats */}
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-5">
-                          <div className="text-center p-4 rounded-lg bg-slate-100 border-l-3 border-l-blue-500">
-                            <span className="text-2xl block mb-2"></span>
-                            <span className="text-2xl font-bold text-slate-800 block">{formatNumber(month.pureWater)} gal</span>
-                            <span className="text-xs text-slate-500">Pure Water</span>
-                          </div>
-                          <div className="text-center p-4 rounded-lg bg-slate-100 border-l-3 border-l-secondary">
-                            <span className="text-2xl block mb-2"></span>
-                            <span className="text-2xl font-bold text-slate-800 block">{formatNumber(month.springWater)} gal</span>
-                            <span className="text-xs text-slate-500">Spring Water</span>
-                          </div>
-                          <div className="text-center p-4 rounded-lg bg-slate-100 border-l-3 border-l-amber-500">
-                            <span className="text-2xl block mb-2"></span>
-                            <span className="text-2xl font-bold text-slate-800 block">{formatNumber(month.mineralWater)} gal</span>
-                            <span className="text-xs text-slate-500">Mineral Water</span>
-                          </div>
+                          {[
+                            { key: 'pure', stockKey: 'pureWater', label: 'Pure Water', border: 'border-l-blue-500' },
+                            { key: 'spring', stockKey: 'springWater', label: 'Spring Water', border: 'border-l-secondary' },
+                            { key: 'mineral', stockKey: 'mineralWater', label: 'Mineral Water', border: 'border-l-amber-500' },
+                          ].map(stat => {
+                            if (!activeWaterTypes.includes(stat.key)) {
+                              return (
+                                <div key={stat.key} className="text-center p-4 rounded-lg bg-slate-50 border border-dashed border-slate-300">
+                                  <span className="text-xs text-slate-400">{stat.label}</span>
+                                  <span className="block text-xs text-slate-400 mt-1 bg-slate-100 px-3 py-1 rounded-full w-fit mx-auto">Water type unavailable</span>
+                                </div>
+                              );
+                            }
+                            return (
+                              <div key={stat.key} className={`text-center p-4 rounded-lg bg-slate-100 border-l-3 ${stat.border}`}>
+                                <span className="text-2xl block mb-2"></span>
+                                <span className="text-2xl font-bold text-slate-800 block">{formatNumber(month[stat.stockKey])} gal</span>
+                                <span className="text-xs text-slate-500">{stat.label}</span>
+                              </div>
+                            );
+                          })}
                         </div>
 
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
@@ -667,18 +677,26 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock }) => {
               <div className="bg-gradient-to-br from-primary-dark to-primary-dark rounded-xl p-4 sm:p-6 text-white">
                 <h4 className="text-white m-0 mb-4 text-base sm:text-lg">Year Summary</h4>
                 <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                  <div className="flex flex-col gap-1 sm:gap-2 bg-white/10 p-3 sm:p-4 rounded-lg backdrop-blur">
-                    <span className="text-slate-400 text-[10px] sm:text-xs uppercase tracking-wider">Total Pure Water</span>
-                    <span className="text-white text-sm sm:text-xl font-bold">{formatNumber(annualData.totals.pureWater)} gal</span>
-                  </div>
-                  <div className="flex flex-col gap-1 sm:gap-2 bg-white/10 p-3 sm:p-4 rounded-lg backdrop-blur">
-                    <span className="text-slate-400 text-[10px] sm:text-xs uppercase tracking-wider">Total Spring Water</span>
-                    <span className="text-white text-sm sm:text-xl font-bold">{formatNumber(annualData.totals.springWater)} gal</span>
-                  </div>
-                  <div className="flex flex-col gap-1 sm:gap-2 bg-white/10 p-3 sm:p-4 rounded-lg backdrop-blur">
-                    <span className="text-slate-400 text-[10px] sm:text-xs uppercase tracking-wider">Total Mineral Water</span>
-                    <span className="text-white text-sm sm:text-xl font-bold">{formatNumber(annualData.totals.mineralWater)} gal</span>
-                  </div>
+                  {[
+                    { key: 'pure', stockKey: 'pureWater', label: 'Total Pure Water' },
+                    { key: 'spring', stockKey: 'springWater', label: 'Total Spring Water' },
+                    { key: 'mineral', stockKey: 'mineralWater', label: 'Total Mineral Water' },
+                  ].map(t => {
+                    if (!activeWaterTypes.includes(t.key)) {
+                      return (
+                        <div key={t.key} className="flex flex-col gap-1 sm:gap-2 bg-white/10 p-3 sm:p-4 rounded-lg backdrop-blur opacity-60">
+                          <span className="text-slate-400 text-[10px] sm:text-xs uppercase tracking-wider">{t.label}</span>
+                          <span className="text-slate-400 text-sm sm:text-xl font-bold">Water type unavailable</span>
+                        </div>
+                      );
+                    }
+                    return (
+                      <div key={t.key} className="flex flex-col gap-1 sm:gap-2 bg-white/10 p-3 sm:p-4 rounded-lg backdrop-blur">
+                        <span className="text-slate-400 text-[10px] sm:text-xs uppercase tracking-wider">{t.label}</span>
+                        <span className="text-white text-sm sm:text-xl font-bold">{formatNumber(annualData.totals[t.stockKey])} gal</span>
+                      </div>
+                    );
+                  })}
                   <div className="flex flex-col gap-1 sm:gap-2 bg-white/10 p-3 sm:p-4 rounded-lg backdrop-blur">
                     <span className="text-slate-400 text-[10px] sm:text-xs uppercase tracking-wider">Total Orders</span>
                     <span className="text-white text-sm sm:text-xl font-bold">{annualData.totalOrders}</span>

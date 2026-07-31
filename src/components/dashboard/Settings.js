@@ -50,6 +50,7 @@ const Settings = ({ stationData, setStationData }) => {
           close: '18:00'
         },
         serviceTypes: ['pickup'],
+        waterTypes: ['pure', 'spring', 'mineral'],
         deliveryRadius: 5,
         deliveryHours: [],
         deliveryDays: [],
@@ -213,6 +214,17 @@ const Settings = ({ stationData, setStationData }) => {
     });
   };
 
+  const toggleWaterType = (type) => {
+    setFormData(prev => {
+      const current = [...(prev.waterTypes || [])];
+      if (current.includes(type)) {
+        return { ...prev, waterTypes: current.filter(t => t !== type) };
+      } else {
+        return { ...prev, waterTypes: [...current, type] };
+      }
+    });
+  };
+
   const handleSave = async () => {
     setLoading(true);
     setMessage('');
@@ -280,7 +292,7 @@ const Settings = ({ stationData, setStationData }) => {
           else if (key === 'deliveryRadius') {
             updates[key] = parseInt(newValue) || 5;
           }
-          else if (key === 'serviceTypes' || key === 'deliveryHours' || key === 'deliveryDays') {
+          else if (key === 'serviceTypes' || key === 'waterTypes' || key === 'deliveryHours' || key === 'deliveryDays') {
             updates[key] = Array.isArray(newValue) ? newValue : [];
           }
           else {
@@ -755,61 +767,66 @@ const Settings = ({ stationData, setStationData }) => {
 
         {/* Pricing */}
         <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
-          <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">Pricing</h3>
+          <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">Water Types & Pricing</h3>
           <div className="mt-4">
-            <div className="mb-5">
-              <label className="block mb-2 text-gray-700 font-medium text-sm">Gallon Pure Water (â‚±)</label>
-              <input
-                type="number"
-                name="pricing_gallon_pure"
-                value={formData.pricing_gallon_pure || ''}
-                onChange={handleInputChange}
-                disabled={!isEditing}
-                min="0"
-                step="0.01"
-                placeholder="Enter price per gallon"
-                className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
-              />
-              {formData.pricing_gallon_pure === null && (
-                <div className="text-xs text-slate-500 italic mt-1">Not yet set</div>
+            {/* Water Types */}
+            <div className="mb-6">
+              <label className="block mb-2 text-gray-700 font-medium text-sm">Water Types Offered</label>
+              <p className="text-xs text-slate-400 italic mb-3">
+                Select which water types your station offers. Customers will only see these.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { key: 'pure', label: 'Pure Water' },
+                  { key: 'spring', label: 'Spring Water' },
+                  { key: 'mineral', label: 'Mineral Water' },
+                ].map(type => {
+                  const selected = (formData.waterTypes || ['pure', 'spring', 'mineral']).includes(type.key);
+                  return (
+                    <button
+                      key={type.key}
+                      type="button"
+                      disabled={!isEditing}
+                      onClick={() => toggleWaterType(type.key)}
+                      className={`px-4 py-2 rounded-lg text-xs font-semibold border-2 cursor-pointer transition-all disabled:cursor-not-allowed ${
+                        selected
+                          ? 'bg-primary text-white border-primary'
+                          : 'bg-white text-slate-600 border-slate-200 hover:border-primary hover:text-primary'
+                      }`}
+                    >
+                      {type.label}
+                    </button>
+                  );
+                })}
+              </div>
+              {(formData.waterTypes || []).length === 0 && isEditing && (
+                <span className="text-red-500 text-xs mt-1 block">Select at least one water type</span>
               )}
             </div>
 
-            <div className="mb-5">
-              <label className="block mb-2 text-gray-700 font-medium text-sm">Gallon Spring Water (â‚±)</label>
-              <input
-                type="number"
-                name="pricing_gallon_spring"
-                value={formData.pricing_gallon_spring || ''}
-                onChange={handleInputChange}
-                disabled={!isEditing}
-                min="0"
-                step="0.01"
-                placeholder="Enter price per gallon"
-                className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
-              />
-              {formData.pricing_gallon_spring === null && (
-                <div className="text-xs text-slate-500 italic mt-1">Not yet set</div>
-              )}
-            </div>
-
-            <div className="mb-5">
-              <label className="block mb-2 text-gray-700 font-medium text-sm">Gallon Mineral Water (â‚±)</label>
-              <input
-                type="number"
-                name="pricing_gallon_mineral"
-                value={formData.pricing_gallon_mineral || ''}
-                onChange={handleInputChange}
-                disabled={!isEditing}
-                min="0"
-                step="0.01"
-                placeholder="Enter price per gallon"
-                className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
-              />
-              {formData.pricing_gallon_mineral === null && (
-                <div className="text-xs text-slate-500 italic mt-1">Not yet set</div>
-              )}
-            </div>
+            {[
+              { key: 'pure', field: 'pricing_gallon_pure', label: 'Gallon Pure Water (â‚±)' },
+              { key: 'spring', field: 'pricing_gallon_spring', label: 'Gallon Spring Water (â‚±)' },
+              { key: 'mineral', field: 'pricing_gallon_mineral', label: 'Gallon Mineral Water (â‚±)' },
+            ].filter(p => (formData.waterTypes || ['pure', 'spring', 'mineral']).includes(p.key)).map(p => (
+              <div key={p.key} className="mb-5">
+                <label className="block mb-2 text-gray-700 font-medium text-sm">{p.label}</label>
+                <input
+                  type="number"
+                  name={p.field}
+                  value={formData[p.field] || ''}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                  min="0"
+                  step="0.01"
+                  placeholder="Enter price per gallon"
+                  className="w-full p-3 border-2 border-slate-200 rounded-lg text-sm transition-all bg-white focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] disabled:bg-slate-50 disabled:text-slate-500 disabled:cursor-not-allowed"
+                />
+                {formData[p.field] === null && (
+                  <div className="text-xs text-slate-500 italic mt-1">Not yet set</div>
+                )}
+              </div>
+            ))}
 
             <div className="mb-5">
               <label className="block mb-2 text-gray-700 font-medium text-sm">Delivery Fee (â‚±)</label>

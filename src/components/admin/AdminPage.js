@@ -874,6 +874,18 @@ const AdminPage = () => {
                       {selectedStation.longitude ? ` ${selectedStation.longitude.toFixed(6)}` : ''}
                     </span>
                   </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="font-semibold text-gray-600 text-sm">Water Types Offered:</span>
+                    <span className="text-gray-800 text-base break-words p-2 bg-gray-50 rounded-md border border-gray-200">
+                      {(() => {
+                        const wt = selectedStation.waterTypes;
+                        const fallback = ['pure', 'spring', 'mineral'];
+                        const names = { pure: 'Pure Water', spring: 'Spring Water', mineral: 'Mineral Water' };
+                        const list = Array.isArray(wt) && wt.length > 0 ? wt : fallback;
+                        return list.map(k => names[k] || k).join(', ');
+                      })()}
+                    </span>
+                  </div>
                 </div>
               </div>
 

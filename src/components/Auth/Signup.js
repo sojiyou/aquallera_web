@@ -45,6 +45,7 @@ const Signup = () => {
     deliveryDays: [], // NEW: Array of delivery days
 
     // PRICING VARIABLES
+    waterTypes: ['pure', 'spring', 'mineral'],
     pricing_gallon_pure: '',
     pricing_gallon_spring: '',
     pricing_gallon_mineral: '',
@@ -108,6 +109,24 @@ const Signup = () => {
       ...prev,
       businessHours: { ...prev.businessHours, [field]: value }
     }));
+  };
+
+  const handleWaterTypeChange = (type) => {
+    setErrors(prev => ({ ...prev, waterTypes: '' }));
+    setFormData(prev => {
+      const currentTypes = [...prev.waterTypes];
+      if (currentTypes.includes(type)) {
+        return {
+          ...prev,
+          waterTypes: currentTypes.filter(t => t !== type)
+        };
+      } else {
+        return {
+          ...prev,
+          waterTypes: [...currentTypes, type]
+        };
+      }
+    });
   };
 
   const handleServiceTypeChange = (serviceType) => {
@@ -596,6 +615,9 @@ const Signup = () => {
     }
 
     if (step === 4) {
+      if (formData.waterTypes.length === 0) {
+        newErrors.waterTypes = 'Select at least one water type';
+      }
       // Pricing is optional
     }
 
@@ -706,6 +728,7 @@ const Signup = () => {
         longitude: formData.longitude,
         businessHours: formData.businessHours,
         serviceTypes: formData.serviceTypes,
+        waterTypes: formData.waterTypes,
         deliveryRadius: Number(formData.deliveryRadius),
         deliveryHours: formData.deliveryHours,
         deliveryDays: formData.deliveryDays,
@@ -1182,74 +1205,80 @@ const Signup = () => {
           {/* STEP 4: Pricing */}
           {currentStep === 4 && (
             <div>
-              <h3 className="text-slate-800 mb-6 text-xl border-b-2 border-slate-100 pb-2">Product Pricing (Optional)</h3>
-              <p className="text-slate-500 text-sm mb-6 p-3 bg-slate-50 rounded-md border-l-4 border-primary">
-                Set your pricing now or update it later in your dashboard settings.
-              </p>
+              <h3 className="text-slate-800 mb-6 text-xl border-b-2 border-slate-100 pb-2">Water Types & Pricing</h3>
 
+              {/* WATER TYPES */}
+              <div className="mb-8">
+                <label className="block mb-2 text-gray-700 font-medium text-sm">Water Types Offered *</label>
+                <div className="flex flex-col sm:flex-row gap-3 mt-2">
+                  {[
+                    { key: 'pure', label: 'Pure Water' },
+                    { key: 'spring', label: 'Spring Water' },
+                    { key: 'mineral', label: 'Mineral Water' },
+                  ].map(type => {
+                    const selected = formData.waterTypes.includes(type.key);
+                    return (
+                      <button
+                        key={type.key}
+                        type="button"
+                        onClick={() => handleWaterTypeChange(type.key)}
+                        className={`flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-semibold border-2 cursor-pointer transition-all flex-1 justify-center ${
+                          selected
+                            ? 'bg-primary text-white border-primary shadow-md'
+                            : 'bg-white text-slate-600 border-slate-200 hover:border-primary hover:text-primary'
+                        }`}
+                      >
+                        {selected ? (
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                          </svg>
+                        ) : (
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                          </svg>
+                        )}
+                        {type.label}
+                      </button>
+                    );
+                  })}
+                </div>
+                {errors.waterTypes && <span className="text-red-500 text-sm mt-1 block">{errors.waterTypes}</span>}
+                <small className="block text-slate-400 text-xs mt-1 italic">Select the water types your station offers. You can update these anytime in your settings.</small>
+              </div>
+
+              {/* PRICING */}
               <div>
-                <div className="mb-6">
-                  <label className="block mb-2 text-gray-700 font-medium text-sm">Gallon Pure Water</label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-700 font-semibold z-[2]">₱</span>
-                    <input
-                      type="number"
-                      name="pricing_gallon_pure"
-                      value={formData.pricing_gallon_pure}
-                      onChange={handleInputChange}
-                      placeholder="0.00"
-                      min="0"
-                      step="0.01"
-                      className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border pl-10 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.pricing_gallon_pure ? 'border-red-500' : 'border-slate-200'}`}
-                    />
-                  </div>
-                  {errors.pricing_gallon_pure && (
-                    <span className="text-red-500 text-sm mt-1 block">{errors.pricing_gallon_pure}</span>
-                  )}
-                  <small className="block text-slate-400 text-xs mt-1 italic">Optional - set later if needed</small>
-                </div>
+                <label className="block mb-2 text-gray-700 font-medium text-sm">Product Pricing (Optional)</label>
+                <p className="text-slate-500 text-sm mb-4 p-3 bg-slate-50 rounded-md border-l-4 border-primary">
+                  Set your pricing now or update it later in your dashboard settings.
+                </p>
 
-                <div className="mb-6">
-                  <label className="block mb-2 text-gray-700 font-medium text-sm">Gallon Spring Water</label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-700 font-semibold z-[2]">₱</span>
-                    <input
-                      type="number"
-                      name="pricing_gallon_spring"
-                      value={formData.pricing_gallon_spring}
-                      onChange={handleInputChange}
-                      placeholder="0.00"
-                      min="0"
-                      step="0.01"
-                      className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border pl-10 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.pricing_gallon_spring ? 'border-red-500' : 'border-slate-200'}`}
-                    />
+                {[
+                  { key: 'pure', field: 'pricing_gallon_pure', label: 'Gallon Pure Water' },
+                  { key: 'spring', field: 'pricing_gallon_spring', label: 'Gallon Spring Water' },
+                  { key: 'mineral', field: 'pricing_gallon_mineral', label: 'Gallon Mineral Water' },
+                ].filter(p => formData.waterTypes.includes(p.key)).map(p => (
+                  <div key={p.key} className="mb-6">
+                    <label className="block mb-2 text-gray-700 font-medium text-sm">{p.label}</label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-700 font-semibold z-[2]">₱</span>
+                      <input
+                        type="number"
+                        name={p.field}
+                        value={formData[p.field]}
+                        onChange={handleInputChange}
+                        placeholder="0.00"
+                        min="0"
+                        step="0.01"
+                        className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border pl-10 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors[p.field] ? 'border-red-500' : 'border-slate-200'}`}
+                      />
+                    </div>
+                    {errors[p.field] && (
+                      <span className="text-red-500 text-sm mt-1 block">{errors[p.field]}</span>
+                    )}
+                    <small className="block text-slate-400 text-xs mt-1 italic">Optional - set later if needed</small>
                   </div>
-                  {errors.pricing_gallon_spring && (
-                    <span className="text-red-500 text-sm mt-1 block">{errors.pricing_gallon_spring}</span>
-                  )}
-                  <small className="block text-slate-400 text-xs mt-1 italic">Optional - set later if needed</small>
-                </div>
-
-                <div className="mb-6">
-                  <label className="block mb-2 text-gray-700 font-medium text-sm">Gallon Mineral Water</label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-700 font-semibold z-[2]">₱</span>
-                    <input
-                      type="number"
-                      name="pricing_gallon_mineral"
-                      value={formData.pricing_gallon_mineral}
-                      onChange={handleInputChange}
-                      placeholder="0.00"
-                      min="0"
-                      step="0.01"
-                      className={`w-full px-4 py-3 border-2 rounded-lg text-base transition-all font-sans box-border pl-10 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.1)] ${errors.pricing_gallon_mineral ? 'border-red-500' : 'border-slate-200'}`}
-                    />
-                  </div>
-                  {errors.pricing_gallon_mineral && (
-                    <span className="text-red-500 text-sm mt-1 block">{errors.pricing_gallon_mineral}</span>
-                  )}
-                  <small className="block text-slate-400 text-xs mt-1 italic">Optional - set later if needed</small>
-                </div>
+                ))}
 
                 <div className="mb-6">
                   <label className="block mb-2 text-gray-700 font-medium text-sm">Delivery Fee (per delivery)</label>

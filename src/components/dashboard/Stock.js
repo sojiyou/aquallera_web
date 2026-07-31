@@ -82,6 +82,8 @@ const convertCoordinatesToAddress = async (lat, lng) => {
 const Stock = () => {
   const [alertProps, showAlert, closeAlert] = useAlert();
   const [, setStationData] = useState(null);
+  const [waterTypes, setWaterTypes] = useState(['pure', 'spring', 'mineral']);
+  const waterTypesRef = useRef(['pure', 'spring', 'mineral']);
   const [orders, setOrders] = useState([]);
   const [stock, setStock] = useState({
     pureWater: 0,
@@ -122,15 +124,17 @@ const Stock = () => {
   const [lastRefreshed, setLastRefreshed] = useState(null);
   const cacheRef = useRef(null);
 
-  const checkLowStock = (stockData) => {
+  const checkLowStock = (stockData, types) => {
     const user = auth.currentUser;
     if (!user) return;
 
+    const activeTypes = types && types.length > 0 ? types : ['pure', 'spring', 'mineral'];
+
     const thresholds = [
-      { key: 'pureWater', label: 'Pure Water' },
-      { key: 'springWater', label: 'Spring Water' },
-      { key: 'mineralWater', label: 'Mineral Water' },
-    ];
+      { key: 'pureWater', waterKey: 'pure', label: 'Pure Water' },
+      { key: 'springWater', waterKey: 'spring', label: 'Spring Water' },
+      { key: 'mineralWater', waterKey: 'mineral', label: 'Mineral Water' },
+    ].filter(t => activeTypes.includes(t.waterKey));
 
     thresholds.forEach(({ key, label }) => {
       const level = stockData[key];
@@ -221,15 +225,17 @@ const Stock = () => {
       mineralCount += parseInt(order.mineralWaterQty) || 0;
     });
 
+    const activeTypes = waterTypesRef.current && waterTypesRef.current.length > 0 ? waterTypesRef.current : ['pure', 'spring', 'mineral'];
+    const counts = [
+      { waterKey: 'pure', count: pureCount, label: 'Pure Water' },
+      { waterKey: 'spring', count: springCount, label: 'Spring Water' },
+      { waterKey: 'mineral', count: mineralCount, label: 'Mineral Water' },
+    ].filter(t => activeTypes.includes(t.waterKey));
+
     let mostBought = 'No orders yet';
-    if (pureCount > 0 || springCount > 0 || mineralCount > 0) {
-      if (pureCount >= springCount && pureCount >= mineralCount) {
-        mostBought = `Pure Water (${pureCount} gallons)`;
-      } else if (springCount >= pureCount && springCount >= mineralCount) {
-        mostBought = `Spring Water (${springCount} gallons)`;
-      } else {
-        mostBought = `Mineral Water (${mineralCount} gallons)`;
-      }
+    const top = counts.reduce((best, t) => (t.count > (best ? best.count : 0) ? t : best), null);
+    if (top && top.count > 0) {
+      mostBought = `${top.label} (${top.count} gallons)`;
     }
 
     const locationCounts = {};
@@ -274,61 +280,66 @@ const Stock = () => {
   const generateInsights = (orderList, stockData) => {
     const insights = [];
 
-    let pureCount = 0, springCount = 0, mineralCount = 0;
+    const activeTypes = waterTypesRef.current && waterTypesRef.current.length > 0 ? waterTypesRef.current : ['pure', 'spring', 'mineral'];
+
+    const counts = {
+      pure: 0,
+      spring: 0,
+      mineral: 0,
+    };
     orderList.forEach((order) => {
-      pureCount += parseInt(order.pureWaterQty) || 0;
-      springCount += parseInt(order.springWaterQty) || 0;
-      mineralCount += parseInt(order.mineralWaterQty) || 0;
+      counts.pure += parseInt(order.pureWaterQty) || 0;
+      counts.spring += parseInt(order.springWaterQty) || 0;
+      counts.mineral += parseInt(order.mineralWaterQty) || 0;
     });
 
-    if (pureCount > springCount && pureCount > mineralCount && pureCount > 0) {
-      if (stockData.pureWater < 20) {
-        insights.push({
-          type: 'warning',
-          title: 'Increase Pure Water Stock',
-          message: `Pure Water is your top seller (${pureCount} gallons sold) but stock is low (${stockData.pureWater} left). Consider ordering more to meet demand.`,
-          action: 'Restock Pure Water',
-        });
-      } else {
-        insights.push({
-          type: 'success',
-          title: 'Pure Water Performing Well',
-          message: `Pure Water is your best seller with ${pureCount} gallons sold. Current stock (${stockData.pureWater}) looks good!`,
-          action: 'Maintain Stock Level',
-        });
-      }
-    } else if (springCount > pureCount && springCount > mineralCount && springCount > 0) {
-      if (stockData.springWater < 20) {
-        insights.push({
-          type: 'warning',
-          title: 'Increase Spring Water Stock',
-          message: `Spring Water is your top seller (${springCount} gallons sold) but stock is low (${stockData.springWater} left). Consider ordering more to meet demand.`,
-          action: 'Restock Spring Water',
-        });
-      } else {
-        insights.push({
-          type: 'success',
-          title: 'Spring Water Performing Well',
-          message: `Spring Water is your best seller with ${springCount} gallons sold. Current stock (${stockData.springWater}) looks good!`,
-          action: 'Maintain Stock Level',
-        });
-      }
-    } else if (mineralCount > 0 && mineralCount >= pureCount && mineralCount >= springCount) {
-      if (stockData.mineralWater < 20) {
-        insights.push({
-          type: 'warning',
-          title: 'Increase Mineral Water Stock',
-          message: `Mineral Water is your top seller (${mineralCount} gallons sold) but stock is low (${stockData.mineralWater} left). Consider ordering more to meet demand.`,
-          action: 'Restock Mineral Water',
-        });
-      } else {
-        insights.push({
-          type: 'success',
-          title: 'Mineral Water Performing Well',
-          message: `Mineral Water is your best seller with ${mineralCount} gallons sold. Current stock (${stockData.mineralWater}) looks good!`,
-          action: 'Maintain Stock Level',
-        });
-      }
+    const topType = activeTypes.reduce((best, wt) => (counts[wt] > (best ? counts[best] : 0) ? wt : best), null);
+    if (!topType || counts[topType] === 0) return insights;
+
+    const typeConfig = {
+      pure: {
+        stockKey: 'pureWater',
+        label: 'Pure Water',
+        restockTitle: 'Increase Pure Water Stock',
+        restockMessage: `Pure Water is your top seller (${counts.pure} gallons sold) but stock is low (${stockData.pureWater} left). Consider ordering more to meet demand.`,
+        goodTitle: 'Pure Water Performing Well',
+        goodMessage: `Pure Water is your best seller with ${counts.pure} gallons sold. Current stock (${stockData.pureWater}) looks good!`,
+      },
+      spring: {
+        stockKey: 'springWater',
+        label: 'Spring Water',
+        restockTitle: 'Increase Spring Water Stock',
+        restockMessage: `Spring Water is your top seller (${counts.spring} gallons sold) but stock is low (${stockData.springWater} left). Consider ordering more to meet demand.`,
+        goodTitle: 'Spring Water Performing Well',
+        goodMessage: `Spring Water is your best seller with ${counts.spring} gallons sold. Current stock (${stockData.springWater}) looks good!`,
+      },
+      mineral: {
+        stockKey: 'mineralWater',
+        label: 'Mineral Water',
+        restockTitle: 'Increase Mineral Water Stock',
+        restockMessage: `Mineral Water is your top seller (${counts.mineral} gallons sold) but stock is low (${stockData.mineralWater} left). Consider ordering more to meet demand.`,
+        goodTitle: 'Mineral Water Performing Well',
+        goodMessage: `Mineral Water is your best seller with ${counts.mineral} gallons sold. Current stock (${stockData.mineralWater}) looks good!`,
+      },
+    };
+
+    const cfg = typeConfig[topType];
+    const stockLevel = stockData[cfg.stockKey];
+
+    if (stockLevel < 20) {
+      insights.push({
+        type: 'warning',
+        title: cfg.restockTitle,
+        message: cfg.restockMessage,
+        action: `Restock ${cfg.label}`,
+      });
+    } else {
+      insights.push({
+        type: 'success',
+        title: cfg.goodTitle,
+        message: cfg.goodMessage,
+        action: 'Maintain Stock Level',
+      });
     }
 
     return insights;
@@ -488,6 +499,10 @@ const Stock = () => {
           const data = snapshot.val();
           setStationData(data);
 
+          const wt = Array.isArray(data.waterTypes) && data.waterTypes.length > 0 ? data.waterTypes : ['pure', 'spring', 'mineral'];
+          setWaterTypes(wt);
+          waterTypesRef.current = wt;
+
           const stockData = {
             pureWater: data.stock_pureWater || 0,
             springWater: data.stock_springWater || 0,
@@ -496,7 +511,7 @@ const Stock = () => {
 
           setStock(stockData);
           setTempStock(stockData);
-          checkLowStock(stockData);
+          checkLowStock(stockData, wt);
         } else {
           setStationData(null);
         }
@@ -579,7 +594,7 @@ const Stock = () => {
 
       setStock(saveStock);
       setEditingStock(false);
-      checkLowStock(saveStock);
+      checkLowStock(saveStock, waterTypesRef.current);
       showAlert({ type: 'success', message: 'Stock updated successfully!' });
     } catch (error) {
       console.error('Error updating stock:', error);
@@ -706,44 +721,24 @@ const Stock = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="rounded-xl p-4 sm:p-8 text-center text-white shadow-md transition-transform hover:-translate-y-1.5 bg-gradient-to-br from-primary to-primary-dark">
-            <div className="text-4xl sm:text-5xl mb-4"></div>
-            <h3 className="text-sm sm:text-lg mb-4 font-semibold">Pure Water (Gallons)</h3>
-            {editingStock ? (
-              <input type="number" name="pureWater" value={tempStock.pureWater} onChange={handleStockChange} className="w-full p-3 text-3xl text-center border-2 border-white/30 rounded-lg bg-white/10 text-white font-bold mb-2 focus:outline-none focus:border-white/60 focus:bg-white/20" min="0" />
-            ) : (
-              <div className="text-3xl sm:text-5xl font-bold mb-2">{stock.pureWater}</div>
-            )}
-            <div className="text-sm font-semibold px-4 py-2 rounded-full inline-block text-white" style={{ backgroundColor: getStockStatus(stock.pureWater).bg }}>
-              {getStockStatus(stock.pureWater).label}
+          {[
+            { waterKey: 'pure', stockKey: 'pureWater', label: 'Pure Water (Gallons)', gradient: 'bg-gradient-to-br from-primary to-primary-dark' },
+            { waterKey: 'spring', stockKey: 'springWater', label: 'Spring Water (Gallons)', gradient: 'bg-gradient-to-br from-secondary to-primary' },
+            { waterKey: 'mineral', stockKey: 'mineralWater', label: 'Mineral Water (Gallons)', gradient: 'bg-gradient-to-br from-amber-500 to-red-500' },
+          ].filter(c => waterTypes.includes(c.waterKey)).map(card => (
+            <div key={card.waterKey} className={`rounded-xl p-4 sm:p-8 text-center text-white shadow-md transition-transform hover:-translate-y-1.5 ${card.gradient}`}>
+              <div className="text-4xl sm:text-5xl mb-4"></div>
+              <h3 className="text-sm sm:text-lg mb-4 font-semibold">{card.label}</h3>
+              {editingStock ? (
+                <input type="number" name={card.stockKey} value={tempStock[card.stockKey]} onChange={handleStockChange} className="w-full p-3 text-3xl text-center border-2 border-white/30 rounded-lg bg-white/10 text-white font-bold mb-2 focus:outline-none focus:border-white/60 focus:bg-white/20" min="0" />
+              ) : (
+                <div className="text-3xl sm:text-5xl font-bold mb-2">{stock[card.stockKey]}</div>
+              )}
+              <div className="text-sm font-semibold px-4 py-2 rounded-full inline-block text-white" style={{ backgroundColor: getStockStatus(stock[card.stockKey]).bg }}>
+                {getStockStatus(stock[card.stockKey]).label}
+              </div>
             </div>
-          </div>
-
-          <div className="rounded-xl p-4 sm:p-8 text-center text-white shadow-md transition-transform hover:-translate-y-1.5 bg-gradient-to-br from-secondary to-primary">
-            <div className="text-4xl sm:text-5xl mb-4"></div>
-            <h3 className="text-sm sm:text-lg mb-4 font-semibold">Spring Water (gallons)</h3>
-            {editingStock ? (
-              <input type="number" name="springWater" value={tempStock.springWater} onChange={handleStockChange} className="w-full p-3 text-3xl text-center border-2 border-white/30 rounded-lg bg-white/10 text-white font-bold mb-2 focus:outline-none focus:border-white/60 focus:bg-white/20" min="0" />
-            ) : (
-              <div className="text-3xl sm:text-5xl font-bold mb-2">{stock.springWater}</div>
-            )}
-            <div className="text-sm font-semibold px-4 py-2 rounded-full inline-block text-white" style={{ backgroundColor: getStockStatus(stock.springWater).bg }}>
-              {getStockStatus(stock.springWater).label}
-            </div>
-          </div>
-
-          <div className="rounded-xl p-4 sm:p-8 text-center text-white shadow-md transition-transform hover:-translate-y-1.5 bg-gradient-to-br from-amber-500 to-red-500">
-            <div className="text-4xl sm:text-5xl mb-4"></div>
-            <h3 className="text-sm sm:text-lg mb-4 font-semibold">Mineral Water (Gallons)</h3>
-            {editingStock ? (
-              <input type="number" name="mineralWater" value={tempStock.mineralWater} onChange={handleStockChange} className="w-full p-3 text-3xl text-center border-2 border-white/30 rounded-lg bg-white/10 text-white font-bold mb-2 focus:outline-none focus:border-white/60 focus:bg-white/20" min="0" />
-            ) : (
-              <div className="text-3xl sm:text-5xl font-bold mb-2">{stock.mineralWater}</div>
-            )}
-            <div className="text-sm font-semibold px-4 py-2 rounded-full inline-block text-white" style={{ backgroundColor: getStockStatus(stock.mineralWater).bg }}>
-              {getStockStatus(stock.mineralWater).label}
-            </div>
-          </div>
+          ))}
         </div>
       </section>
 
@@ -969,7 +964,7 @@ const Stock = () => {
           </div>
           {showConsumptionAnalytics && (
             <div className="p-6 border-t border-slate-200 animate-[toggleSlideDown_0.3s_ease-out] overflow-hidden">
-              <WaterConsumptionAnalytics stationId={auth.currentUser?.uid} currentStock={stock} />
+              <WaterConsumptionAnalytics stationId={auth.currentUser?.uid} currentStock={stock} waterTypes={waterTypes} />
             </div>
           )}
         </div>
