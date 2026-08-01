@@ -1,4 +1,4 @@
-const CACHE = 'aquallera-v4';
+const CACHE = 'aquallera-v5';
 
 self.addEventListener('install', () => {
   self.skipWaiting();

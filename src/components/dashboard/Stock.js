@@ -29,6 +29,71 @@ import {
 } from '../../utils/chartDataFormatter';
 import { getRevenueCache } from '../../utils/revenueCache';
 
+// Sample revenue data generator for the demo toggle
+const buildSampleRevenueData = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const day = now.getDate();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const monthName = now.toLocaleDateString('en-US', { month: 'long' });
+
+  const chartData = [];
+  let cumulative = 0;
+  for (let d = 1; d <= day; d++) {
+    const daily = 850 + ((d * 137) % 420);
+    cumulative += daily;
+    chartData.push({
+      day: d,
+      actual: Math.round(cumulative),
+      projected: Math.round((cumulative / d) * d),
+    });
+  }
+
+  const currentRevenue = Math.round(cumulative);
+  const dailyAverage = Math.round(cumulative / day);
+  const projectedRevenue = Math.round(dailyAverage * daysInMonth);
+
+  const futureMonths = [];
+  for (let i = 1; i <= 6; i++) {
+    const m = new Date(year, month + i, 1);
+    futureMonths.push({
+      monthName: m.toLocaleDateString('en-US', { month: 'long' }),
+      projectedRevenue: Math.round((dailyAverage + i * 150) * daysInMonth),
+    });
+  }
+
+  return {
+    currentMonth: {
+      monthName,
+      year,
+      currentRevenue,
+      projectedRevenue,
+      dailyAverage,
+      daysPassed: day,
+      daysRemaining: daysInMonth - day,
+    },
+    chartData,
+    yearForecast: {
+      year,
+      totalYearProjection: Math.round(dailyAverage * 365),
+      futureMonths,
+      hasMinimumData: true,
+      currentMonth: { monthName, projectedRevenue },
+    },
+    yearComparison: {
+      hasPreviousYearData: true,
+      previousYear: year - 1,
+      currentYear: year,
+      previousYearTotal: Math.round(currentRevenue * 10),
+      currentYearTotal: Math.round(currentRevenue * 14),
+      growthPercentage: 27.3,
+    },
+    confidence: { level: 'High', color: '#1C7293', message: 'Sample data demonstration' },
+    lastRefreshed: now,
+  };
+};
+
 // Mapbox Geocoding Function (same as Dashboard.js)
 const convertCoordinatesToAddress = async (lat, lng) => {
   try {
@@ -108,6 +173,7 @@ const Stock = () => {
   });
   // ===== View Mode State =====
   const [dataViewMode, setDataViewMode] = useState('monthly'); // 'monthly' or 'annual'
+  const [useSampleRevenue, setUseSampleRevenue] = useState(false);
 
   // ===== Toggle States =====
   const [showConsumptionAnalytics, setShowConsumptionAnalytics] = useState(false);
@@ -623,8 +689,17 @@ const Stock = () => {
     return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
   };
 
-  if (loading) {
-    return (
+  // ===== Sample Data Toggle: effective values for revenue analytics =====
+  const sampleRevenue = useSampleRevenue ? buildSampleRevenueData() : null;
+  const effRevenueProjection = sampleRevenue ? sampleRevenue.currentMonth : revenueProjection;
+  const effChartData = sampleRevenue ? sampleRevenue.chartData : chartData;
+  const effYearForecast = sampleRevenue ? sampleRevenue.yearForecast : yearForecast;
+  const effYearComparison = sampleRevenue ? sampleRevenue.yearComparison : yearComparison;
+  const effProjectionConfidence = sampleRevenue ? sampleRevenue.confidence : projectionConfidence;
+  const effLastRefreshed = sampleRevenue ? sampleRevenue.lastRefreshed : lastRefreshed;
+  const effProjectionLoading = sampleRevenue ? false : projectionLoading;
+
+  if (loading) {    return (
       <div className="p-8 min-h-screen">
         <div className="flex flex-col items-center justify-center min-h-[50vh]">
           <div className="border-4 border-slate-200 border-t-primary rounded-full w-[50px] h-[50px] animate-spin mb-4"></div>
@@ -767,47 +842,55 @@ const Stock = () => {
           </div>
           {showRevenueAnalytics && (
             <div className="p-6 border-t border-slate-200 animate-[toggleSlideDown_0.3s_ease-out] overflow-hidden">
-              {/* Monthly/Annual Toggle */}
-              <div className="flex gap-2 bg-slate-100 p-1 rounded-full mb-6 w-fit">
-                <div className="relative group">
-                  <button 
-                    className={`px-5 py-2 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${dataViewMode === 'monthly' ? 'bg-white text-primary shadow-sm' : ''}`}
-                    onClick={() => setDataViewMode('monthly')}
-                  >
-                    Monthly View
-                  </button>
-                  <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                    Historical performance by month
-                  </span>
+              {/* Monthly/Annual Toggle + Sample Data Toggle */}
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+                <div className="flex gap-2 bg-slate-100 p-1 rounded-full w-fit">
+                  <div className="relative group">
+                    <button 
+                      className={`px-5 py-2 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${dataViewMode === 'monthly' ? 'bg-white text-primary shadow-sm' : ''}`}
+                      onClick={() => setDataViewMode('monthly')}
+                    >
+                      Monthly View
+                    </button>
+                    <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                      Historical performance by month
+                    </span>
+                  </div>
+                  <div className="relative group">
+                    <button 
+                      className={`px-5 py-2 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${dataViewMode === 'annual' ? 'bg-white text-primary shadow-sm' : ''}`}
+                      onClick={() => setDataViewMode('annual')}
+                    >
+                      Annual View
+                    </button>
+                    <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                      Yearly revenue reports &amp; summaries
+                    </span>
+                  </div>
                 </div>
-                <div className="relative group">
-                  <button 
-                    className={`px-5 py-2 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${dataViewMode === 'annual' ? 'bg-white text-primary shadow-sm' : ''}`}
-                    onClick={() => setDataViewMode('annual')}
-                  >
-                    Annual View
-                  </button>
-                  <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                    Yearly revenue reports &amp; summaries
-                  </span>
-                </div>
+                <button
+                  onClick={() => setUseSampleRevenue(!useSampleRevenue)}
+                  className={`px-4 py-2 border-none rounded-full font-medium cursor-pointer transition-all text-xs ${useSampleRevenue ? 'bg-amber-100 text-amber-700 ring-1 ring-amber-300' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-800'}`}
+                >
+                  {useSampleRevenue ? 'Viewing Sample Data - Click for Live Data' : 'View Sample Data'}
+                </button>
               </div>
 
               {/* Revenue Projection Card */}
-              {!projectionLoading && revenueProjection && yearForecast?.hasMinimumData ? (
+              {!effProjectionLoading && effRevenueProjection && effYearForecast?.hasMinimumData ? (
                 <div className="bg-gradient-to-br from-primary-dark to-primary-dark rounded-2xl p-4 sm:p-8 mb-8 text-white shadow-lg border border-white/10">
                   <div className="flex flex-col lg:flex-row justify-between items-start mb-8 gap-4">
                     <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
                       <div>
-                        <h3 className="text-2xl m-0 mb-1 text-white">{revenueProjection.monthName} {revenueProjection.year} Revenue Projection</h3>
-                        <p className="text-white m-0 text-sm">Based on {revenueProjection.daysPassed} days of actual data • {revenueProjection.daysRemaining} days remaining</p>
+                        <h3 className="text-2xl m-0 mb-1 text-white">{effRevenueProjection.monthName} {effRevenueProjection.year} Revenue Projection</h3>
+                        <p className="text-white m-0 text-sm">Based on {effRevenueProjection.daysPassed} days of actual data • {effRevenueProjection.daysRemaining} days remaining</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-1 sm:gap-3 justify-end flex-shrink-0 min-w-0">
-                      {projectionConfidence && (
-                        <div className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1 sm:py-2 rounded-full text-[11px] sm:text-sm font-semibold whitespace-nowrap" style={{ backgroundColor: `${projectionConfidence.color}20`, color: projectionConfidence.color }}>
-                          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full inline-block flex-shrink-0" style={{ backgroundColor: projectionConfidence.color }}></span>
-                          {projectionConfidence.level} Confidence
+                      {effProjectionConfidence && (
+                        <div className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1 sm:py-2 rounded-full text-[11px] sm:text-sm font-semibold whitespace-nowrap" style={{ backgroundColor: `${effProjectionConfidence.color}20`, color: effProjectionConfidence.color }}>
+                          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full inline-block flex-shrink-0" style={{ backgroundColor: effProjectionConfidence.color }}></span>
+                          {effProjectionConfidence.level} Confidence
                         </div>
                       )}
                       <div className="flex items-center gap-1 sm:gap-2">
@@ -820,7 +903,7 @@ const Stock = () => {
                             Recalculate revenue &amp; consumption projections
                           </span>
                         </div>
-                        {lastRefreshed && !isRefreshing && <span className="text-slate-500 text-[0.6rem] sm:text-[0.75rem] whitespace-nowrap">Updated {formatLastRefreshed(lastRefreshed)}</span>}
+                        {effLastRefreshed && !isRefreshing && <span className="text-slate-500 text-[0.6rem] sm:text-[0.75rem] whitespace-nowrap">Updated {formatLastRefreshed(effLastRefreshed)}</span>}
                       </div>
                     </div>
                   </div>
@@ -828,17 +911,17 @@ const Stock = () => {
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 mb-8">
                     <div className="bg-white/10 rounded-xl p-3 sm:p-5 backdrop-blur border border-white/10">
                       <span className="block text-xs sm:text-base uppercase tracking-wider mb-2">Revenue to Date</span>
-                      <span className="block text-xl sm:text-3xl font-bold mb-1 text-white">₱{revenueProjection.currentRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
-                      <span className="block text-slate-400 text-xs">{revenueProjection.daysPassed} days</span>
+                      <span className="block text-xl sm:text-3xl font-bold mb-1 text-white">₱{effRevenueProjection.currentRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                      <span className="block text-slate-400 text-xs">{effRevenueProjection.daysPassed} days</span>
                     </div>
                     <div className="bg-white/10 rounded-xl p-3 sm:p-5 backdrop-blur border border-white/10">
                       <span className="block text-xs sm:text-base uppercase tracking-wider mb-2">Projected End of Month</span>
-                      <span className="block text-xl sm:text-3xl font-bold mb-1 text-white">₱{revenueProjection.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                      <span className="block text-xl sm:text-3xl font-bold mb-1 text-white">₱{effRevenueProjection.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
                       <span className="block text-slate-400 text-xs">Target</span>
                     </div>
                     <div className="bg-white/10 rounded-xl p-3 sm:p-5 backdrop-blur border border-white/10">
                       <span className="block text-xs sm:text-base uppercase tracking-wider mb-2">Daily Average</span>
-                      <span className="block text-xl sm:text-3xl font-bold mb-1 text-white">₱{revenueProjection.dailyAverage?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                      <span className="block text-xl sm:text-3xl font-bold mb-1 text-white">₱{effRevenueProjection.dailyAverage?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
                       <span className="block text-slate-400 text-xs">per day</span>
                     </div>
                     <div className="bg-white/10 rounded-xl p-3 sm:p-5 backdrop-blur border border-white/10">
@@ -848,12 +931,12 @@ const Stock = () => {
                     </div>
                   </div>
 
-                  {chartData.length > 0 && (
+                  {effChartData.length > 0 && (
                     <div className="bg-white rounded-xl p-4 sm:p-6 mb-8">
                       <h4 className="text-slate-800 text-sm m-0 mb-4 font-semibold hidden md:block">Daily Revenue vs Projection</h4>
                       <div className="hidden md:block">
                         <ResponsiveContainer width="100%" height={250}>
-                          <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
+                          <LineChart data={effChartData} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                             <XAxis dataKey="day" tickFormatter={(day) => `Day ${day}`} stroke="#64748b" />
                             <YAxis tickFormatter={(value) => { if (value >= 1000000) return `₱${(value/1000000).toFixed(1)}M`; if (value >= 1000) return `₱${(value/1000).toFixed(0)}k`; return `₱${value}`; }} stroke="#64748b" />
@@ -870,19 +953,19 @@ const Stock = () => {
                     </div>
                   )}
 
-                  {yearForecast?.futureMonths?.length > 0 && (
+                  {effYearForecast?.futureMonths?.length > 0 && (
                     <div className="bg-white/5 rounded-xl p-4 sm:p-6 mb-6">
                       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2">
-                        <h4 className="text-white m-0 text-base sm:text-lg">{yearForecast.year} Year Forecast</h4>
-                        <span className="text-yellow-500 font-bold text-xl sm:text-2xl">Total: ₱{yearForecast.totalYearProjection?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                        <h4 className="text-white m-0 text-base sm:text-lg">{effYearForecast.year} Year Forecast</h4>
+                        <span className="text-yellow-500 font-bold text-xl sm:text-2xl">Total: ₱{effYearForecast.totalYearProjection?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                       </div>
                       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-4">
                         <div className="bg-primary/20 border border-primary rounded-lg p-4 text-center relative">
-                          <span className="block text-white text-base font-semibold mb-2">{revenueProjection.monthName}</span>
-                          <span className="block text-white font-bold text-lg sm:text-2xl">₱{revenueProjection.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                          <span className="block text-white text-base font-semibold mb-2">{effRevenueProjection.monthName}</span>
+                          <span className="block text-white font-bold text-lg sm:text-2xl">₱{effRevenueProjection.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                           <span className="absolute -top-2 right-2 bg-primary text-white text-[0.7rem] px-2 py-1 rounded-full">Current</span>
                         </div>
-                        {yearForecast.futureMonths.map((month, index) => (
+                        {effYearForecast.futureMonths.map((month, index) => (
                           <div key={index} className="bg-white/3 rounded-lg p-4 text-center relative">
                             <span className="block text-white text-base font-semibold mb-2">{month.monthName}</span>
                             <span className="block text-white font-bold text-lg sm:text-2xl">₱{month.projectedRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
@@ -892,29 +975,29 @@ const Stock = () => {
                     </div>
                   )}
 
-                  {yearComparison && yearComparison.hasPreviousYearData && (
+                  {effYearComparison && effYearComparison.hasPreviousYearData && (
                     <div className="bg-white/5 rounded-xl p-4 sm:p-6">
                       <div>
-                        <h4 className="text-white m-0 mb-6 text-lg">{yearComparison.previousYear} vs {yearComparison.currentYear}</h4>
+                        <h4 className="text-white m-0 mb-6 text-lg">{effYearComparison.previousYear} vs {effYearComparison.currentYear}</h4>
                       </div>
                       <div>
                         <div className="flex items-center gap-4 mb-4">
-                          <span className="min-w-[60px] text-slate-400 font-semibold">{yearComparison.previousYear}</span>
+                          <span className="min-w-[60px] text-slate-400 font-semibold">{effYearComparison.previousYear}</span>
                           <div className="flex-1 h-10 bg-white/10 rounded-full overflow-hidden">
-                            <div className="h-full flex items-center px-4 text-white font-semibold text-sm transition-all bg-gradient-to-r from-slate-500 to-slate-600" style={{ width: `${Math.min((yearComparison.previousYearTotal / (yearComparison.currentYearTotal || 1)) * 100, 100)}%` }}>
-                              ₱{yearComparison.previousYearTotal?.toLocaleString()}
+                            <div className="h-full flex items-center px-4 text-white font-semibold text-sm transition-all bg-gradient-to-r from-slate-500 to-slate-600" style={{ width: `${Math.min((effYearComparison.previousYearTotal / (effYearComparison.currentYearTotal || 1)) * 100, 100)}%` }}>
+                              ₱{effYearComparison.previousYearTotal?.toLocaleString()}
                             </div>
                           </div>
                         </div>
                         <div className="flex items-center gap-4 mb-4">
-                          <span className="min-w-[60px] text-slate-400 font-semibold">{yearComparison.currentYear}</span>
+                          <span className="min-w-[60px] text-slate-400 font-semibold">{effYearComparison.currentYear}</span>
                           <div className="flex-1 h-10 bg-white/10 rounded-full overflow-hidden">
-                            <div className="h-full flex items-center px-4 text-white font-semibold text-sm transition-all bg-gradient-to-r from-blue-500 to-blue-600" style={{ width: '100%' }}>₱{yearComparison.currentYearTotal?.toLocaleString()}</div>
+                            <div className="h-full flex items-center px-4 text-white font-semibold text-sm transition-all bg-gradient-to-r from-blue-500 to-blue-600" style={{ width: '100%' }}>₱{effYearComparison.currentYearTotal?.toLocaleString()}</div>
                           </div>
                         </div>
-                        {yearComparison.growthPercentage !== null && (
+                        {effYearComparison.growthPercentage !== null && (
                           <div className="mt-4 pt-4 border-t border-white/10 text-slate-400 flex items-center gap-2">
-                            {Math.abs(yearComparison.growthPercentage).toFixed(1)}% {yearComparison.growthPercentage > 0 ? 'growth' : 'decline'} from last year
+                            {Math.abs(effYearComparison.growthPercentage).toFixed(1)}% {effYearComparison.growthPercentage > 0 ? 'growth' : 'decline'} from last year
                           </div>
                         )}
                       </div>
@@ -924,8 +1007,8 @@ const Stock = () => {
               ) : (
                 <div className="bg-gradient-to-br from-primary-dark to-primary-dark rounded-2xl p-6 sm:p-12 text-center text-white mb-8">
                   <h3 className="text-white mb-2">Monthly Revenue Prediction</h3>
-                  <p className="text-slate-400 mb-6">{projectionLoading ? 'Loading revenue projections...' : `Predictions will be available on ${new Date(new Date().getFullYear(), new Date().getMonth(), 4).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}.`}</p>
-                  {!projectionLoading && (
+                  <p className="text-slate-400 mb-6">{effProjectionLoading ? 'Loading revenue projections...' : `Predictions will be available on ${new Date(new Date().getFullYear(), new Date().getMonth(), 4).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}.`}</p>
+                  {!effProjectionLoading && (
                     <div className="flex flex-col items-center gap-4">
                       <div className="flex gap-2">
                         <span className="w-2 h-2 bg-primary rounded-full animate-[pulse_1.5s_infinite]"></span>
