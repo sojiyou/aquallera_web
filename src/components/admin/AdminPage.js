@@ -550,7 +550,7 @@ const AdminPage = () => {
       {/* Stats Overview */}
       <section className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 sm:gap-6 p-4 sm:p-8 max-w-[1400px] mx-auto">
         <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm flex items-center gap-3 sm:gap-4 transition-transform hover:-translate-y-0.5">
-          <div className="w-12 h-12 sm:w-15 sm:h-15 rounded-xl flex items-center justify-center text-lg sm:text-2xl bg-primary/10 text-primary-dark"></div>
+          <img src="/total-stations.svg" alt="Total Stations" className="w-10 h-10 sm:w-12 sm:h-12 select-none" draggable={false} />
           <div className="min-w-0">
             <h3 className="m-0 text-slate-800 text-2xl sm:text-3xl">{stats.totalStations}</h3>
             <p className="m-1 text-slate-500 text-xs sm:text-sm">Total Stations</p>
@@ -558,7 +558,7 @@ const AdminPage = () => {
         </div>
 
         <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm flex items-center gap-3 sm:gap-4 transition-transform hover:-translate-y-0.5">
-          <div className="w-12 h-12 sm:w-15 sm:h-15 rounded-xl flex items-center justify-center text-lg sm:text-2xl bg-amber-100 text-amber-600"></div>
+          <img src="/pending.svg" alt="Pending Review" className="w-10 h-10 sm:w-12 sm:h-12 select-none" draggable={false} />
           <div className="min-w-0">
             <h3 className="m-0 text-slate-800 text-2xl sm:text-3xl">{stats.pendingStations}</h3>
             <p className="m-1 text-slate-500 text-xs sm:text-sm">Pending Review</p>
@@ -566,7 +566,7 @@ const AdminPage = () => {
         </div>
 
         <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm flex items-center gap-3 sm:gap-4 transition-transform hover:-translate-y-0.5">
-          <div className="w-12 h-12 sm:w-15 sm:h-15 rounded-xl flex items-center justify-center text-lg sm:text-2xl bg-emerald-100 text-emerald-600"></div>
+          <img src="/approved.svg" alt="Approved Stations" className="w-10 h-10 sm:w-12 sm:h-12 select-none" draggable={false} />
           <div className="min-w-0">
             <h3 className="m-0 text-slate-800 text-2xl sm:text-3xl">{stats.approvedStations}</h3>
             <p className="m-1 text-slate-500 text-xs sm:text-sm">Approved Stations</p>
