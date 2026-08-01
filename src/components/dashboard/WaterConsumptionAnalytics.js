@@ -29,9 +29,9 @@ const SAMPLE_DATA = {
       springWater: 10.7,
       mineralWater: 6.0
     },
-    daysRemaining: 18,
+    daysRemaining: 16,
     daysInMonth: 30,
-    daysPassed: 12,
+    daysPassed: 14,
     month: 3,
     year: 2026,
     monthName: 'April'
@@ -156,6 +156,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock, waterTypes }) => {
   const [stockDepletion, setStockDepletion] = useState(null);
   const [momComparison, setMomComparison] = useState(null);
   const [useSampleData, setUseSampleData] = useState(true);
+  const [forceSampleData, setForceSampleData] = useState(false);
   const [expandedMonth, setExpandedMonth] = useState(null);
   const [historicalData, setHistoricalData] = useState(SAMPLE_DATA.historicalData);
   const [annualData, setAnnualData] = useState(SAMPLE_DATA.annualData);
@@ -218,6 +219,21 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock, waterTypes }) => {
   };
 
   const formatNumber = (num) => Math.round(num).toLocaleString();
+
+  // ===== Manual Sample Data Toggle =====
+  const handleToggleSample = () => {
+    if (forceSampleData) {
+      setForceSampleData(false);
+      loadConsumptionData();
+    } else {
+      setForceSampleData(true);
+      setProjection(SAMPLE_DATA.projection);
+      setMomComparison(SAMPLE_DATA.momComparison);
+      if (currentStock) {
+        setStockDepletion(calculateStockDepletion(currentStock, SAMPLE_DATA.projection.dailyAverages));
+      }
+    }
+  };
   
   // Helper to get unit for water type
   const getUnit = (waterType) => {
@@ -331,10 +347,10 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock, waterTypes }) => {
 
   return (
     <div className="p-4">
-      {useSampleData && (
+      {(useSampleData || forceSampleData) && (
         <div className="bg-gradient-to-br from-amber-50 to-amber-100 border border-amber-300 rounded-lg px-4 py-3 mb-4 flex items-center gap-3 text-amber-800 text-sm">
           <span className="text-xl"></span>
-          <span>Showing sample data for demonstration. Real data will appear after Day 3 of the month.</span>
+          <span>{forceSampleData ? 'Showing sample data for demonstration. Click the toggle again to return to live data.' : 'Showing sample data for demonstration. Real data will appear after Day 3 of the month.'}</span>
         </div>
       )}
 
@@ -431,28 +447,36 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock, waterTypes }) => {
       <div className="mt-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-3 border-b-2 border-slate-200 gap-3">
           <h4 className="text-slate-800 m-0 text-base sm:text-lg">Water Consumption Reports</h4>
-          <div className="flex gap-1 bg-slate-100 p-0.5 rounded-full">
-            <div className="relative group">
-              <button 
-                className={`px-4 py-1.5 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${consumptionViewMode === 'monthly' ? 'bg-white text-primary shadow-sm' : ''}`}
-                onClick={() => setConsumptionViewMode('monthly')}
-              >
-                Monthly View
-              </button>
-              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                Monthly water usage breakdown
-              </span>
-            </div>
-            <div className="relative group">
-              <button 
-                className={`px-4 py-1.5 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${consumptionViewMode === 'annual' ? 'bg-white text-primary shadow-sm' : ''}`}
-                onClick={() => setConsumptionViewMode('annual')}
-              >
-                Annual View
-              </button>
-              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                Yearly consumption trends
-              </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={handleToggleSample}
+              className={`px-4 py-2 border-none rounded-full font-medium cursor-pointer transition-all text-xs ${forceSampleData || useSampleData ? 'bg-amber-100 text-amber-700 ring-1 ring-amber-300' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-800'}`}
+            >
+              {forceSampleData || useSampleData ? 'Viewing Sample Data - Click for Live Data' : 'View Sample Data'}
+            </button>
+            <div className="flex gap-1 bg-slate-100 p-0.5 rounded-full">
+              <div className="relative group">
+                <button 
+                  className={`px-4 py-1.5 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${consumptionViewMode === 'monthly' ? 'bg-white text-primary shadow-sm' : ''}`}
+                  onClick={() => setConsumptionViewMode('monthly')}
+                >
+                  Monthly View
+                </button>
+                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                  Monthly water usage breakdown
+                </span>
+              </div>
+              <div className="relative group">
+                <button 
+                  className={`px-4 py-1.5 border-none bg-transparent rounded-full font-medium cursor-pointer transition-all text-xs text-slate-500 hover:bg-slate-200 hover:text-slate-800 ${consumptionViewMode === 'annual' ? 'bg-white text-primary shadow-sm' : ''}`}
+                  onClick={() => setConsumptionViewMode('annual')}
+                >
+                  Annual View
+                </button>
+                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                  Yearly consumption trends
+                </span>
+              </div>
             </div>
           </div>
         </div>

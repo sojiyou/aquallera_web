@@ -34,13 +34,14 @@ const buildSampleRevenueData = () => {
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth();
-  const day = now.getDate();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const monthName = now.toLocaleDateString('en-US', { month: 'long' });
 
+  const SAMPLE_DAYS = 14;
+
   const chartData = [];
   let cumulative = 0;
-  for (let d = 1; d <= day; d++) {
+  for (let d = 1; d <= SAMPLE_DAYS; d++) {
     const daily = 850 + ((d * 137) % 420);
     cumulative += daily;
     chartData.push({
@@ -51,7 +52,7 @@ const buildSampleRevenueData = () => {
   }
 
   const currentRevenue = Math.round(cumulative);
-  const dailyAverage = Math.round(cumulative / day);
+  const dailyAverage = Math.round(cumulative / SAMPLE_DAYS);
   const projectedRevenue = Math.round(dailyAverage * daysInMonth);
 
   const futureMonths = [];
@@ -70,8 +71,8 @@ const buildSampleRevenueData = () => {
       currentRevenue,
       projectedRevenue,
       dailyAverage,
-      daysPassed: day,
-      daysRemaining: daysInMonth - day,
+      daysPassed: SAMPLE_DAYS,
+      daysRemaining: daysInMonth - SAMPLE_DAYS,
     },
     chartData,
     yearForecast: {
