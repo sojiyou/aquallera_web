@@ -489,6 +489,8 @@ const Signup = () => {
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?` +
         `access_token=${MAPBOX_TOKEN}&` +
         `country=PH&` +
+        `bbox=120.545,16.345,120.665,16.445&` +
+        `proximity=120.5960,16.4023&` +
         `types=address,place,poi,locality,neighborhood,district&` +
         `language=en&` +
         `limit=8&` +
