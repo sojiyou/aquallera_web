@@ -1,2 +1,2 @@
-const BUILD_VERSION = "1.4.2";
+const BUILD_VERSION = "1.4.3";
 export default BUILD_VERSION;

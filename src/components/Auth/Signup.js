@@ -70,6 +70,7 @@ const Signup = () => {
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showPolicy, setShowPolicy] = useState(null); // 'terms' | 'privacy' | null
   const [locationStatus, setLocationStatus] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -1532,7 +1533,24 @@ const Signup = () => {
                         onBlur={handleBlur}
                         className="w-[18px] h-[18px] m-0"
                       />
-                      <span>I agree to Terms & Conditions and Data Privacy Policy</span>
+                      <span>
+                        I agree to{' '}
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); setShowPolicy('terms'); }}
+                          className="text-primary font-semibold underline underline-offset-2 cursor-pointer"
+                        >
+                          Terms &amp; Conditions
+                        </button>
+                        {' '}and{' '}
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); setShowPolicy('privacy'); }}
+                          className="text-primary font-semibold underline underline-offset-2 cursor-pointer"
+                        >
+                          Data Privacy Policy
+                        </button>
+                      </span>
                     </label>
                     {errors.termsAccepted && <span className="text-red-500 text-sm mt-1 block">{errors.termsAccepted}</span>}
                   </div>
@@ -1617,6 +1635,100 @@ const Signup = () => {
           <p>Already have an account? <a href="/login" className="text-primary hover:underline font-medium">Login</a></p>
         </div>
       </div>
+
+      {showPolicy && (
+        <div
+          className="fixed inset-0 bg-[rgba(10,20,50,0.55)] backdrop-blur-sm flex items-center justify-center z-[9999] p-4"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowPolicy(null); }}
+        >
+          <div className="bg-white rounded-2xl shadow-[0_24px_60px_rgba(0,0,0,0.22)] w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden border-t-4 border-t-primary">
+            <div className="flex items-center justify-between px-6 py-5 pb-4 border-b border-gray-100">
+              <h3 className="text-lg font-bold m-0 leading-tight text-primary-dark">
+                {showPolicy === 'terms' ? 'Terms & Conditions' : 'Data Privacy Policy'}
+              </h3>
+              <button
+                type="button"
+                onClick={() => setShowPolicy(null)}
+                className="text-slate-400 hover:text-slate-600 text-3xl leading-none cursor-pointer"
+              >
+                &times;
+              </button>
+            </div>
+
+            <div className="overflow-y-auto px-6 py-5 text-sm text-gray-600 leading-relaxed space-y-5">
+              {showPolicy === 'terms' ? (
+                <>
+                  <section>
+                    <h4 className="font-bold text-primary-dark text-base mb-1 m-0">1. Eligibility</h4>
+                    <p className="m-0">You must operate a legitimate water refilling station with a valid business permit, a properly zoned commercial address, and comply with all applicable laws, including DOH Administrative Order 2017-0010, Philippine National Standards (PNS), the Data Privacy Act (RA 10173), and local sanitation codes.</p>
+                  </section>
+                  <section>
+                    <h4 className="font-bold text-primary-dark text-base mb-1 m-0">2. Accurate Information</h4>
+                    <p className="m-0">You agree to provide accurate, complete, and current information during registration, including business documents, location coordinates, and pricing. Providing false information or missing documents may result in immediate rejection of your application.</p>
+                  </section>
+                  <section>
+                    <h4 className="font-bold text-primary-dark text-base mb-1 m-0">3. Service Commitment</h4>
+                    <p className="m-0">As a registered station, you commit to maintaining quality water standards, honoring your stated business and delivery hours, and fulfilling orders placed through the platform within the delivery radius you set.</p>
+                  </section>
+                  <section>
+                    <h4 className="font-bold text-primary-dark text-base mb-1 m-0">4. Pricing &amp; Orders</h4>
+                    <p className="m-0">You set your own water type prices and delivery fees, which must be kept up to date. You are responsible for processing and completing all orders assigned to your station through the platform.</p>
+                  </section>
+                  <section>
+                    <h4 className="font-bold text-primary-dark text-base mb-1 m-0">5. Account Responsibility</h4>
+                    <p className="m-0">You are responsible for maintaining the confidentiality of your login credentials and for all activities under your account. Keep your business information, such as contact details, address, and operating hours, updated at all times.</p>
+                  </section>
+                  <section>
+                    <h4 className="font-bold text-primary-dark text-base mb-1 m-0">6. Data Privacy</h4>
+                    <p className="m-0">Your personal and business information is handled in accordance with our Data Privacy Policy and the Data Privacy Act (RA 10173). By using the platform, you consent to the collection and processing of your information as described in the policy.</p>
+                  </section>
+                  <section>
+                    <h4 className="font-bold text-primary-dark text-base mb-1 m-0">7. Compliance &amp; Termination</h4>
+                    <p className="m-0">Failure to comply with these terms, applicable laws, or quality standards may result in the suspension or removal of your station from the platform. We reserve the right to update these terms at any time.</p>
+                  </section>
+                </>
+              ) : (
+                <>
+                  <section>
+                    <h4 className="font-bold text-primary-dark text-base mb-1 m-0">1. Information We Collect</h4>
+                    <p className="m-0">When you register your station on Aquallera, we collect the following information: your station name, owner's full name, email address, phone number, business address and map coordinates, business documents (such as your Mayor's Permit, DTI registration, sanitary permit, and FDA License to Operate), water types and pricing, delivery details, and records of orders handled by your station. This information is necessary to verify and provide our services to you.</p>
+                  </section>
+                  <section>
+                    <h4 className="font-bold text-primary-dark text-base mb-1 m-0">2. How We Use Your Information</h4>
+                    <p className="m-0">We use your information solely to verify your application, display your station on the platform, process and fulfill customer orders, communicate with you about account-related matters, provide customer support, and improve our services. We do not sell, rent, or share your personal information with third parties for marketing purposes.</p>
+                  </section>
+                  <section>
+                    <h4 className="font-bold text-primary-dark text-base mb-1 m-0">3. Data Storage and Security</h4>
+                    <p className="m-0">Your data is stored securely in Firebase Realtime Database, which employs encryption in transit (HTTPS) and at rest. Access to your data is restricted to authenticated users and authorized administrators. We implement reasonable security measures to protect your personal information from unauthorized access, alteration, or disclosure.</p>
+                  </section>
+                  <section>
+                    <h4 className="font-bold text-primary-dark text-base mb-1 m-0">4. Data Retention and Deletion</h4>
+                    <p className="m-0">If your station account is removed or deactivated, we will remove your data from our database as appropriate. You may also contact us to request the deletion of your account and associated data.</p>
+                  </section>
+                  <section>
+                    <h4 className="font-bold text-primary-dark text-base mb-1 m-0">5. Your Rights</h4>
+                    <p className="m-0">You have the right to access your personal data at any time through your dashboard. You may update or correct your information using the settings page, and you may request the deletion of your account and all associated data at any time.</p>
+                  </section>
+                  <section>
+                    <h4 className="font-bold text-primary-dark text-base mb-1 m-0">6. Contact Us</h4>
+                    <p className="m-0">If you have any questions about this privacy policy or how we handle your data, please contact us at <span className="font-medium text-primary">sojodecaran200@gmail.com</span>.</p>
+                  </section>
+                </>
+              )}
+            </div>
+
+            <div className="px-6 py-4 border-t border-gray-100 bg-slate-50">
+              <button
+                type="button"
+                onClick={() => setShowPolicy(null)}
+                className="w-full bg-primary text-white py-2.5 rounded-lg font-semibold cursor-pointer hover:bg-primary-dark transition-colors"
+              >
+                Got it
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {alertProps && <AlertCard {...alertProps} onClose={() => { closeAlert(); if (alertProps.type === 'success') { window.location.href = '/login'; } }} />}
     </div>
