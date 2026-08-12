@@ -740,12 +740,20 @@ const AdminPage = () => {
                               {activeTab === 'pending' ? (
                                 <>
                                   {station.revokedAt ? (
-                                    <button
-                                      onClick={() => handleDeleteStation(station.id)}
-                                      className="px-3 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium transition-all bg-red-600 text-white hover:bg-red-700"
-                                    >
-                                      Delete
-                                    </button>
+                                    <>
+                                      <button
+                                        onClick={() => handleApproveStation(station.id)}
+                                        className="px-3 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium transition-all bg-secondary text-white hover:bg-primary-dark"
+                                      >
+                                        Approve
+                                      </button>
+                                      <button
+                                        onClick={() => handleDeleteStation(station.id)}
+                                        className="px-3 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium transition-all bg-red-600 text-white hover:bg-red-700"
+                                      >
+                                        Delete
+                                      </button>
+                                    </>
                                   ) : (
                                     <>
                                       <button
@@ -803,7 +811,10 @@ const AdminPage = () => {
                         {activeTab === 'pending' ? (
                           <>
                             {station.revokedAt ? (
-                              <button onClick={() => handleDeleteStation(station.id)} className="flex-1 min-w-[80px] px-2 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium bg-red-600 text-white hover:bg-red-700">Delete</button>
+                              <>
+                                <button onClick={() => handleApproveStation(station.id)} className="flex-1 min-w-[80px] px-2 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium bg-secondary text-white hover:bg-primary-dark">Approve</button>
+                                <button onClick={() => handleDeleteStation(station.id)} className="flex-1 min-w-[80px] px-2 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium bg-red-600 text-white hover:bg-red-700">Delete</button>
+                              </>
                             ) : (
                               <>
                                 <button onClick={() => handleApproveStation(station.id)} disabled={rejectingStationId === station.id} className="flex-1 min-w-[80px] px-2 py-1.5 border-none rounded-md cursor-pointer text-xs font-medium bg-secondary text-white hover:bg-primary-dark disabled:opacity-50">Approve</button>
