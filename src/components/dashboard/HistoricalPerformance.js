@@ -1,5 +1,3 @@
-// src/components/dashboard/HistoricalPerformance.jsx
-// UPDATED: Auto-calculates from orders when archives don't exist
 import React, { useState, useEffect } from 'react';
 import { getArchivedYear } from '../../utils/monthlyArchiver';
 import { calculateMonthlyRevenue, getDailyRevenueForArchive } from '../../utils/revenueCalculator';
@@ -14,7 +12,6 @@ const HistoricalPerformance = ({ stationId }) => {
   const [loading, setLoading] = useState(true);
   const [showSkeleton, setShowSkeleton] = useState(false);
 
-  // Generate dynamic sample data based on current date
   const generateSkeletonData = () => {
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
@@ -71,19 +68,14 @@ const HistoricalPerformance = ({ stationId }) => {
     });
   };
 
-  // NEW: Calculate historical data directly from orders (for unarchived months)
   const calculateFromOrders = async (targetYear, targetMonth) => {
     try {
-      // Get monthly revenue
       const actualRevenue = await calculateMonthlyRevenue(stationId, targetYear, targetMonth);
       
-      // If no revenue, return null
       if (actualRevenue === 0) return null;
       
-      // Get daily breakdown
       const { dailyData } = await getDailyRevenueForArchive(stationId, targetYear, targetMonth);
       
-      // Count orders for the month
       const { ref, get } = await import('firebase/database');
       const { database } = await import('../config/Firebase');
       
@@ -125,7 +117,7 @@ const HistoricalPerformance = ({ stationId }) => {
         accuracy: accuracy,
         dailyData: dailyData,
         isSkeleton: false,
-        fromOrders: true // Flag to indicate this came from raw orders
+        fromOrders: true
       };
     } catch (error) {
       console.error(`Error calculating data for ${targetMonth}/${targetYear}:`, error);
@@ -145,7 +137,6 @@ const HistoricalPerformance = ({ stationId }) => {
         const currentYear = currentDate.getFullYear();
         const currentMonth = currentDate.getMonth();
         
-        // Try to get archived data first
         let yearData = await getArchivedYear(stationId, currentYear);
         
         const monthNames = [
@@ -156,7 +147,6 @@ const HistoricalPerformance = ({ stationId }) => {
         let archivedMonths = [];
         
         if (yearData) {
-          // Process archived months
           archivedMonths = monthNames
             .map((monthKey, index) => {
               const monthData = yearData[monthKey];
@@ -174,7 +164,6 @@ const HistoricalPerformance = ({ stationId }) => {
             .filter(Boolean);
         }
         
-        // Check for missing months that have actual orders but aren't archived
         const missingMonths = [];
         for (let i = 1; i <= 3; i++) {
           let targetMonth = currentMonth - i;
@@ -185,13 +174,11 @@ const HistoricalPerformance = ({ stationId }) => {
             targetYear--;
           }
           
-          // Check if this month is already in archivedMonths
           const isArchived = archivedMonths.some(m => 
             m.monthIndex === targetMonth && m.year === targetYear
           );
           
           if (!isArchived) {
-            // Try to calculate from orders
             const calculatedData = await calculateFromOrders(targetYear, targetMonth);
             if (calculatedData && calculatedData.actual > 0) {
               missingMonths.push(calculatedData);
@@ -199,23 +186,19 @@ const HistoricalPerformance = ({ stationId }) => {
           }
         }
         
-        // Combine archived and calculated months
         let allMonths = [...archivedMonths, ...missingMonths];
         
-        // Sort by date (most recent first)
         allMonths.sort((a, b) => {
           if (a.year !== b.year) return b.year - a.year;
           return b.monthIndex - a.monthIndex;
         });
         
-        // Take only last 3 months
         allMonths = allMonths.slice(0, 3);
         
         if (allMonths.length > 0) {
           setHistoricalData(allMonths);
           setShowSkeleton(false);
         } else {
-          // No real data at all, show skeleton
           setHistoricalData(generateSkeletonData());
           setShowSkeleton(true);
         }
@@ -270,7 +253,6 @@ const HistoricalPerformance = ({ stationId }) => {
         </p>
       </div>
 
-      {/* Demo Mode Banner - Only shows when using sample data */}
       {showSkeleton && (
         <div className="bg-amber-50 border-l-4 border-l-amber-500 p-3 mb-6 rounded-lg text-sm text-amber-800 flex items-center gap-2">
           <span className="text-lg"></span>
@@ -278,7 +260,6 @@ const HistoricalPerformance = ({ stationId }) => {
         </div>
       )}
 
-      {/* Live Data Indicator - Shows when using real orders */}
       {!showSkeleton && historicalData.some(m => m.fromOrders) && (
         <div className="bg-secondary/10 border-l-4 border-l-secondary p-3 mb-6 rounded-lg text-sm text-primary-dark flex items-center gap-2">
           <span className="text-lg"></span>
@@ -341,7 +322,7 @@ const HistoricalPerformance = ({ stationId }) => {
 
               {isExpanded && (
                 <div className="px-5 pb-5 border-t border-slate-200 animate-[slideDown_0.3s_ease]">
-                  <div className="flex flex-col sm:flex-row items-center justify-around bg-gradient-to-br from-surface to-surface rounded-xl p-4 sm:p-6 mb-6 gap-4">
+                  <div className="flex flex-col sm:flex-row items-center justify-around bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl p-4 sm:p-6 mb-6 gap-4">
                     <div className="flex flex-col items-center gap-2">
                       <span className="text-slate-500 text-xs uppercase tracking-wider font-semibold">Projected</span>
                       <span className="text-xl font-bold text-gray-700">

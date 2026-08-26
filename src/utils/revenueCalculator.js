@@ -1,4 +1,3 @@
-//revenueCalculator.js
 import { ref, onValue, get } from 'firebase/database';
 import { database } from '../components/config/Firebase';
 
@@ -11,7 +10,6 @@ import { database } from '../components/config/Firebase';
  */
 export const calculateMonthlyRevenue = async (stationId, year, month) => {
   try {
-    // FIX: Get ALL orders from root level (not nested under stationId)
     const ordersRef = ref(database, 'orders');
     
     return new Promise((resolve) => {
@@ -22,13 +20,10 @@ export const calculateMonthlyRevenue = async (stationId, year, month) => {
           return;
         }
 
-        // FIX: Filter orders for this specific station AND month/year
         const monthlyTotal = Object.values(orders)
           .filter(order => {
-            // Match station ID
             if (order.stationId !== stationId) return false;
             
-            // Match month/year and completed status
             const orderDate = new Date(order.createdAt);
             return orderDate.getMonth() === month && 
                    orderDate.getFullYear() === year &&
@@ -38,7 +33,6 @@ export const calculateMonthlyRevenue = async (stationId, year, month) => {
                     order.status === 'Delivered');
           })
           .reduce((sum, order) => {
-            // FIX: Calculate total from individual water type totals + delivery fee
             const pureTotal = parseFloat(order.pureWaterTotal) || 0;
             const springTotal = parseFloat(order.springWaterTotal) || 0;
             const mineralTotal = parseFloat(order.mineralWaterTotal) || 0;
@@ -65,7 +59,6 @@ export const calculateMonthlyRevenue = async (stationId, year, month) => {
  */
 export const getDailyRevenueForMonth = async (stationId, year, month) => {
   try {
-    // FIX: Get ALL orders from root level
     const ordersRef = ref(database, 'orders');
     
     return new Promise((resolve) => {
@@ -76,12 +69,10 @@ export const getDailyRevenueForMonth = async (stationId, year, month) => {
           return;
         }
 
-        // Create map of day -> revenue
         const dailyRevenue = {};
         
         Object.values(orders)
           .filter(order => {
-            // FIX: Match station ID first
             if (order.stationId !== stationId) return false;
             
             const orderDate = new Date(order.createdAt);
@@ -96,7 +87,6 @@ export const getDailyRevenueForMonth = async (stationId, year, month) => {
             const orderDate = new Date(order.createdAt);
             const day = orderDate.getDate();
             
-            // FIX: Calculate total properly
             const orderTotal = (parseFloat(order.pureWaterTotal) || 0) +
                               (parseFloat(order.springWaterTotal) || 0) +
                               (parseFloat(order.mineralWaterTotal) || 0) +
@@ -105,7 +95,6 @@ export const getDailyRevenueForMonth = async (stationId, year, month) => {
             dailyRevenue[day] = (dailyRevenue[day] || 0) + orderTotal;
           });
 
-        // Convert to array format for chart
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         const dailyData = [];
         
@@ -133,7 +122,6 @@ export const getDailyRevenueForMonth = async (stationId, year, month) => {
 };
 
 /**
- * ===== NEW FUNCTION FOR ARCHIVING =====
  * Get daily revenue breakdown for archiving (uses get() instead of onValue)
  * This version doesn't create listeners - safer for archiving
  */
@@ -149,17 +137,14 @@ export const getDailyRevenueForArchive = async (stationId, year, month) => {
     const orders = snapshot.val();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     
-    // Initialize daily data
     const dailyRevenue = new Array(daysInMonth).fill(0);
     
-    // Calculate revenue for each day
     Object.values(orders).forEach(order => {
       if (order.stationId !== stationId) return;
       
       const orderDate = new Date(order.createdAt);
       if (orderDate.getMonth() !== month || orderDate.getFullYear() !== year) return;
       
-      // Only count completed/delivered orders
       if (!(order.status === 'completed' || 
             order.status === 'Completed' ||
             order.status === 'delivered' ||
@@ -177,7 +162,6 @@ export const getDailyRevenueForArchive = async (stationId, year, month) => {
       dailyRevenue[day - 1] += orderRevenue;
     });
     
-    // Create daily data array with dates
     const dailyData = dailyRevenue.map((revenue, index) => ({
       day: index + 1,
       date: new Date(year, month, index + 1).toISOString(),

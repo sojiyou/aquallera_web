@@ -1,24 +1,56 @@
-// src/components/admin/AlertCard.js
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-// ─── Icons per type ───────────────────────────────────────────────────────────
 const ICONS = {
-  success: <img src="/info.svg" alt="" className="w-5 h-5 select-none" draggable={false} />,
-  error:   <img src="/info.svg" alt="" className="w-5 h-5 select-none" draggable={false} />,
-  warning: <img src="/info.svg" alt="" className="w-5 h-5 select-none" draggable={false} />,
-  confirm: <img src="/info.svg" alt="" className="w-5 h-5 select-none" draggable={false} />,
-  prompt:  <img src="/info.svg" alt="" className="w-5 h-5 select-none" draggable={false} />,
+  success: (
+    <img
+      src="/info.svg"
+      alt=""
+      className="w-5 h-5 select-none"
+      draggable={false}
+    />
+  ),
+  error: (
+    <img
+      src="/info.svg"
+      alt=""
+      className="w-5 h-5 select-none"
+      draggable={false}
+    />
+  ),
+  warning: (
+    <img
+      src="/info.svg"
+      alt=""
+      className="w-5 h-5 select-none"
+      draggable={false}
+    />
+  ),
+  confirm: (
+    <img
+      src="/info.svg"
+      alt=""
+      className="w-5 h-5 select-none"
+      draggable={false}
+    />
+  ),
+  prompt: (
+    <img
+      src="/info.svg"
+      alt=""
+      className="w-5 h-5 select-none"
+      draggable={false}
+    />
+  ),
 };
 
 const TITLES = {
-  success: 'Success',
-  error:   'Error',
-  warning: 'Warning',
-  confirm: 'Confirm Action',
-  prompt:  'Input Required',
+  success: "Success",
+  error: "Error",
+  warning: "Warning",
+  confirm: "Confirm Action",
+  prompt: "Input Required",
 };
 
-// ─── AlertCard component ──────────────────────────────────────────────────────
 /**
  * Props:
  *   type        – 'success' | 'error' | 'warning' | 'confirm' | 'prompt'
@@ -30,20 +62,20 @@ const TITLES = {
  *   inputType   – (prompt) 'text' (default) or 'password'
  */
 const AlertCard = ({
-  type = 'success',
+  type = "success",
   title,
   message,
   onClose,
   onConfirm,
-  placeholder = 'Type here...',
+  placeholder = "Type here...",
   inputType,
 }) => {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
 
   const handleOk = () => {
-    if (type === 'prompt') {
+    if (type === "prompt") {
       if (onConfirm) onConfirm(inputValue);
-    } else if (type === 'confirm') {
+    } else if (type === "confirm") {
       if (onConfirm) onConfirm(true);
     } else {
       if (onClose) onClose();
@@ -51,38 +83,95 @@ const AlertCard = ({
   };
 
   const handleCancel = () => {
-    if (type === 'confirm' && onConfirm) onConfirm(false);
+    if (type === "confirm" && onConfirm) onConfirm(false);
     if (onClose) onClose();
   };
 
   const handleBackdropClick = (e) => {
-    // Only close on backdrop click (not card click)
     if (e.target === e.currentTarget) handleCancel();
   };
 
-  const showCancel = type === 'confirm' || type === 'prompt';
+  const showCancel = type === "confirm" || type === "prompt";
 
-  const borderTopClass = type === 'success' ? 'border-t-4 border-t-secondary' : type === 'error' ? 'border-t-4 border-t-red-500' : type === 'warning' ? 'border-t-4 border-t-amber-500' : type === 'confirm' ? 'border-t-4 border-t-primary' : type === 'prompt' ? 'border-t-4 border-t-secondary' : '';
-  const iconBgClass = type === 'success' ? 'bg-secondary/10' : type === 'error' ? 'bg-red-100' : type === 'warning' ? 'bg-amber-100' : type === 'confirm' ? 'bg-primary/10' : type === 'prompt' ? 'bg-secondary/10' : '';
-  const titleColorClass = type === 'success' ? 'text-primary-dark' : type === 'error' ? 'text-red-800' : type === 'warning' ? 'text-amber-800' : type === 'confirm' ? 'text-primary-dark' : type === 'prompt' ? 'text-primary-dark' : '';
-  const okBtnClass = type === 'success' ? 'bg-secondary text-white min-w-[80px] hover:bg-primary-dark hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(0,168,150,0.35)]' : type === 'error' ? 'bg-red-600 text-white min-w-[80px] hover:bg-red-700 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(220,38,38,0.35)]' : type === 'warning' ? 'bg-amber-600 text-white min-w-[80px] hover:bg-amber-700 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(217,119,6,0.35)]' : type === 'confirm' ? 'bg-primary text-white min-w-[80px] hover:bg-primary-dark hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(2,128,144,0.35)]' : type === 'prompt' ? 'bg-primary-dark text-white min-w-[80px] hover:bg-primary-dark hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(2,128,144,0.35)]' : '';
+  const borderTopClass =
+    type === "success"
+      ? "border-t-4 border-t-secondary"
+      : type === "error"
+        ? "border-t-4 border-t-red-500"
+        : type === "warning"
+          ? "border-t-4 border-t-amber-500"
+          : type === "confirm"
+            ? "border-t-4 border-t-primary"
+            : type === "prompt"
+              ? "border-t-4 border-t-secondary"
+              : "";
+  const iconBgClass =
+    type === "success"
+      ? "bg-secondary/10"
+      : type === "error"
+        ? "bg-red-100"
+        : type === "warning"
+          ? "bg-amber-100"
+          : type === "confirm"
+            ? "bg-primary/10"
+            : type === "prompt"
+              ? "bg-secondary/10"
+              : "";
+  const titleColorClass =
+    type === "success"
+      ? "text-primary-dark"
+      : type === "error"
+        ? "text-red-800"
+        : type === "warning"
+          ? "text-amber-800"
+          : type === "confirm"
+            ? "text-primary-dark"
+            : type === "prompt"
+              ? "text-primary-dark"
+              : "";
+  const okBtnClass =
+    type === "success"
+      ? "bg-secondary text-white min-w-[80px] hover:bg-primary-dark hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(0,168,150,0.35)]"
+      : type === "error"
+        ? "bg-red-600 text-white min-w-[80px] hover:bg-red-700 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(220,38,38,0.35)]"
+        : type === "warning"
+          ? "bg-amber-600 text-white min-w-[80px] hover:bg-amber-700 hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(217,119,6,0.35)]"
+          : type === "confirm"
+            ? "bg-primary text-white min-w-[80px] hover:bg-primary-dark hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(2,128,144,0.35)]"
+            : type === "prompt"
+              ? "bg-primary-dark text-white min-w-[80px] hover:bg-primary-dark hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(2,128,144,0.35)]"
+              : "";
 
   return (
-    <div className="fixed inset-0 bg-[rgba(10,20,50,0.55)] backdrop-blur-sm flex items-center justify-center z-[9999] animate-[backdropIn_0.2s_ease]" onClick={handleBackdropClick}>
-      <div className={`bg-white rounded-2xl shadow-[0_24px_60px_rgba(0,0,0,0.22),0_8px_20px_rgba(0,0,0,0.12)] w-full max-w-[440px] mx-auto overflow-hidden animate-[cardSlideIn_0.28s_cubic-bezier(0.34,1.56,0.64,1)] ${borderTopClass}`} role="dialog" aria-modal="true">
-
-        {/* Header */}
+    <div
+      className="fixed inset-0 bg-[rgba(10,20,50,0.55)] backdrop-blur-sm flex items-center justify-center z-[9999] animate-[backdropIn_0.2s_ease]"
+      onClick={handleBackdropClick}
+    >
+      <div
+        className={`bg-white rounded-2xl shadow-[0_24px_60px_rgba(0,0,0,0.22),0_8px_20px_rgba(0,0,0,0.12)] w-full max-w-[440px] mx-auto overflow-hidden animate-[cardSlideIn_0.28s_cubic-bezier(0.34,1.56,0.64,1)] ${borderTopClass}`}
+        role="dialog"
+        aria-modal="true"
+      >
         <div className="flex items-center gap-3 px-6 py-5 pb-4 border-b border-gray-100">
-          <div className={`w-11 h-11 rounded-full flex items-center justify-center text-xl flex-shrink-0 ${iconBgClass}`}>{ICONS[type]}</div>
-          <h3 className={`text-lg font-bold m-0 leading-tight ${titleColorClass}`}>{title || TITLES[type]}</h3>
+          <div
+            className={`w-11 h-11 rounded-full flex items-center justify-center text-xl flex-shrink-0 ${iconBgClass}`}
+          >
+            {ICONS[type]}
+          </div>
+          <h3
+            className={`text-lg font-bold m-0 leading-tight ${titleColorClass}`}
+          >
+            {title || TITLES[type]}
+          </h3>
         </div>
 
-        {/* Body */}
         <div className="px-6 py-5">
-          <p className="text-gray-700 text-sm leading-relaxed m-0 mb-1 whitespace-pre-line">{message}</p>
+          <p className="text-gray-700 text-sm leading-relaxed m-0 mb-1 whitespace-pre-line">
+            {message}
+          </p>
 
-          {type === 'prompt' && (
-            inputType === 'password' ? (
+          {type === "prompt" &&
+            (inputType === "password" ? (
               <input
                 type="password"
                 className="w-full mt-3.5 p-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 outline-none transition-all font-sans box-border focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.15)]"
@@ -99,28 +188,30 @@ const AlertCard = ({
                 onChange={(e) => setInputValue(e.target.value)}
                 autoFocus
               />
-            )
-          )}
+            ))}
         </div>
 
-        {/* Footer */}
         <div className="flex justify-end gap-2.5 px-6 pb-5 pt-3.5">
           {showCancel && (
-            <button className="px-5 py-2 border-none rounded-lg text-sm font-semibold cursor-pointer transition-all bg-gray-100 text-gray-700 hover:bg-gray-200" onClick={handleCancel}>
+            <button
+              className="px-5 py-2 border-none rounded-lg text-sm font-semibold cursor-pointer transition-all bg-gray-100 text-gray-700 hover:bg-gray-200"
+              onClick={handleCancel}
+            >
               Cancel
             </button>
           )}
-          <button className={`px-5 py-2 border-none rounded-lg text-sm font-semibold cursor-pointer transition-all ${okBtnClass}`} onClick={handleOk}>
-            {type === 'confirm' ? 'Confirm' : 'OK'}
+          <button
+            className={`px-5 py-2 border-none rounded-lg text-sm font-semibold cursor-pointer transition-all ${okBtnClass}`}
+            onClick={handleOk}
+          >
+            {type === "confirm" ? "Confirm" : "OK"}
           </button>
         </div>
-
       </div>
     </div>
   );
 };
 
-// ─── useAlert hook ────────────────────────────────────────────────────────────
 /**
  * Convenience hook that manages alert state.
  * Returns: [alertProps, showAlert, closeAlert]

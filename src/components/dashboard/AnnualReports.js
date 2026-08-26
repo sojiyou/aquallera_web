@@ -1,5 +1,3 @@
-// src/components/dashboard/AnnualReports.jsx
-// UPDATED: Auto-calculates from orders when archives don't exist
 import React, { useState, useEffect } from 'react';
 import { getAllAnnualReports, getAnnualReport } from '../../utils/yearlyReportGenerator';
 import { calculateMonthlyRevenue } from '../../utils/revenueCalculator';
@@ -15,7 +13,6 @@ const AnnualReports = ({ stationId }) => {
   const [loading, setLoading] = useState(true);
   const [showSkeleton, setShowSkeleton] = useState(false);
 
-  // Generate skeleton placeholder data
   const generateSkeletonData = () => {
     const currentYear = new Date().getFullYear();
     const years = [currentYear - 1, currentYear - 2];
@@ -69,7 +66,6 @@ const AnnualReports = ({ stationId }) => {
     });
   };
 
-  // NEW: Calculate annual report directly from orders
   const calculateAnnualFromOrders = async (year) => {
     try {
       const monthNames = [
@@ -81,12 +77,9 @@ const AnnualReports = ({ stationId }) => {
       let totalRevenue = 0;
       let totalOrders = 0;
       
-      // Loop through all 12 months of the year
       for (let month = 0; month < 12; month++) {
-        // Get monthly revenue using the existing calculator
         const revenue = await calculateMonthlyRevenue(stationId, year, month);
         
-        // Count orders for this month
         const { ref, get } = await import('firebase/database');
         const { database } = await import('../config/Firebase');
         
@@ -119,12 +112,10 @@ const AnnualReports = ({ stationId }) => {
         totalOrders += orderCount;
       }
       
-      // If no revenue for the entire year, return null
       if (totalRevenue === 0) return null;
       
       const avgMonthly = totalRevenue / 12;
       
-      // Find best and worst months
       const sortedByRevenue = [...monthlyBreakdown].sort((a, b) => b.revenue - a.revenue);
       const bestMonth = sortedByRevenue[0];
       const worstMonth = sortedByRevenue[11];
@@ -146,7 +137,7 @@ const AnnualReports = ({ stationId }) => {
         },
         monthlyBreakdown,
         isSkeleton: false,
-        fromOrders: true // Flag to indicate this came from raw orders
+        fromOrders: true
       };
     } catch (error) {
       console.error(`Error calculating annual report for ${year}:`, error);
@@ -154,7 +145,6 @@ const AnnualReports = ({ stationId }) => {
     }
   };
 
-  // Get all years that have order data
   const getYearsWithOrders = async () => {
     try {
       const { ref, get } = await import('firebase/database');
@@ -191,15 +181,12 @@ const AnnualReports = ({ stationId }) => {
       }
 
       try {
-        // First, try to get archived reports
         const archivedYears = await getAllAnnualReports(stationId);
         let allReports = [];
         
-        // Get years that have order data (for fallback calculation)
         const yearsWithOrders = await getYearsWithOrders();
         
         if (archivedYears && archivedYears.length > 0) {
-          // Load archived reports
           const archivedReportsData = await Promise.all(
             archivedYears.map(async (year) => {
               const reportData = await getAnnualReport(stationId, year);
@@ -209,11 +196,9 @@ const AnnualReports = ({ stationId }) => {
           allReports = [...archivedReportsData.filter(Boolean)];
         }
         
-        // Check for missing years that have orders but no archive
         const archivedYearSet = new Set(allReports.map(r => r.year));
         const missingYears = yearsWithOrders.filter(year => !archivedYearSet.has(year));
         
-        // Calculate reports for missing years from orders
         for (const year of missingYears) {
           const calculatedReport = await calculateAnnualFromOrders(year);
           if (calculatedReport && calculatedReport.total > 0) {
@@ -221,14 +206,12 @@ const AnnualReports = ({ stationId }) => {
           }
         }
         
-        // Sort years descending (most recent first)
         allReports.sort((a, b) => b.year - a.year);
         
         if (allReports.length > 0) {
           setReports(allReports);
           setShowSkeleton(false);
         } else {
-          // No real data at all, show skeleton
           setReports(generateSkeletonData());
           setShowSkeleton(true);
         }
@@ -293,7 +276,6 @@ const AnnualReports = ({ stationId }) => {
         </p>
       </div>
 
-      {/* Demo Mode Banner - Only shows when using sample data */}
       {showSkeleton && (
         <div className="bg-amber-50 border-l-4 border-l-amber-500 p-3 mb-6 rounded-lg text-sm text-amber-800 flex items-center gap-2">
           <span className="text-lg"></span>
@@ -301,7 +283,6 @@ const AnnualReports = ({ stationId }) => {
         </div>
       )}
 
-      {/* Live Data Indicator - Shows when using real orders */}
       {!showSkeleton && reports.some(r => r.fromOrders) && (
         <div className="bg-secondary/10 border-l-4 border-l-secondary p-3 mb-6 rounded-lg text-sm text-primary-dark flex items-center gap-2">
           <span className="text-lg"></span>

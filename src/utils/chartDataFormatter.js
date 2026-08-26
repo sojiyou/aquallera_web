@@ -6,27 +6,23 @@ export const formatMonthlyChartData = (dailyData, currentDay, daysInMonth, proje
   const chartData = [];
   
   for (let day = 1; day <= daysInMonth; day++) {
-    // Find actual revenue for this day (if it exists)
     const dayData = dailyData.find(d => d.day === day);
     const actualRevenue = dayData?.revenue || 0;
     
-    // Calculate cumulative revenue up to this day
     const cumulativeActual = dailyData
       .filter(d => d.day <= day)
       .reduce((sum, d) => sum + d.revenue, 0);
     
     if (day <= currentDay) {
-      // Past or current day - show actual data
       chartData.push({
         day,
         dayLabel: `Day ${day}`,
         actual: cumulativeActual,
-        projected: null, // No projection for past days
+        projected: null,
         isProjected: false,
         revenue: actualRevenue // Daily revenue for tooltips
       });
     } else {
-      // Future day - show projected cumulative
       const daysProjected = day - currentDay;
       const projectedAdditional = projectedDailyAverage * daysProjected;
       const projectedCumulative = cumulativeActual + projectedAdditional;
@@ -34,7 +30,7 @@ export const formatMonthlyChartData = (dailyData, currentDay, daysInMonth, proje
       chartData.push({
         day,
         dayLabel: `Day ${day}`,
-        actual: null, // No actual data for future
+        actual: null,
         projected: projectedCumulative,
         isProjected: true,
         revenue: projectedDailyAverage // Estimated daily revenue
@@ -53,7 +49,6 @@ export const formatMonthlyChartData = (dailyData, currentDay, daysInMonth, proje
 export const getRechartsMonthlyData = async (stationId, year, month, projectedDailyAverage) => {
   const { getDailyRevenueForMonth } = await import('./revenueCalculator');
   
-  // Get actual daily data
   const { dailyData } = await getDailyRevenueForMonth(stationId, year, month);
   
   const now = new Date();
@@ -89,7 +84,6 @@ export const getRechartsMonthlyData = async (stationId, year, month, projectedDa
     };
   }
   
-  // For current month, format with projection
   const chartData = formatMonthlyChartData(
     dailyData,
     currentDay,
@@ -97,7 +91,6 @@ export const getRechartsMonthlyData = async (stationId, year, month, projectedDa
     projectedDailyAverage
   );
   
-  // Calculate total actual so far
   const totalActual = dailyData.reduce((sum, d) => sum + d.revenue, 0);
   
   return {

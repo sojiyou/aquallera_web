@@ -2,7 +2,6 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, setPersistence, browserSessionPersistence } from 'firebase/auth';
 import { getDatabase } from 'firebase/database';
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyBFGWRLolpvnlrK-fpqtiCAvdual07mzDM",
   authDomain: "aquallera.firebaseapp.com",
@@ -13,10 +12,8 @@ const firebaseConfig = {
   appId: "1:432017337394:web:f62e953b995675cbaa602b"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firebase services
 const auth = getAuth(app);
 setPersistence(auth, browserSessionPersistence);
 const database = getDatabase(
@@ -26,7 +23,6 @@ const database = getDatabase(
 
 // const storage = getStorage(app); used when firebase plan is upgraded
 
-// Export all services together
 //export { auth, database, storage }; used when firebase plan is upgraded
 export { auth, database };
 export default app;

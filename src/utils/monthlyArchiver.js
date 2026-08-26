@@ -1,4 +1,3 @@
-// utils/monthlyArchiver.js
 import { ref, set, get } from 'firebase/database';
 import { database } from '../components/config/Firebase';
 import { calculateMonthlyRevenue, getDailyRevenueForArchive } from './revenueCalculator';
@@ -21,29 +20,24 @@ export const archiveLastMonth = async (stationId) => {
     
     console.log(`Archiving ${monthKey} ${year} for station ${stationId}...`);
     
-    // Get actual revenue for the month
     const actualRevenue = await calculateMonthlyRevenue(stationId, year, lastMonth);
     
-    // Get daily breakdown
     const { dailyData } = await getDailyRevenueForArchive(stationId, year, lastMonth);
     
-    // Get projected revenue (from cache if available)
     let projectedRevenue = 0;
     try {
       const { getRevenueCache } = await import('./revenueCache');
       const cache = getRevenueCache(stationId);
       const cached = cache.getCachedYearProjection();
       
-      // If we have cached projections from that month, use them
       if (cached?.currentMonth?.month === lastMonth && cached?.currentMonth?.year === year) {
         projectedRevenue = cached.currentMonth.projectedRevenue || 0;
       }
     } catch (err) {
       console.log('No projected data found, using actual as projected');
-      projectedRevenue = actualRevenue; // Fallback: use actual as projected
+      projectedRevenue = actualRevenue;
     }
     
-    // Count total orders for the month
     const ordersRef = ref(database, 'orders');
     const ordersSnapshot = await get(ordersRef);
     let monthOrderCount = 0;
@@ -62,12 +56,10 @@ export const archiveLastMonth = async (stationId) => {
       }).length;
     }
     
-    // Calculate accuracy
     const accuracy = projectedRevenue > 0 
       ? (actualRevenue / projectedRevenue) * 100 
       : 0;
     
-    // Archive data structure
     const archiveData = {
       projected: projectedRevenue,
       actual: actualRevenue,
@@ -80,7 +72,6 @@ export const archiveLastMonth = async (stationId) => {
       year: year
     };
     
-    // Save to Firebase
     const archiveRef = ref(
       database, 
       `waterStations/${stationId}/monthlyArchive/${year}/${monthKey}`

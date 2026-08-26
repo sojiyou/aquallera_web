@@ -1,86 +1,92 @@
-// src/components/Dashboard/Dashboard.js
-import React, { useState, useEffect, useRef } from 'react';
-import { ref, onValue, update, set, onDisconnect, push, get } from 'firebase/database';
-import { database, auth } from '../config/Firebase';
-import AlertCard, { useAlert } from '../admin/AlertCard';
-import Settings from './Settings';
-import Stock from './Stock';
-import { useNavigate } from 'react-router-dom';
-import { onAuthStateChanged } from 'firebase/auth';
-import CalendarView from './CalendarView';
-import NotificationDropdown from './NotificationDropdown';
+import React, { useState, useEffect, useRef } from "react";
+import {
+  ref,
+  onValue,
+  update,
+  set,
+  onDisconnect,
+  push,
+  get,
+} from "firebase/database";
+import { database, auth } from "../config/Firebase";
+import AlertCard, { useAlert } from "../admin/AlertCard";
+import Settings from "./Settings";
+import Stock from "./Stock";
+import { useNavigate } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
+import CalendarView from "./CalendarView";
+import NotificationDropdown from "./NotificationDropdown";
 
-// Mapbox Geocoding Function using YOUR token
 const convertCoordinatesToAddress = async (lat, lng) => {
   try {
-    if (!lat || !lng) return 'No location provided';
-    
+    if (!lat || !lng) return "No location provided";
+
     const latitude = parseFloat(lat);
     const longitude = parseFloat(lng);
-    
+
     if (isNaN(latitude) || isNaN(longitude)) {
-      return 'Invalid coordinates';
+      return "Invalid coordinates";
     }
-    
+
     const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
-    
+
     const response = await fetch(
       `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?` +
-      `access_token=${MAPBOX_TOKEN}&` +
-      `types=address,place,poi,neighborhood&` +
-      `language=en&` +
-      `limit=1`
+        `access_token=${MAPBOX_TOKEN}&` +
+        `types=address,place,poi,neighborhood&` +
+        `language=en&` +
+        `limit=1`,
     );
-    
+
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Mapbox API error:', response.status, errorText);
+      console.error("Mapbox API error:", response.status, errorText);
       return `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
     }
-    
+
     const data = await response.json();
-    
+
     if (data.features && data.features.length > 0) {
       const feature = data.features[0];
       let address = feature.place_name;
-      
+
       if (address && address.length > 100) {
-        address = address.split(',')[0];
+        address = address.split(",")[0];
       }
-      
+
       return address || `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
     } else {
       return `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
     }
-    
   } catch (error) {
-    console.error('Mapbox geocoding error:', error);
+    console.error("Mapbox geocoding error:", error);
     const latitude = parseFloat(lat) || 0;
     const longitude = parseFloat(lng) || 0;
     return `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
   }
 };
 
-// Shared helpers
 const getStatusBadge = (status) => {
   const statusConfig = {
-    pending: { bg: '#fef3c7', color: '#92400e', label: 'Pending' },
-    Pending: { bg: '#fef3c7', color: '#92400e', label: 'Pending' },
-    confirmed: { bg: '#dbeafe', color: '#1e40af', label: 'Confirmed' },
-    Confirmed: { bg: '#dbeafe', color: '#1e40af', label: 'Confirmed' },
-    preparing: { bg: '#ede9fe', color: '#5b21b6', label: 'Preparing' },
-    Preparing: { bg: '#ede9fe', color: '#5b21b6', label: 'Preparing' },
-    on_delivery: { bg: '#dbeafe', color: '#1e40af', label: 'For Delivery' },
-    ready: { bg: '#d1fae5', color: '#065f46', label: 'For Pickup' },
-    Ready: { bg: '#d1fae5', color: '#065f46', label: 'Ready' },
-    completed: { bg: '#e2e8f0', color: '#475569', label: 'Completed' },
-    Completed: { bg: '#e2e8f0', color: '#475569', label: 'Completed' },
-    delivered: { bg: '#e2e8f0', color: '#475569', label: 'Delivered' },
-    Delivered: { bg: '#e2e8f0', color: '#475569', label: 'Delivered' },
-    cancelled: { bg: '#fee2e2', color: '#991b1b', label: 'Cancelled' },
-    Cancelled: { bg: '#fee2e2', color: '#991b1b', label: 'Cancelled' },
+    pending: { bg: "#fef3c7", color: "#92400e", label: "Pending" },
+    Pending: { bg: "#fef3c7", color: "#92400e", label: "Pending" },
+    confirmed: { bg: "#dbeafe", color: "#1e40af", label: "Confirmed" },
+    Confirmed: { bg: "#dbeafe", color: "#1e40af", label: "Confirmed" },
+    preparing: { bg: "#ede9fe", color: "#5b21b6", label: "Preparing" },
+    Preparing: { bg: "#ede9fe", color: "#5b21b6", label: "Preparing" },
+    on_delivery: { bg: "#dbeafe", color: "#1e40af", label: "For Delivery" },
+    ready: { bg: "#d1fae5", color: "#065f46", label: "For Pickup" },
+    Ready: { bg: "#d1fae5", color: "#065f46", label: "Ready" },
+    completed: { bg: "#e2e8f0", color: "#475569", label: "Completed" },
+    Completed: { bg: "#e2e8f0", color: "#475569", label: "Completed" },
+    delivered: { bg: "#e2e8f0", color: "#475569", label: "Delivered" },
+    Delivered: { bg: "#e2e8f0", color: "#475569", label: "Delivered" },
+    cancelled: { bg: "#fee2e2", color: "#991b1b", label: "Cancelled" },
+    Cancelled: { bg: "#fee2e2", color: "#991b1b", label: "Cancelled" },
   };
-  return statusConfig[status] || { bg: '#f1f5f9', color: '#475569', label: status };
+  return (
+    statusConfig[status] || { bg: "#f1f5f9", color: "#475569", label: status }
+  );
 };
 
 const formatCurrency = (amount) => {
@@ -88,15 +94,14 @@ const formatCurrency = (amount) => {
 };
 
 const formatTime12hr = (time24) => {
-  if (!time24) return '';
-  const [h, m] = time24.split(':').map(Number);
+  if (!time24) return "";
+  const [h, m] = time24.split(":").map(Number);
   if (isNaN(h) || isNaN(m)) return time24;
-  const ampm = h >= 12 ? 'PM' : 'AM';
+  const ampm = h >= 12 ? "PM" : "AM";
   const h12 = h % 12 || 12;
-  return `${h12}:${String(m).padStart(2, '0')} ${ampm}`;
+  return `${h12}:${String(m).padStart(2, "0")} ${ampm}`;
 };
 
-// ===== ORDERS TABLE COMPONENT =====
 const OrdersTable = ({ orders, onOrderClick }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -121,70 +126,112 @@ const OrdersTable = ({ orders, onOrderClick }) => {
       <div className="text-center py-16 bg-white rounded-xl shadow-sm">
         <div className="text-5xl mb-4"></div>
         <h3 className="text-slate-800 m-0 mb-2">No orders found</h3>
-        <p className="text-slate-500 m-0">There are no orders matching your current filter.</p>
+        <p className="text-slate-500 m-0">
+          There are no orders matching your current filter.
+        </p>
       </div>
     );
   }
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200">
-      {/* Desktop Table - hidden below md */}
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full border-collapse text-sm min-w-[700px] [table-layout:fixed]">
           <thead>
             <tr className="bg-slate-100">
-              <th className="w-[110px] px-4 py-3 border-r border-slate-200 text-left text-slate-700 font-semibold text-xs uppercase tracking-wider">Order #</th>
-              <th className="w-[260px] px-4 py-3 border-r border-slate-200 text-left text-slate-700 font-semibold text-xs uppercase tracking-wider">Customer</th>
-              <th className="w-[60px] px-4 py-3 border-r border-slate-200 text-center text-slate-700 font-semibold text-xs uppercase tracking-wider">Type</th>
-              <th className="w-[60px] px-4 py-3 border-r border-slate-200 text-center text-slate-700 font-semibold text-xs uppercase tracking-wider">Amount</th>
-              <th className="w-[70px] px-4 py-3 border-r border-slate-200 text-center text-slate-700 font-semibold text-xs uppercase tracking-wider">Status</th>
-              <th className="w-[70px] text-center px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">Action</th>
+              <th className="w-[110px] px-4 py-3 border-r border-slate-200 text-left text-slate-700 font-semibold text-xs uppercase tracking-wider">
+                Order #
+              </th>
+              <th className="w-[260px] px-4 py-3 border-r border-slate-200 text-left text-slate-700 font-semibold text-xs uppercase tracking-wider">
+                Customer
+              </th>
+              <th className="w-[60px] px-4 py-3 border-r border-slate-200 text-center text-slate-700 font-semibold text-xs uppercase tracking-wider">
+                Type
+              </th>
+              <th className="w-[60px] px-4 py-3 border-r border-slate-200 text-center text-slate-700 font-semibold text-xs uppercase tracking-wider">
+                Amount
+              </th>
+              <th className="w-[70px] px-4 py-3 border-r border-slate-200 text-center text-slate-700 font-semibold text-xs uppercase tracking-wider">
+                Status
+              </th>
+              <th className="w-[70px] text-center px-4 py-3 text-slate-700 font-semibold text-xs uppercase tracking-wider">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
             {currentOrders.map((order, index) => {
               const statusInfo = getStatusBadge(order.status);
-              const orderId = order.orderId || order.id || 'N/A';
-              const customerName = order.customerName || 'N/A';
-              const orderType = order.orderType || 'N/A';
-              const grandTotal = order.grandTotal || (order.waterSubtotal || 0) + (order.transactionFee || 0);
+              const orderId = order.orderId || order.id || "N/A";
+              const customerName = order.customerName || "N/A";
+              const orderType = order.orderType || "N/A";
+              const grandTotal =
+                order.grandTotal ||
+                (order.waterSubtotal || 0) + (order.transactionFee || 0);
 
               return (
-                <tr 
-                  key={orderId} 
-                  className={`border-b border-slate-200 cursor-pointer transition-all hover:bg-primary/5 last:border-b-0 ${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}`}
+                <tr
+                  key={orderId}
+                  className={`border-b border-slate-200 cursor-pointer transition-all hover:bg-primary/5 last:border-b-0 ${index % 2 === 0 ? "bg-white" : "bg-slate-50/50"}`}
                   onClick={() => onOrderClick(order)}
                 >
                   <td className="w-[110px] px-4 py-3 border-r border-slate-200">
                     <div className="flex flex-col">
-                      <span className="font-semibold text-primary font-mono text-xs">#{orderId}</span>
-                      <span className="text-slate-400 text-[10px] mt-0.5">Created {new Date(order.createdAt || order.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
+                      <span className="font-semibold text-primary font-mono text-xs">
+                        #{orderId}
+                      </span>
+                      <span className="text-slate-400 text-[10px] mt-0.5">
+                        Created{" "}
+                        {new Date(
+                          order.createdAt || order.date,
+                        ).toLocaleDateString(undefined, {
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </span>
                     </div>
                   </td>
                   <td className="w-[260px] px-4 py-3 border-r border-slate-200">
                     <div className="flex flex-col gap-0.5">
-                      <span className="font-semibold text-slate-800 text-base">{customerName}</span>
-                      <span className="text-slate-500 text-sm">{order.customerPhone || ''}</span>
+                      <span className="font-semibold text-slate-800 text-base">
+                        {customerName}
+                      </span>
+                      <span className="text-slate-500 text-sm">
+                        {order.customerPhone || ""}
+                      </span>
                     </div>
                   </td>
                   <td className="w-[60px] px-4 py-3 border-r border-slate-200 text-center">
-                    <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${orderType === 'Delivery' ? 'bg-primary/15 text-primary-dark' : 'bg-emerald-100 text-emerald-800'}`}>
+                    <span
+                      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${orderType === "Delivery" ? "bg-primary/15 text-primary-dark" : "bg-emerald-100 text-emerald-800"}`}
+                    >
                       {orderType}
                     </span>
                   </td>
                   <td className="w-[60px] px-4 py-3 border-r border-slate-200 text-center">
-                    <span className="font-bold text-slate-800 text-sm">{formatCurrency(grandTotal)}</span>
+                    <span className="font-bold text-slate-800 text-sm">
+                      {formatCurrency(grandTotal)}
+                    </span>
                   </td>
                   <td className="w-[70px] px-4 py-3 border-r border-slate-200 text-center">
-                    <span 
+                    <span
                       className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap shadow-sm"
-                      style={{ backgroundColor: statusInfo.bg, color: statusInfo.color }}
+                      style={{
+                        backgroundColor: statusInfo.bg,
+                        color: statusInfo.color,
+                      }}
                     >
                       {statusInfo.label}
                     </span>
                   </td>
                   <td className="w-[70px] text-center px-4 py-3">
-                    <button className="bg-primary text-white border-none px-4 py-2 rounded-md cursor-pointer text-xs font-semibold transition-all hover:bg-primary-dark hover:-translate-y-0.5 hover:shadow-md active:translate-y-0" onClick={(e) => { e.stopPropagation(); onOrderClick(order); }}>
+                    <button
+                      className="bg-primary text-white border-none px-4 py-2 rounded-md cursor-pointer text-xs font-semibold transition-all hover:bg-primary-dark hover:-translate-y-0.5 hover:shadow-md active:translate-y-0"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onOrderClick(order);
+                      }}
+                    >
                       View
                     </button>
                   </td>
@@ -195,37 +242,48 @@ const OrdersTable = ({ orders, onOrderClick }) => {
         </table>
       </div>
 
-      {/* Mobile Cards - hidden on md+ */}
       <div className="md:hidden divide-y divide-slate-200">
         {currentOrders.map((order, index) => {
           const statusInfo = getStatusBadge(order.status);
-          const orderId = order.orderId || order.id || 'N/A';
-          const customerName = order.customerName || 'N/A';
-          const grandTotal = order.grandTotal || (order.waterSubtotal || 0) + (order.transactionFee || 0);
+          const orderId = order.orderId || order.id || "N/A";
+          const customerName = order.customerName || "N/A";
+          const grandTotal =
+            order.grandTotal ||
+            (order.waterSubtotal || 0) + (order.transactionFee || 0);
 
           return (
-            <div 
+            <div
               key={orderId}
               className="px-4 py-4 cursor-pointer transition-all hover:bg-primary/5 active:bg-primary/10"
               onClick={() => onOrderClick(order)}
             >
               <div className="flex items-start justify-between mb-2">
                 <div className="flex-1 min-w-0 mr-3">
-                  <div className="font-semibold text-slate-800 text-[15px] leading-tight truncate">{customerName}</div>
+                  <div className="font-semibold text-slate-800 text-[15px] leading-tight truncate">
+                    {customerName}
+                  </div>
                   {order.customerPhone && (
-                    <div className="text-slate-400 text-xs mt-0.5">{order.customerPhone}</div>
+                    <div className="text-slate-400 text-xs mt-0.5">
+                      {order.customerPhone}
+                    </div>
                   )}
                 </div>
                 <div className="flex items-center gap-2">
-                  <span 
+                  <span
                     className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold"
-                    style={{ backgroundColor: statusInfo.bg, color: statusInfo.color }}
+                    style={{
+                      backgroundColor: statusInfo.bg,
+                      color: statusInfo.color,
+                    }}
                   >
                     {statusInfo.label}
                   </span>
-                  <button 
+                  <button
                     className="flex-shrink-0 bg-primary text-white border-none px-4 py-[7px] rounded-md cursor-pointer text-xs font-semibold transition-all hover:bg-primary-dark active:scale-95"
-                    onClick={(e) => { e.stopPropagation(); onOrderClick(order); }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onOrderClick(order);
+                    }}
                   >
                     View
                   </button>
@@ -233,27 +291,37 @@ const OrdersTable = ({ orders, onOrderClick }) => {
               </div>
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold text-primary font-mono text-[11px]">#{orderId}</span>
-                  <span className="text-slate-400 text-[10px]">Created {new Date(order.createdAt || order.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
+                  <span className="font-semibold text-primary font-mono text-[11px]">
+                    #{orderId}
+                  </span>
+                  <span className="text-slate-400 text-[10px]">
+                    Created{" "}
+                    {new Date(order.createdAt || order.date).toLocaleDateString(
+                      undefined,
+                      { month: "short", day: "numeric" },
+                    )}
+                  </span>
                 </div>
-                <span className="font-bold text-slate-700 text-xs ml-auto">{formatCurrency(grandTotal)}</span>
+                <span className="font-bold text-slate-700 text-xs ml-auto">
+                  {formatCurrency(grandTotal)}
+                </span>
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* Pagination Footer */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center px-4 sm:px-5 py-4 bg-slate-100 border-t border-slate-200 gap-3">
         <div className="text-slate-600 text-sm font-medium">
-          Showing {startIndex + 1}-{Math.min(endIndex, orders.length)} of {orders.length} orders
+          Showing {startIndex + 1}-{Math.min(endIndex, orders.length)} of{" "}
+          {orders.length} orders
         </div>
-        
+
         <div className="flex items-center gap-6 flex-wrap">
           <div className="flex items-center gap-2 text-sm text-slate-600">
             <span className="font-medium">Rows per page:</span>
-            <select 
-              value={rowsPerPage} 
+            <select
+              value={rowsPerPage}
               onChange={(e) => setRowsPerPage(Number(e.target.value))}
               className="px-3 py-1.5 border border-slate-300 rounded-md text-sm bg-white cursor-pointer font-medium"
             >
@@ -263,10 +331,10 @@ const OrdersTable = ({ orders, onOrderClick }) => {
               <option value={50}>50</option>
             </select>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <div className="relative group">
-              <button 
+              <button
                 className="w-8 h-8 border border-slate-300 bg-white rounded-md cursor-pointer flex items-center justify-center text-sm transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
                 onClick={() => handlePageChange(1)}
                 disabled={currentPage === 1}
@@ -278,7 +346,7 @@ const OrdersTable = ({ orders, onOrderClick }) => {
               </span>
             </div>
             <div className="relative group">
-              <button 
+              <button
                 className="w-8 h-8 border border-slate-300 bg-white rounded-md cursor-pointer flex items-center justify-center text-sm transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
@@ -289,13 +357,13 @@ const OrdersTable = ({ orders, onOrderClick }) => {
                 Previous page
               </span>
             </div>
-            
+
             <span className="text-sm text-slate-700 font-semibold px-3 whitespace-nowrap">
               Page {currentPage} of {totalPages}
             </span>
-            
+
             <div className="relative group">
-              <button 
+              <button
                 className="w-8 h-8 border border-slate-300 bg-white rounded-md cursor-pointer flex items-center justify-center text-sm transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
@@ -307,7 +375,7 @@ const OrdersTable = ({ orders, onOrderClick }) => {
               </span>
             </div>
             <div className="relative group">
-              <button 
+              <button
                 className="w-8 h-8 border border-slate-200 bg-white rounded-md cursor-pointer flex items-center justify-center text-xs transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed"
                 onClick={() => handlePageChange(totalPages)}
                 disabled={currentPage === totalPages}
@@ -325,9 +393,8 @@ const OrdersTable = ({ orders, onOrderClick }) => {
   );
 };
 
-// ===== ORDER DETAIL MODAL COMPONENT =====
 const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState("");
   const [addressLoading, setAddressLoading] = useState(true);
   const [showRawLocation, setShowRawLocation] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -348,24 +415,24 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
 
       const lat = order.deliveryLatitude || order.latitude;
       const lng = order.deliveryLongitude || order.longitude;
-      
-      if (!lat || !lng || order.orderType !== 'Delivery') {
-        setAddress('Pickup order');
+
+      if (!lat || !lng || order.orderType !== "Delivery") {
+        setAddress("Pickup order");
         setAddressLoading(false);
         return;
       }
-      
+
       const cacheKey = `mapbox_addr_${lat}_${lng}`;
       const cached = localStorage.getItem(cacheKey);
       const cacheTime = localStorage.getItem(`${cacheKey}_time`);
       const now = Date.now();
-      
-      if (cached && cacheTime && (now - parseInt(cacheTime)) < 3600000) {
+
+      if (cached && cacheTime && now - parseInt(cacheTime) < 3600000) {
         setAddress(cached);
         setAddressLoading(false);
         return;
       }
-      
+
       setAddressLoading(true);
       try {
         const result = await convertCoordinatesToAddress(lat, lng);
@@ -373,13 +440,15 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
         localStorage.setItem(cacheKey, result);
         localStorage.setItem(`${cacheKey}_time`, now.toString());
       } catch (error) {
-        console.error('Failed to get address:', error);
-        setAddress(`${parseFloat(lat).toFixed(6)}, ${parseFloat(lng).toFixed(6)}`);
+        console.error("Failed to get address:", error);
+        setAddress(
+          `${parseFloat(lat).toFixed(6)}, ${parseFloat(lng).toFixed(6)}`,
+        );
       } finally {
         setAddressLoading(false);
       }
     };
-    
+
     fetchAddress();
   }, [order]);
 
@@ -389,34 +458,46 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
     if (!lat || !lng) return null;
     return {
       lat: parseFloat(lat).toFixed(6),
-      lng: parseFloat(lng).toFixed(6)
+      lng: parseFloat(lng).toFixed(6),
     };
   };
 
   const getStatusColor = (status) => {
     const colors = {
-      pending: '#f59e0b', Pending: '#f59e0b',
-      confirmed: '#3b82f6', Confirmed: '#3b82f6',
-      preparing: '#8b5cf6', Preparing: '#8b5cf6',
-      on_delivery: '#3b82f6',
-      ready: '#10b981',
-      completed: '#6b7280', Completed: '#10b981',
-      cancelled: '#ef4444', Cancelled: '#ef4444',
-      delivered: '#10b981', Delivered: '#10b981',
+      pending: "#f59e0b",
+      Pending: "#f59e0b",
+      confirmed: "#3b82f6",
+      Confirmed: "#3b82f6",
+      preparing: "#8b5cf6",
+      Preparing: "#8b5cf6",
+      on_delivery: "#3b82f6",
+      ready: "#10b981",
+      completed: "#6b7280",
+      Completed: "#10b981",
+      cancelled: "#ef4444",
+      Cancelled: "#ef4444",
+      delivered: "#10b981",
+      Delivered: "#10b981",
     };
-    return colors[status] || '#6b7280';
+    return colors[status] || "#6b7280";
   };
 
   const getStatusText = (status) => {
     const statusMap = {
-      pending: 'Pending', Pending: 'Pending',
-      confirmed: 'Confirmed', Confirmed: 'Confirmed',
-      preparing: 'Preparing', Preparing: 'Preparing',
-      on_delivery: 'On Delivery',
-      ready: 'Ready for Pickup',
-      completed: 'Completed', Completed: 'Completed',
-      cancelled: 'Cancelled', Cancelled: 'Cancelled',
-      delivered: 'Delivered', Delivered: 'Delivered',
+      pending: "Pending",
+      Pending: "Pending",
+      confirmed: "Confirmed",
+      Confirmed: "Confirmed",
+      preparing: "Preparing",
+      Preparing: "Preparing",
+      on_delivery: "On Delivery",
+      ready: "Ready for Pickup",
+      completed: "Completed",
+      Completed: "Completed",
+      cancelled: "Cancelled",
+      Cancelled: "Cancelled",
+      delivered: "Delivered",
+      Delivered: "Delivered",
     };
     return statusMap[status] || status;
   };
@@ -424,15 +505,15 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
   const handleStatusUpdate = async (newStatus) => {
     if (isUpdating) return;
     setIsUpdating(true);
-    
+
     try {
       const orderRef = ref(database, `orders/${order.orderId || order.id}`);
       await update(orderRef, {
         status: newStatus,
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       });
 
-      if (newStatus === 'completed' && order.stationId) {
+      if (newStatus === "completed" && order.stationId) {
         const stationRef = ref(database, `waterStations/${order.stationId}`);
         const snapshot = await get(stationRef);
         if (snapshot.exists()) {
@@ -441,23 +522,41 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
           const springQty = parseInt(order.springWaterQty) || 0;
           const mineralQty = parseInt(order.mineralWaterQty) || 0;
           const updates = {};
-          if (pureQty > 0) updates.stock_pureWater = Math.max(0, (data.stock_pureWater || 0) - pureQty);
-          if (springQty > 0) updates.stock_springWater = Math.max(0, (data.stock_springWater || 0) - springQty);
-          if (mineralQty > 0) updates.stock_mineralWater = Math.max(0, (data.stock_mineralWater || 0) - mineralQty);
+          if (pureQty > 0)
+            updates.stock_pureWater = Math.max(
+              0,
+              (data.stock_pureWater || 0) - pureQty,
+            );
+          if (springQty > 0)
+            updates.stock_springWater = Math.max(
+              0,
+              (data.stock_springWater || 0) - springQty,
+            );
+          if (mineralQty > 0)
+            updates.stock_mineralWater = Math.max(
+              0,
+              (data.stock_mineralWater || 0) - mineralQty,
+            );
           if (Object.keys(updates).length > 0) {
             updates.stockUpdatedAt = new Date().toISOString();
             await update(stationRef, updates);
           }
         }
       }
-      
+
       if (onStatusUpdate) {
         onStatusUpdate(order.orderId || order.id, newStatus);
       }
-      showAlert({ type: 'success', message: `Order status updated to: ${getStatusText(newStatus)}` });
+      showAlert({
+        type: "success",
+        message: `Order status updated to: ${getStatusText(newStatus)}`,
+      });
     } catch (error) {
-      console.error('Error updating order status:', error);
-      showAlert({ type: 'error', message: 'Failed to update order status. Please try again.' });
+      console.error("Error updating order status:", error);
+      showAlert({
+        type: "error",
+        message: "Failed to update order status. Please try again.",
+      });
     } finally {
       setIsUpdating(false);
     }
@@ -469,18 +568,33 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
   const mineralTotal = order.mineralWaterTotal || 0;
   const deliveryFee = order.deliveryFee || 0;
   const transactionFee = order.transactionFee || 0;
-  const grandTotal = order.grandTotal || (order.waterSubtotal || 0) + (order.transactionFee || 0);
+  const grandTotal =
+    order.grandTotal ||
+    (order.waterSubtotal || 0) + (order.transactionFee || 0);
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[1000] p-4 animate-[fadeIn_0.2s_ease]" onClick={onClose}>
-      <div className="bg-white rounded-2xl w-full max-w-[650px] max-h-[90vh] overflow-y-auto shadow-2xl animate-[slideUp_0.3s_ease]" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 bg-black/60 flex items-center justify-center z-[1000] p-4 animate-[fadeIn_0.2s_ease]"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-2xl w-full max-w-[650px] max-h-[90vh] overflow-y-auto shadow-2xl animate-[slideUp_0.3s_ease]"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex justify-between items-center px-4 sm:px-6 py-4 sm:py-5 border-b border-slate-200 sticky top-0 bg-white z-10 rounded-t-2xl">
           <div className="flex items-center gap-3">
             <h2>Order Details</h2>
-            <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-semibold text-xs font-mono">#{order.orderId || order.id || 'N/A'}</span>
+            <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-semibold text-xs font-mono">
+              #{order.orderId || order.id || "N/A"}
+            </span>
           </div>
           <div className="relative group">
-            <button className="w-9 h-9 border-none bg-slate-100 rounded-full cursor-pointer text-lg text-slate-500 flex items-center justify-center transition-all hover:bg-slate-200 hover:text-slate-800" onClick={onClose}>&times;</button>
+            <button
+              className="w-9 h-9 border-none bg-slate-100 rounded-full cursor-pointer text-lg text-slate-500 flex items-center justify-center transition-all hover:bg-slate-200 hover:text-slate-800"
+              onClick={onClose}
+            >
+              &times;
+            </button>
             <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
               Close
             </span>
@@ -489,68 +603,107 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
 
         <div className="p-4 sm:p-6">
           <div className="mb-5">
-            <div 
+            <div
               className="inline-block px-4 py-1.5 rounded-full font-semibold text-xs"
-              style={{ backgroundColor: getStatusColor(order.status), color: 'white' }}
+              style={{
+                backgroundColor: getStatusColor(order.status),
+                color: "white",
+              }}
             >
               {getStatusText(order.status)}
             </div>
           </div>
 
-             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
             <div className="flex flex-col gap-1">
-              <span className="text-xs text-slate-500 font-medium">Customer</span>
-              <span className="text-sm text-slate-800 font-medium">{order.customerName || 'N/A'}</span>
+              <span className="text-xs text-slate-500 font-medium">
+                Customer
+              </span>
+              <span className="text-sm text-slate-800 font-medium">
+                {order.customerName || "N/A"}
+              </span>
             </div>
             <div className="flex flex-col gap-1">
               <span className="text-xs text-slate-500 font-medium">Phone</span>
-              <span className="text-sm text-slate-800 font-medium">{order.customerPhone || 'Not provided'}</span>
+              <span className="text-sm text-slate-800 font-medium">
+                {order.customerPhone || "Not provided"}
+              </span>
             </div>
             <div className="flex flex-col gap-1">
               <span className="text-xs text-slate-500 font-medium">Type</span>
-              <span className="text-sm text-slate-800 font-medium">{order.orderType || 'N/A'}</span>
+              <span className="text-sm text-slate-800 font-medium">
+                {order.orderType || "N/A"}
+              </span>
             </div>
             <div className="flex flex-col gap-1">
               <span className="text-xs text-slate-500 font-medium">Date</span>
               <span className="text-sm text-slate-800 font-medium">
-                {order.date && order.time 
+                {order.date && order.time
                   ? `${order.date} at ${formatTime12hr(order.time)}`
-                  : order.createdAt 
-                    ? new Date(order.createdAt).toLocaleString(undefined, { hour12: true })
-                    : 'N/A'}
+                  : order.createdAt
+                    ? new Date(order.createdAt).toLocaleString(undefined, {
+                        hour12: true,
+                      })
+                    : "N/A"}
               </span>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="text-xs text-slate-500 font-medium">Reference</span>
-              <span className="text-sm text-slate-800 font-medium">{order.referenceNumber || 'N/A'}</span>
+              <span className="text-xs text-slate-500 font-medium">
+                Reference
+              </span>
+              <span className="text-sm text-slate-800 font-medium">
+                {order.referenceNumber || "N/A"}
+              </span>
             </div>
           </div>
 
-          {order.orderType === 'Delivery' && (
-            <div className="p-4 rounded-xl mb-6 border border-white/10" style={{ background: '#1B3B6F' }}>
-              <h4 className="m-0 mb-2 text-slate-200 text-sm">Delivery Address</h4>
+          {order.orderType === "Delivery" && (
+            <div
+              className="p-4 rounded-xl mb-6 border border-white/10"
+              style={{ background: "#1B3B6F" }}
+            >
+              <h4 className="m-0 mb-2 text-slate-200 text-sm">
+                Delivery Address
+              </h4>
               {addressLoading ? (
-                <p className="text-slate-400 italic text-sm">Loading address...</p>
+                <p className="text-slate-400 italic text-sm">
+                  Loading address...
+                </p>
               ) : (
                 <>
-                  <p className="m-0 mb-2 text-slate-300 text-sm font-medium">{address}</p>
+                  <p className="m-0 mb-2 text-slate-300 text-sm font-medium">
+                    {address}
+                  </p>
                   {order.additionalDetails && (
-                    <div className="my-2 p-3 rounded-md border-l-4" style={{ background: 'rgba(217,119,6,0.15)', borderLeftColor: '#fbbf24' }}>
-                      <span className="font-semibold text-amber-300 text-xs">Additional Instructions:</span>
-                      <p className="m-1 text-amber-200 text-sm">{order.additionalDetails}</p>
+                    <div
+                      className="my-2 p-3 rounded-md border-l-4"
+                      style={{
+                        background: "rgba(217,119,6,0.15)",
+                        borderLeftColor: "#fbbf24",
+                      }}
+                    >
+                      <span className="font-semibold text-amber-300 text-xs">
+                        Additional Instructions:
+                      </span>
+                      <p className="m-1 text-amber-200 text-sm">
+                        {order.additionalDetails}
+                      </p>
                     </div>
                   )}
                   {coords && (
                     <div className="mt-3">
-                      <button 
+                      <button
                         className="bg-secondary text-white border-none px-4 py-2 rounded-lg text-xs font-semibold cursor-pointer transition-all hover:brightness-110"
                         onClick={() => setShowRawLocation(!showRawLocation)}
                       >
-                        {showRawLocation ? 'Hide Map' : 'Show on Map'}
+                        {showRawLocation ? "Hide Map" : "Show on Map"}
                       </button>
                       {showRawLocation && (
                         <div className="mt-3 rounded-lg overflow-hidden border border-white/10">
-                          <div className="w-full" style={{ height: '250px', overflow: 'hidden' }}>
+                          <div
+                            className="w-full"
+                            style={{ height: "250px", overflow: "hidden" }}
+                          >
                             <iframe
                               title="Delivery Location"
                               width="100%"
@@ -558,10 +711,14 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
                               frameBorder="0"
                               scrolling="no"
                               src={`https://www.openstreetmap.org/export/embed.html?bbox=${parseFloat(coords.lng) - 0.005},${parseFloat(coords.lat) - 0.005},${parseFloat(coords.lng) + 0.005},${parseFloat(coords.lat) + 0.005}&layer=mapnik&marker=${coords.lat},${coords.lng}`}
-                              style={{ border: 0, marginTop: '-30px', display: 'block' }}
+                              style={{
+                                border: 0,
+                                marginTop: "-30px",
+                                display: "block",
+                              }}
                             />
                           </div>
-                          <a 
+                          <a
                             href={`https://www.openstreetmap.org/?mlat=${coords.lat}&mlon=${coords.lng}&zoom=15`}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -583,50 +740,89 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
             <table className="w-full border-collapse text-sm">
               <thead>
                 <tr>
-                  <th className="text-left p-2 border-b-2 border-slate-200 text-slate-500 font-semibold text-xs">Item</th>
-                  <th className="text-left p-2 border-b-2 border-slate-200 text-slate-500 font-semibold text-xs">Qty</th>
-                  <th className="text-left p-2 border-b-2 border-slate-200 text-slate-500 font-semibold text-xs">Price</th>
+                  <th className="text-left p-2 border-b-2 border-slate-200 text-slate-500 font-semibold text-xs">
+                    Item
+                  </th>
+                  <th className="text-left p-2 border-b-2 border-slate-200 text-slate-500 font-semibold text-xs">
+                    Qty
+                  </th>
+                  <th className="text-left p-2 border-b-2 border-slate-200 text-slate-500 font-semibold text-xs">
+                    Price
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {order.pureWaterQty > 0 && (
                   <tr>
-                    <td className="p-2.5 border-b border-slate-100">Pure Water (Gallon)</td>
-                    <td className="p-2.5 border-b border-slate-100">×{order.pureWaterQty}</td>
-                    <td className="p-2.5 border-b border-slate-100">₱{parseFloat(pureTotal).toFixed(2)}</td>
+                    <td className="p-2.5 border-b border-slate-100">
+                      Pure Water (Gallon)
+                    </td>
+                    <td className="p-2.5 border-b border-slate-100">
+                      ×{order.pureWaterQty}
+                    </td>
+                    <td className="p-2.5 border-b border-slate-100">
+                      ₱{parseFloat(pureTotal).toFixed(2)}
+                    </td>
                   </tr>
                 )}
                 {order.springWaterQty > 0 && (
                   <tr>
-                    <td className="p-2.5 border-b border-slate-100">Spring Water (Gallon)</td>
-                    <td className="p-2.5 border-b border-slate-100">×{order.springWaterQty}</td>
-                    <td className="p-2.5 border-b border-slate-100">₱{parseFloat(springTotal).toFixed(2)}</td>
+                    <td className="p-2.5 border-b border-slate-100">
+                      Spring Water (Gallon)
+                    </td>
+                    <td className="p-2.5 border-b border-slate-100">
+                      ×{order.springWaterQty}
+                    </td>
+                    <td className="p-2.5 border-b border-slate-100">
+                      ₱{parseFloat(springTotal).toFixed(2)}
+                    </td>
                   </tr>
                 )}
                 {order.mineralWaterQty > 0 && (
                   <tr>
-                    <td className="p-2.5 border-b border-slate-100">Mineral Water (Gallon)</td>
-                    <td className="p-2.5 border-b border-slate-100">×{order.mineralWaterQty}</td>
-                    <td className="p-2.5 border-b border-slate-100">₱{parseFloat(mineralTotal).toFixed(2)}</td>
+                    <td className="p-2.5 border-b border-slate-100">
+                      Mineral Water (Gallon)
+                    </td>
+                    <td className="p-2.5 border-b border-slate-100">
+                      ×{order.mineralWaterQty}
+                    </td>
+                    <td className="p-2.5 border-b border-slate-100">
+                      ₱{parseFloat(mineralTotal).toFixed(2)}
+                    </td>
                   </tr>
                 )}
-                {order.orderType === 'Delivery' && deliveryFee > 0 && (
+                {order.orderType === "Delivery" && deliveryFee > 0 && (
                   <tr>
-                    <td className="p-2.5 border-b border-slate-100">Delivery Fee</td>
+                    <td className="p-2.5 border-b border-slate-100">
+                      Delivery Fee
+                    </td>
                     <td className="p-2.5 border-b border-slate-100"></td>
-                    <td className="p-2.5 border-b border-slate-100">₱{parseFloat(deliveryFee).toFixed(2)}</td>
+                    <td className="p-2.5 border-b border-slate-100">
+                      ₱{parseFloat(deliveryFee).toFixed(2)}
+                    </td>
                   </tr>
                 )}
                 <tr>
-                    <td className="p-2.5 border-b border-slate-100">Transaction Fee</td>
-                    <td className="p-2.5 border-b border-slate-100"></td>
-                    <td className="p-2.5 border-b border-slate-100">₱{parseFloat(transactionFee).toFixed(2)}</td>
+                  <td className="p-2.5 border-b border-slate-100">
+                    Transaction Fee
+                  </td>
+                  <td className="p-2.5 border-b border-slate-100"></td>
+                  <td className="p-2.5 border-b border-slate-100">
+                    ₱{parseFloat(transactionFee).toFixed(2)}
+                  </td>
                 </tr>
               </tbody>
               <tfoot>
                 <tr>
-                  <td colSpan="2" className="border-b-0 border-t-2 border-slate-200 pt-3"><strong>Total</strong></td>
-                  <td className="border-b-0 border-t-2 border-slate-200 pt-3"><strong>₱{parseFloat(grandTotal).toFixed(2)}</strong></td>
+                  <td
+                    colSpan="2"
+                    className="border-b-0 border-t-2 border-slate-200 pt-3"
+                  >
+                    <strong>Total</strong>
+                  </td>
+                  <td className="border-b-0 border-t-2 border-slate-200 pt-3">
+                    <strong>₱{parseFloat(grandTotal).toFixed(2)}</strong>
+                  </td>
                 </tr>
               </tfoot>
             </table>
@@ -635,42 +831,74 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
           <div className="modal-status-actions">
             <h4 className="m-0 mb-3 text-slate-800 text-base">Update Status</h4>
             <div className="flex gap-3 flex-wrap">
-              {(order.status === 'pending' || order.status === 'Pending') && (
+              {(order.status === "pending" || order.status === "Pending") && (
                 <>
-                  <button onClick={() => handleStatusUpdate('confirmed')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-secondary hover:bg-primary-dark">
+                  <button
+                    onClick={() => handleStatusUpdate("confirmed")}
+                    disabled={isUpdating}
+                    className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-secondary hover:bg-primary-dark"
+                  >
                     Confirm Order
                   </button>
-                  <button onClick={() => handleStatusUpdate('cancelled')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-red-500 hover:bg-red-600">
+                  <button
+                    onClick={() => handleStatusUpdate("cancelled")}
+                    disabled={isUpdating}
+                    className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-red-500 hover:bg-red-600"
+                  >
                     Cancel Order
                   </button>
                 </>
               )}
-              {(order.status === 'confirmed' || order.status === 'Confirmed') && (
-                <button onClick={() => handleStatusUpdate('preparing')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-primary hover:bg-primary-dark">
+              {(order.status === "confirmed" ||
+                order.status === "Confirmed") && (
+                <button
+                  onClick={() => handleStatusUpdate("preparing")}
+                  disabled={isUpdating}
+                  className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-primary hover:bg-primary-dark"
+                >
                   Start Preparing
                 </button>
               )}
-              {(order.status === 'preparing' || order.status === 'Preparing') && (
+              {(order.status === "preparing" ||
+                order.status === "Preparing") && (
                 <>
-                  {order.orderType === 'Delivery' ? (
-                    <button onClick={() => handleStatusUpdate('on_delivery')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-primary hover:bg-primary-dark">
+                  {order.orderType === "Delivery" ? (
+                    <button
+                      onClick={() => handleStatusUpdate("on_delivery")}
+                      disabled={isUpdating}
+                      className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-primary hover:bg-primary-dark"
+                    >
                       Out for Delivery
                     </button>
                   ) : (
-                    <button onClick={() => handleStatusUpdate('ready')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-amber-500 hover:bg-amber-600">
+                    <button
+                      onClick={() => handleStatusUpdate("ready")}
+                      disabled={isUpdating}
+                      className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-amber-500 hover:bg-amber-600"
+                    >
                       Ready for Pickup
                     </button>
                   )}
                 </>
               )}
-              {(order.status === 'on_delivery' || order.status === 'On_Delivery' || order.status === 'ready' || order.status === 'Ready') && (
-                <button onClick={() => handleStatusUpdate('completed')} disabled={isUpdating} className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-secondary hover:bg-primary-dark">
+              {(order.status === "on_delivery" ||
+                order.status === "On_Delivery" ||
+                order.status === "ready" ||
+                order.status === "Ready") && (
+                <button
+                  onClick={() => handleStatusUpdate("completed")}
+                  disabled={isUpdating}
+                  className="px-5 py-2.5 border-none rounded-lg cursor-pointer font-semibold text-xs transition-all flex-1 min-w-[140px] flex items-center justify-center gap-2 shadow-sm text-white hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed bg-secondary hover:bg-primary-dark"
+                >
                   Mark as Completed
                 </button>
               )}
-              {(order.status === 'completed' || order.status === 'Completed' || 
-                order.status === 'cancelled' || order.status === 'Cancelled' ||
-                order.status === 'delivered' || order.status === 'Delivered') && (
+              {(order.status === "completed" ||
+                order.status === "Completed" ||
+                order.status === "cancelled" ||
+                order.status === "Cancelled" ||
+                order.status === "delivered" ||
+                order.status === "Delivered") && (
                 <div className="text-center p-3 bg-slate-100 rounded-lg text-slate-500 font-medium">
                   Order {getStatusText(order.status)}
                 </div>
@@ -683,11 +911,9 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
   );
 };
 
-
-
 const Dashboard = () => {
   const [alertProps, showAlert, closeAlert] = useAlert();
-  const [activeSection, setActiveSection] = useState('orders');
+  const [activeSection, setActiveSection] = useState("orders");
   const [stationData, setStationData] = useState(null);
   const [orders, setOrders] = useState([]);
   const [, setStats] = useState({
@@ -695,14 +921,14 @@ const Dashboard = () => {
     pendingOrders: 0,
     completedOrders: 0,
     todaysRevenue: 0,
-    mostBoughtWater: 'N/A',
-    topLocation: 'N/A'
+    mostBoughtWater: "N/A",
+    topLocation: "N/A",
   });
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState("all");
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [viewMode, setViewMode] = useState('list');
+  const [viewMode, setViewMode] = useState("list");
   const navigate = useNavigate();
   const knownOrderIds = useRef(new Set());
   const isInitialOrdersLoad = useRef(true);
@@ -717,7 +943,7 @@ const Dashboard = () => {
       if (latMatch && lngMatch) {
         return {
           lat: parseFloat(latMatch[1]),
-          lng: parseFloat(lngMatch[1])
+          lng: parseFloat(lngMatch[1]),
         };
       }
     } catch (error) {
@@ -729,17 +955,25 @@ const Dashboard = () => {
 
   const calculateStats = async (orderList) => {
     const total = orderList.length;
-    const pending = orderList.filter(order => 
-      order.status === 'pending' || order.status === 'Pending'
+    const pending = orderList.filter(
+      (order) => order.status === "pending" || order.status === "Pending",
     ).length;
-    const completed = orderList.filter(order => 
-      order.status === 'completed' || order.status === 'Completed' || 
-      order.status === 'delivered' || order.status === 'Delivered'
+    const completed = orderList.filter(
+      (order) =>
+        order.status === "completed" ||
+        order.status === "Completed" ||
+        order.status === "delivered" ||
+        order.status === "Delivered",
     ).length;
-    
+
     const revenue = orderList
-      .filter(order => order.status === 'completed' || order.status === 'Completed' || 
-                    order.status === 'delivered' || order.status === 'Delivered')
+      .filter(
+        (order) =>
+          order.status === "completed" ||
+          order.status === "Completed" ||
+          order.status === "delivered" ||
+          order.status === "Delivered",
+      )
       .reduce((sum, order) => {
         const pureTotal = parseFloat(order.pureWaterTotal) || 0;
         const springTotal = parseFloat(order.springWaterTotal) || 0;
@@ -748,18 +982,20 @@ const Dashboard = () => {
         return sum + pureTotal + springTotal + mineralTotal + deliveryFee;
       }, 0);
 
-    let pureCount = 0, springCount = 0, mineralCount = 0;
-    orderList.forEach(order => {
+    let pureCount = 0,
+      springCount = 0,
+      mineralCount = 0;
+    orderList.forEach((order) => {
       const pureQty = parseInt(order.pureWaterQty) || 0;
       const springQty = parseInt(order.springWaterQty) || 0;
       const mineralQty = parseInt(order.mineralWaterQty) || 0;
-      
+
       pureCount += pureQty;
       springCount += springQty;
       mineralCount += mineralQty;
     });
-    
-    let mostBought = 'No orders yet';
+
+    let mostBought = "No orders yet";
     if (pureCount > 0 || springCount > 0 || mineralCount > 0) {
       if (pureCount >= springCount && pureCount >= mineralCount) {
         mostBought = `Pure Water (${pureCount} gallons)`;
@@ -778,20 +1014,18 @@ const Dashboard = () => {
       const coords = extractLatLng(order.locationDetails);
       if (!coords) continue;
 
-      const address = await convertCoordinatesToAddress(
-        coords.lat,
-        coords.lng
-      );
+      const address = await convertCoordinatesToAddress(coords.lat, coords.lng);
 
       if (address && address !== "Unknown") {
-        locationCounts[address] =
-          (locationCounts[address] || 0) + 1;
+        locationCounts[address] = (locationCounts[address] || 0) + 1;
       }
     }
 
-    let topLocation = 'No orders yet';
+    let topLocation = "No orders yet";
     if (Object.keys(locationCounts).length > 0) {
-      const sortedLocations = Object.entries(locationCounts).sort((a, b) => b[1] - a[1]);
+      const sortedLocations = Object.entries(locationCounts).sort(
+        (a, b) => b[1] - a[1],
+      );
       const topCity = sortedLocations[0];
       topLocation = `${topCity[0]} (${topCity[1]} orders)`;
     }
@@ -802,25 +1036,28 @@ const Dashboard = () => {
       completedOrders: completed,
       todaysRevenue: revenue,
       mostBoughtWater: mostBought,
-      topLocation: topLocation
+      topLocation: topLocation,
     });
   };
 
   const getFilteredOrders = () => {
-    const sorted = [...orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    if (activeTab === 'all') return sorted;
-    
-    return sorted.filter(order => {
-      const status = (order.status || '').toLowerCase();
-      
-      if (activeTab === 'pending') return status === 'pending';
-      if (activeTab === 'confirmed') return status === 'confirmed';
-      if (activeTab === 'preparing') return status === 'preparing';
-      if (activeTab === 'for_pickup') return status === 'ready';
-      if (activeTab === 'for_delivery') return status === 'on_delivery';
-      if (activeTab === 'completed') return status === 'completed' || status === 'delivered';
-      if (activeTab === 'cancelled') return status === 'cancelled';
-      
+    const sorted = [...orders].sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+    );
+    if (activeTab === "all") return sorted;
+
+    return sorted.filter((order) => {
+      const status = (order.status || "").toLowerCase();
+
+      if (activeTab === "pending") return status === "pending";
+      if (activeTab === "confirmed") return status === "confirmed";
+      if (activeTab === "preparing") return status === "preparing";
+      if (activeTab === "for_pickup") return status === "ready";
+      if (activeTab === "for_delivery") return status === "on_delivery";
+      if (activeTab === "completed")
+        return status === "completed" || status === "delivered";
+      if (activeTab === "cancelled") return status === "cancelled";
+
       return true;
     });
   };
@@ -836,27 +1073,26 @@ const Dashboard = () => {
   };
 
   const handleStatusUpdate = (orderId, newStatus) => {
-    setOrders(prevOrders => 
-      prevOrders.map(order => 
-        (order.orderId || order.id) === orderId 
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        (order.orderId || order.id) === orderId
           ? { ...order, status: newStatus }
-          : order
-      )
+          : order,
+      ),
     );
-    setSelectedOrder(prev => 
+    setSelectedOrder((prev) =>
       prev && (prev.orderId || prev.id) === orderId
         ? { ...prev, status: newStatus }
-        : prev
+        : prev,
     );
   };
-
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
       if (!user) {
         setOrders([]);
         setLoading(false);
-        navigate('/login', { replace: true });
+        navigate("/login", { replace: true });
         return;
       }
 
@@ -882,36 +1118,51 @@ const Dashboard = () => {
       const unsubscribeOrders = onValue(ordersRef, async (snapshot) => {
         if (snapshot.exists()) {
           const ordersData = snapshot.val();
-          const ordersArray = Object.entries(ordersData).map(([key, value]) => ({
-            id: key,
-            ...value
-          }));
+          const ordersArray = Object.entries(ordersData).map(
+            ([key, value]) => ({
+              id: key,
+              ...value,
+            }),
+          );
 
-          const stationOrders = ordersArray.filter(order => {
+          const stationOrders = ordersArray.filter((order) => {
             const matches = order.stationId === user.uid;
             if (matches) {
-              console.log("DASHBOARD - Matched order:", order.id || order.orderId, "StationId:", order.stationId);
+              console.log(
+                "DASHBOARD - Matched order:",
+                order.id || order.orderId,
+                "StationId:",
+                order.stationId,
+              );
             }
             return matches;
           });
 
-          console.log("DASHBOARD - Station orders filtered:", stationOrders.length);
+          console.log(
+            "DASHBOARD - Station orders filtered:",
+            stationOrders.length,
+          );
 
-          const currentIds = new Set(stationOrders.map(o => o.id));
+          const currentIds = new Set(stationOrders.map((o) => o.id));
           const newPending = stationOrders.filter(
-            o => !knownOrderIds.current.has(o.id) && (o.status === "pending" || o.status === "Pending")
+            (o) =>
+              !knownOrderIds.current.has(o.id) &&
+              (o.status === "pending" || o.status === "Pending"),
           );
 
           if (!isInitialOrdersLoad.current && newPending.length > 0) {
-            const notifRef = ref(database, `waterStations/${user.uid}/notifications`);
-            newPending.forEach(order => {
+            const notifRef = ref(
+              database,
+              `waterStations/${user.uid}/notifications`,
+            );
+            newPending.forEach((order) => {
               const newNotifRef = push(notifRef);
               set(newNotifRef, {
                 customerName: order.customerName || "Unknown",
                 orderType: order.orderType || "Order",
                 orderId: order.id,
                 createdAt: new Date().toISOString(),
-                read: false
+                read: false,
               });
             });
           }
@@ -936,7 +1187,7 @@ const Dashboard = () => {
     });
 
     return () => unsubscribeAuth();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -944,26 +1195,25 @@ const Dashboard = () => {
       if (event.persisted) {
         const user = auth.currentUser;
         if (!user) {
-          window.location.replace('/login');
+          window.location.replace("/login");
           return;
         }
-        user.getIdToken(true)
-          .catch(() => window.location.replace('/login'));
+        user.getIdToken(true).catch(() => window.location.replace("/login"));
       }
     };
-    window.addEventListener('pageshow', handlePageShow);
-    return () => window.removeEventListener('pageshow', handlePageShow);
+    window.addEventListener("pageshow", handlePageShow);
+    return () => window.removeEventListener("pageshow", handlePageShow);
   }, []);
 
   useEffect(() => {
     const handlePopState = () => {
       auth.signOut().finally(() => {
-        window.location.replace('/login');
+        window.location.replace("/login");
       });
     };
 
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
   const handleLogout = async () => {
@@ -976,38 +1226,64 @@ const Dashboard = () => {
       }
 
       await auth.signOut();
-      window.location.replace('/login');
-
+      window.location.replace("/login");
     } catch (error) {
-      console.error('Logout error:', error);
-      showAlert({ type: 'error', message: 'Failed to logout. Please try again.' });
+      console.error("Logout error:", error);
+      showAlert({
+        type: "error",
+        message: "Failed to logout. Please try again.",
+      });
     }
   };
 
-  if (stationData && stationData.status === 'pending') {
+  if (stationData && stationData.status === "pending") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary to-primary-dark font-sans relative overflow-hidden">
-        <svg className="absolute inset-0 w-full h-full opacity-15" viewBox="0 0 1440 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <path fill="#9EB3C2" d="M0,200L48,213.3C96,226.7,192,253.3,288,250.7C384,248,480,216,576,213.3C672,210.7,768,237.3,864,245.3C960,253.3,1056,242.7,1152,224C1248,205.3,1344,178.7,1392,165.3L1440,152L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
-          <path fill="#ffffff" d="M0,350L48,338.7C96,327.3,192,304.7,288,320C384,335.3,480,388.7,576,396C672,403.3,768,364.7,864,346.7C960,328.7,1056,331.3,1152,352C1248,372.7,1344,411.3,1392,430.7L1440,450L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
-          <path fill="#9EB3C2" d="M0,550L48,565.3C96,580.7,192,611.3,288,608C384,604.7,480,568,576,554.7C672,541.3,768,552,864,578.7C960,605.3,1056,648,1152,632C1248,616,1344,541.3,1392,504L1440,466.7L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
+        <svg
+          className="absolute inset-0 w-full h-full opacity-15"
+          viewBox="0 0 1440 900"
+          preserveAspectRatio="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill="#9EB3C2"
+            d="M0,200L48,213.3C96,226.7,192,253.3,288,250.7C384,248,480,216,576,213.3C672,210.7,768,237.3,864,245.3C960,253.3,1056,242.7,1152,224C1248,205.3,1344,178.7,1392,165.3L1440,152L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"
+          />
+          <path
+            fill="#ffffff"
+            d="M0,350L48,338.7C96,327.3,192,304.7,288,320C384,335.3,480,388.7,576,396C672,403.3,768,364.7,864,346.7C960,328.7,1056,331.3,1152,352C1248,372.7,1344,411.3,1392,430.7L1440,450L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"
+          />
+          <path
+            fill="#9EB3C2"
+            d="M0,550L48,565.3C96,580.7,192,611.3,288,608C384,604.7,480,568,576,554.7C672,541.3,768,552,864,578.7C960,605.3,1056,648,1152,632C1248,616,1344,541.3,1392,504L1440,466.7L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"
+          />
         </svg>
         <div className="relative z-10">
           <header className="bg-white border-b border-slate-200 px-4 sm:px-8 py-6 shadow-sm">
             <div className="flex justify-between items-center max-w-[1200px] mx-auto flex-wrap gap-4">
               <div className="header-info">
-                <h1 className="text-slate-800 m-0 mb-1 text-2xl md:text-3xl">Pending Approval</h1>
+                <h1 className="text-slate-800 m-0 mb-1 text-2xl md:text-3xl">
+                  Pending Approval
+                </h1>
                 <p className="text-slate-600 text-sm m-1 flex items-center gap-1">
-                  {stationData.stationName || 'Your Station'}
+                  {stationData.stationName || "Your Station"}
                 </p>
               </div>
               <div className="relative group ml-auto">
-                <button onClick={handleLogout} className="border-none p-1.5 rounded cursor-pointer select-none hover:bg-slate-100 transition-colors">
-                <img draggable={false} src="/log-out.svg" alt="Logout" className="w-5 h-5 sm:w-6 sm:h-6" />
-              </button>
-              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-                Logout
-              </span>
+                <button
+                  onClick={handleLogout}
+                  className="border-none p-1.5 rounded cursor-pointer select-none hover:bg-slate-100 transition-colors"
+                >
+                  <img
+                    draggable={false}
+                    src="/log-out.svg"
+                    alt="Logout"
+                    className="w-5 h-5 sm:w-6 sm:h-6"
+                  />
+                </button>
+                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                  Logout
+                </span>
               </div>
             </div>
           </header>
@@ -1015,23 +1291,40 @@ const Dashboard = () => {
 
         <div className="max-w-[800px] mx-auto my-8 p-6 sm:p-12 bg-white rounded-xl shadow-sm text-center">
           <div className="text-4xl md:text-6xl mb-6 opacity-70"></div>
-          <h2 className="text-slate-800 mb-4">Your station is pending admin approval</h2>
-          <p className="text-slate-500 mb-8 leading-relaxed">Thank you for registering! An administrator will review your application soon.</p>
-          <p className="text-slate-500 mb-8 leading-relaxed">You will receive an email notification once your station is approved.</p>
-          
+          <h2 className="text-slate-800 mb-4">
+            Your station is pending admin approval
+          </h2>
+          <p className="text-slate-500 mb-8 leading-relaxed">
+            Thank you for registering! An administrator will review your
+            application soon.
+          </p>
+          <p className="text-slate-500 mb-8 leading-relaxed">
+            You will receive an email notification once your station is
+            approved.
+          </p>
+
           <div className="text-left max-w-md mx-auto">
             <h3 className="text-slate-800 mb-4 text-lg">What happens next?</h3>
             <ul className="list-disc pl-5 text-left">
-              <li className="mb-2 text-slate-600">Admin reviews your business permit and station details</li>
-              <li className="mb-2 text-slate-600">You'll receive an email notification (usually within 24-48 hours)</li>
-              <li className="mb-2 text-slate-600">Once approved, you can start accepting orders!</li>
+              <li className="mb-2 text-slate-600">
+                Admin reviews your business permit and station details
+              </li>
+              <li className="mb-2 text-slate-600">
+                You'll receive an email notification (usually within 24-48
+                hours)
+              </li>
+              <li className="mb-2 text-slate-600">
+                Once approved, you can start accepting orders!
+              </li>
             </ul>
           </div>
-          
+
           <div className="flex gap-4 justify-center mt-8">
-            <button 
+            <button
               className="bg-slate-500 text-white px-8 py-4 rounded-lg font-semibold cursor-pointer transition-all hover:bg-slate-600"
-              onClick={() => window.location.href = 'mailto:aquallera.main@gmail.com'}
+              onClick={() =>
+                (window.location.href = "mailto:aquallera.main@gmail.com")
+              }
             >
               Contact Support
             </button>
@@ -1044,37 +1337,66 @@ const Dashboard = () => {
   if (stationData === null && !loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary to-primary-dark font-sans relative overflow-hidden">
-        <svg className="absolute inset-0 w-full h-full opacity-15" viewBox="0 0 1440 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <path fill="#9EB3C2" d="M0,200L48,213.3C96,226.7,192,253.3,288,250.7C384,248,480,216,576,213.3C672,210.7,768,237.3,864,245.3C960,253.3,1056,242.7,1152,224C1248,205.3,1344,178.7,1392,165.3L1440,152L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
-          <path fill="#ffffff" d="M0,350L48,338.7C96,327.3,192,304.7,288,320C384,335.3,480,388.7,576,396C672,403.3,768,364.7,864,346.7C960,328.7,1056,331.3,1152,352C1248,372.7,1344,411.3,1392,430.7L1440,450L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
-          <path fill="#9EB3C2" d="M0,550L48,565.3C96,580.7,192,611.3,288,608C384,604.7,480,568,576,554.7C672,541.3,768,552,864,578.7C960,605.3,1056,648,1152,632C1248,616,1344,541.3,1392,504L1440,466.7L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
+        <svg
+          className="absolute inset-0 w-full h-full opacity-15"
+          viewBox="0 0 1440 900"
+          preserveAspectRatio="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill="#9EB3C2"
+            d="M0,200L48,213.3C96,226.7,192,253.3,288,250.7C384,248,480,216,576,213.3C672,210.7,768,237.3,864,245.3C960,253.3,1056,242.7,1152,224C1248,205.3,1344,178.7,1392,165.3L1440,152L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"
+          />
+          <path
+            fill="#ffffff"
+            d="M0,350L48,338.7C96,327.3,192,304.7,288,320C384,335.3,480,388.7,576,396C672,403.3,768,364.7,864,346.7C960,328.7,1056,331.3,1152,352C1248,372.7,1344,411.3,1392,430.7L1440,450L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"
+          />
+          <path
+            fill="#9EB3C2"
+            d="M0,550L48,565.3C96,580.7,192,611.3,288,608C384,604.7,480,568,576,554.7C672,541.3,768,552,864,578.7C960,605.3,1056,648,1152,632C1248,616,1344,541.3,1392,504L1440,466.7L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"
+          />
         </svg>
         <div className="relative z-10">
           <header className="bg-white border-b border-slate-200 px-4 sm:px-8 py-6 shadow-sm">
             <div className="flex justify-between items-center max-w-[1200px] mx-auto flex-wrap gap-4">
               <div className="header-info">
-                <h1 className="text-slate-800 m-0 mb-1 text-2xl md:text-3xl">Access Removed</h1>
+                <h1 className="text-slate-800 m-0 mb-1 text-2xl md:text-3xl">
+                  Access Removed
+                </h1>
                 <p className="text-slate-600 text-sm m-1 flex items-center gap-1">
                   Your station is no longer registered
                 </p>
               </div>
               <div className="relative group ml-auto">
-                <button onClick={handleLogout} className="border-none p-1.5 rounded cursor-pointer select-none hover:bg-slate-100 transition-colors">
-                <img draggable={false} src="/log-out.svg" alt="Logout" className="w-5 h-5 sm:w-6 sm:h-6" />
-              </button>
-              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-                Logout
-              </span>
+                <button
+                  onClick={handleLogout}
+                  className="border-none p-1.5 rounded cursor-pointer select-none hover:bg-slate-100 transition-colors"
+                >
+                  <img
+                    draggable={false}
+                    src="/log-out.svg"
+                    alt="Logout"
+                    className="w-5 h-5 sm:w-6 sm:h-6"
+                  />
+                </button>
+                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                  Logout
+                </span>
               </div>
             </div>
           </header>
         </div>
         <div className="max-w-[800px] mx-auto my-8 p-6 sm:p-12 bg-white rounded-xl shadow-sm text-center">
           <h2 className="text-slate-800 mb-4">Station Registration Removed</h2>
-          <p className="text-slate-600 mb-8">Your station has been removed from the system by an administrator. Please contact support if you believe this is an error.</p>
-          <button 
+          <p className="text-slate-600 mb-8">
+            Your station has been removed from the system by an administrator.
+            Please contact support if you believe this is an error.
+          </p>
+          <button
             className="bg-slate-500 text-white px-8 py-4 rounded-lg font-semibold cursor-pointer transition-all hover:bg-slate-600"
-            onClick={() => window.location.href = 'mailto:aquallera.main@gmail.com'}
+            onClick={() =>
+              (window.location.href = "mailto:aquallera.main@gmail.com")
+            }
           >
             Contact Support
           </button>
@@ -1083,30 +1405,54 @@ const Dashboard = () => {
     );
   }
 
-  if (stationData && stationData.status === 'rejected') {
+  if (stationData && stationData.status === "rejected") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary to-primary-dark font-sans relative overflow-hidden">
-        <svg className="absolute inset-0 w-full h-full opacity-15" viewBox="0 0 1440 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <path fill="#9EB3C2" d="M0,200L48,213.3C96,226.7,192,253.3,288,250.7C384,248,480,216,576,213.3C672,210.7,768,237.3,864,245.3C960,253.3,1056,242.7,1152,224C1248,205.3,1344,178.7,1392,165.3L1440,152L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
-          <path fill="#ffffff" d="M0,350L48,338.7C96,327.3,192,304.7,288,320C384,335.3,480,388.7,576,396C672,403.3,768,364.7,864,346.7C960,328.7,1056,331.3,1152,352C1248,372.7,1344,411.3,1392,430.7L1440,450L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
-          <path fill="#9EB3C2" d="M0,550L48,565.3C96,580.7,192,611.3,288,608C384,604.7,480,568,576,554.7C672,541.3,768,552,864,578.7C960,605.3,1056,648,1152,632C1248,616,1344,541.3,1392,504L1440,466.7L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
+        <svg
+          className="absolute inset-0 w-full h-full opacity-15"
+          viewBox="0 0 1440 900"
+          preserveAspectRatio="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill="#9EB3C2"
+            d="M0,200L48,213.3C96,226.7,192,253.3,288,250.7C384,248,480,216,576,213.3C672,210.7,768,237.3,864,245.3C960,253.3,1056,242.7,1152,224C1248,205.3,1344,178.7,1392,165.3L1440,152L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"
+          />
+          <path
+            fill="#ffffff"
+            d="M0,350L48,338.7C96,327.3,192,304.7,288,320C384,335.3,480,388.7,576,396C672,403.3,768,364.7,864,346.7C960,328.7,1056,331.3,1152,352C1248,372.7,1344,411.3,1392,430.7L1440,450L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"
+          />
+          <path
+            fill="#9EB3C2"
+            d="M0,550L48,565.3C96,580.7,192,611.3,288,608C384,604.7,480,568,576,554.7C672,541.3,768,552,864,578.7C960,605.3,1056,648,1152,632C1248,616,1344,541.3,1392,504L1440,466.7L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"
+          />
         </svg>
         <div className="relative z-10">
           <header className="bg-white border-b border-slate-200 px-4 sm:px-8 py-6 shadow-sm">
             <div className="flex justify-between items-center max-w-[1200px] mx-auto flex-wrap gap-4">
               <div className="header-info">
-                <h1 className="text-slate-800 m-0 mb-1 text-2xl md:text-3xl">Registration Rejected</h1>
+                <h1 className="text-slate-800 m-0 mb-1 text-2xl md:text-3xl">
+                  Registration Rejected
+                </h1>
                 <p className="text-slate-600 text-sm m-1 flex items-center gap-1">
-                  {stationData.stationName || 'Your Station'}
+                  {stationData.stationName || "Your Station"}
                 </p>
               </div>
               <div className="relative group ml-auto">
-                <button onClick={handleLogout} className="border-none p-1.5 rounded cursor-pointer select-none hover:bg-slate-100 transition-colors">
-                <img draggable={false} src="/log-out.svg" alt="Logout" className="w-5 h-5 sm:w-6 sm:h-6" />
-              </button>
-              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-                Logout
-              </span>
+                <button
+                  onClick={handleLogout}
+                  className="border-none p-1.5 rounded cursor-pointer select-none hover:bg-slate-100 transition-colors"
+                >
+                  <img
+                    draggable={false}
+                    src="/log-out.svg"
+                    alt="Logout"
+                    className="w-5 h-5 sm:w-6 sm:h-6"
+                  />
+                </button>
+                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                  Logout
+                </span>
               </div>
             </div>
           </header>
@@ -1115,24 +1461,28 @@ const Dashboard = () => {
         <div className="max-w-[800px] mx-auto my-8 p-6 sm:p-12 bg-white rounded-xl shadow-sm text-center">
           <div className="text-4xl md:text-6xl mb-6 text-red-600"></div>
           <h2 className="text-slate-800 mb-4">Station Registration Rejected</h2>
-          
+
           {stationData.rejectionReason && (
             <div className="bg-red-50 p-6 rounded-lg my-8 border border-red-200 text-left">
               <h3 className="text-red-600 mb-2">Reason for Rejection:</h3>
-              <p className="text-red-800 leading-relaxed">{stationData.rejectionReason}</p>
+              <p className="text-red-800 leading-relaxed">
+                {stationData.rejectionReason}
+              </p>
             </div>
           )}
-          
+
           <div className="flex gap-4 justify-center mt-8 flex-wrap">
-            <button 
+            <button
               className="bg-primary text-white px-8 py-4 rounded-lg font-semibold cursor-pointer transition-all hover:bg-primary-dark"
-              onClick={() => navigate('/signup')}
+              onClick={() => navigate("/signup")}
             >
               Re-apply with Corrections
             </button>
-            <button 
+            <button
               className="bg-slate-500 text-white px-8 py-4 rounded-lg font-semibold cursor-pointer transition-all hover:bg-slate-600"
-              onClick={() => window.location.href = 'mailto:aquallera.main@gmail.com'}
+              onClick={() =>
+                (window.location.href = "mailto:aquallera.main@gmail.com")
+              }
             >
               Contact Support
             </button>
@@ -1144,115 +1494,169 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary to-primary-dark font-sans relative overflow-hidden">
-      <svg className="absolute inset-0 w-full h-full opacity-15" viewBox="0 0 1440 900" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-        <path fill="#9EB3C2" d="M0,200L48,213.3C96,226.7,192,253.3,288,250.7C384,248,480,216,576,213.3C672,210.7,768,237.3,864,245.3C960,253.3,1056,242.7,1152,224C1248,205.3,1344,178.7,1392,165.3L1440,152L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
-        <path fill="#ffffff" d="M0,350L48,338.7C96,327.3,192,304.7,288,320C384,335.3,480,388.7,576,396C672,403.3,768,364.7,864,346.7C960,328.7,1056,331.3,1152,352C1248,372.7,1344,411.3,1392,430.7L1440,450L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
-        <path fill="#9EB3C2" d="M0,550L48,565.3C96,580.7,192,611.3,288,608C384,604.7,480,568,576,554.7C672,541.3,768,552,864,578.7C960,605.3,1056,648,1152,632C1248,616,1344,541.3,1392,504L1440,466.7L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
+      <svg
+        className="absolute inset-0 w-full h-full opacity-15"
+        viewBox="0 0 1440 900"
+        preserveAspectRatio="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill="#9EB3C2"
+          d="M0,200L48,213.3C96,226.7,192,253.3,288,250.7C384,248,480,216,576,213.3C672,210.7,768,237.3,864,245.3C960,253.3,1056,242.7,1152,224C1248,205.3,1344,178.7,1392,165.3L1440,152L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"
+        />
+        <path
+          fill="#ffffff"
+          d="M0,350L48,338.7C96,327.3,192,304.7,288,320C384,335.3,480,388.7,576,396C672,403.3,768,364.7,864,346.7C960,328.7,1056,331.3,1152,352C1248,372.7,1344,411.3,1392,430.7L1440,450L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"
+        />
+        <path
+          fill="#9EB3C2"
+          d="M0,550L48,565.3C96,580.7,192,611.3,288,608C384,604.7,480,568,576,554.7C672,541.3,768,552,864,578.7C960,605.3,1056,648,1152,632C1248,616,1344,541.3,1392,504L1440,466.7L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"
+        />
       </svg>
       <div className="relative z-10">
         <header className="bg-white border-b border-slate-200 px-4 sm:px-8 py-4 sm:py-6 shadow-sm">
           <div className="flex justify-between items-start sm:items-center max-w-[1200px] mx-auto flex-col sm:flex-row gap-4">
             <div className="header-info">
               <h1 className="text-slate-800 m-0 mb-1 text-2xl md:text-3xl">
-                {stationData && stationData.stationName 
+                {stationData && stationData.stationName
                   ? `${stationData.stationName} Dashboard`
-                  : "Station Dashboard"
-                }
+                  : "Station Dashboard"}
               </h1>
-            
-            {stationData && (stationData.city || stationData.address) && (
-              <p className="text-slate-600 text-sm m-1 flex items-center gap-1">
-                {stationData.address || ''} 
-                {stationData.address && stationData.city ? ', ' : ''}
-                {stationData.city || ''}
-              </p>
-            )}
-          </div>
-          <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
-            <div className="flex items-center gap-2 bg-secondary/5 px-2 sm:px-4 py-1 sm:py-2 rounded-full border border-secondary/20 text-[10px] sm:text-sm text-primary-dark">
-              <div className="w-2 h-2 rounded-full bg-secondary animate-[pulse_2s_infinite]"></div>
-              <span>Online</span>
-            </div>
-            <div className="flex gap-2 sm:gap-4">
-              <div className="relative group">
-                <button 
-                  className={`relative p-1.5 rounded-lg cursor-pointer select-none transition-all flex items-center justify-center hover:bg-slate-100`}
-                  onClick={() => setActiveSection('orders')}
-                >
-                  <img draggable={false} src="/orders.svg" alt="Orders" className="w-5 h-5 sm:w-6 sm:h-6" />
-                  {activeSection === 'orders' && <span className="absolute left-1/2 -translate-x-1/2 bottom-0 w-5 sm:w-6 h-[3px] rounded-full bg-primary"></span>}
-                </button>
-                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-                  Orders
-                </span>
-              </div>
-              <span className="text-slate-300 text-xl sm:text-2xl font-light select-none">|</span>
-              <div className="relative group">
-                <button 
-                  className={`relative p-1.5 rounded-lg cursor-pointer select-none transition-all flex items-center justify-center hover:bg-slate-100`}
-                  onClick={() => setActiveSection('stock')}
-                >
-                  <img draggable={false} src="/analytics.svg" alt="Analytics" className="w-5 h-5 sm:w-6 sm:h-6" />
-                  {activeSection === 'stock' && <span className="absolute left-1/2 -translate-x-1/2 bottom-0 w-5 sm:w-6 h-[3px] rounded-full bg-primary"></span>}
-                </button>
-                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-                  Analytics
-                </span>
-              </div>
-              <span className="text-slate-300 text-xl sm:text-2xl font-light select-none">|</span>
-              <div className="relative group">
-                <button 
-                  className={`relative p-1.5 rounded-lg cursor-pointer select-none transition-all flex items-center justify-center hover:bg-slate-100`}
-                  onClick={() => setActiveSection('settings')}
-                >
-                  <img draggable={false} src="/settings.svg" alt="Settings" className="w-5 h-5 sm:w-6 sm:h-6" />
-                  {activeSection === 'settings' && <span className="absolute left-1/2 -translate-x-1/2 bottom-0 w-5 sm:w-6 h-[3px] rounded-full bg-primary"></span>}
-                </button>
-                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-                  Settings
-                </span>
-              </div>
-            </div>
-            <span className="text-slate-300 text-xl sm:text-2xl font-light select-none">|</span>
-            <NotificationDropdown />
-            <span className="text-slate-300 text-xl sm:text-2xl font-light select-none">|</span>
-            <div className="relative group ml-auto">
-              <button onClick={handleLogout} className="border-none p-1.5 rounded cursor-pointer select-none hover:bg-slate-100 transition-colors">
-                <img draggable={false} src="/log-out.svg" alt="Logout" className="w-5 h-5 sm:w-6 sm:h-6" />
-              </button>
-              <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-                Logout
-              </span>
-            </div>
-          </div>
-        </div>
-      </header>
 
-      {activeSection === 'orders' && (
-        <>
-          <section className="max-w-[1200px] mx-auto px-4 sm:px-8 py-4 sm:py-8">
+              {stationData && (stationData.city || stationData.address) && (
+                <p className="text-slate-600 text-sm m-1 flex items-center gap-1">
+                  {stationData.address || ""}
+                  {stationData.address && stationData.city ? ", " : ""}
+                  {stationData.city || ""}
+                </p>
+              )}
+            </div>
+            <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
+              <div className="flex items-center gap-2 bg-secondary/5 px-2 sm:px-4 py-1 sm:py-2 rounded-full border border-secondary/20 text-[10px] sm:text-sm text-primary-dark">
+                <div className="w-2 h-2 rounded-full bg-secondary animate-[pulse_2s_infinite]"></div>
+                <span>Online</span>
+              </div>
+              <div className="flex gap-2 sm:gap-4">
+                <div className="relative group">
+                  <button
+                    className={`relative p-1.5 rounded-lg cursor-pointer select-none transition-all flex items-center justify-center hover:bg-slate-100`}
+                    onClick={() => setActiveSection("orders")}
+                  >
+                    <img
+                      draggable={false}
+                      src="/orders.svg"
+                      alt="Orders"
+                      className="w-5 h-5 sm:w-6 sm:h-6"
+                    />
+                    {activeSection === "orders" && (
+                      <span className="absolute left-1/2 -translate-x-1/2 bottom-0 w-5 sm:w-6 h-[3px] rounded-full bg-primary"></span>
+                    )}
+                  </button>
+                  <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                    Orders
+                  </span>
+                </div>
+                <span className="text-slate-300 text-xl sm:text-2xl font-light select-none">
+                  |
+                </span>
+                <div className="relative group">
+                  <button
+                    className={`relative p-1.5 rounded-lg cursor-pointer select-none transition-all flex items-center justify-center hover:bg-slate-100`}
+                    onClick={() => setActiveSection("stock")}
+                  >
+                    <img
+                      draggable={false}
+                      src="/analytics.svg"
+                      alt="Analytics"
+                      className="w-5 h-5 sm:w-6 sm:h-6"
+                    />
+                    {activeSection === "stock" && (
+                      <span className="absolute left-1/2 -translate-x-1/2 bottom-0 w-5 sm:w-6 h-[3px] rounded-full bg-primary"></span>
+                    )}
+                  </button>
+                  <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                    Analytics
+                  </span>
+                </div>
+                <span className="text-slate-300 text-xl sm:text-2xl font-light select-none">
+                  |
+                </span>
+                <div className="relative group">
+                  <button
+                    className={`relative p-1.5 rounded-lg cursor-pointer select-none transition-all flex items-center justify-center hover:bg-slate-100`}
+                    onClick={() => setActiveSection("settings")}
+                  >
+                    <img
+                      draggable={false}
+                      src="/settings.svg"
+                      alt="Settings"
+                      className="w-5 h-5 sm:w-6 sm:h-6"
+                    />
+                    {activeSection === "settings" && (
+                      <span className="absolute left-1/2 -translate-x-1/2 bottom-0 w-5 sm:w-6 h-[3px] rounded-full bg-primary"></span>
+                    )}
+                  </button>
+                  <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                    Settings
+                  </span>
+                </div>
+              </div>
+              <span className="text-slate-300 text-xl sm:text-2xl font-light select-none">
+                |
+              </span>
+              <NotificationDropdown />
+              <span className="text-slate-300 text-xl sm:text-2xl font-light select-none">
+                |
+              </span>
+              <div className="relative group ml-auto">
+                <button
+                  onClick={handleLogout}
+                  className="border-none p-1.5 rounded cursor-pointer select-none hover:bg-slate-100 transition-colors"
+                >
+                  <img
+                    draggable={false}
+                    src="/log-out.svg"
+                    alt="Logout"
+                    className="w-5 h-5 sm:w-6 sm:h-6"
+                  />
+                </button>
+                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                  Logout
+                </span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {activeSection === "orders" && (
+          <>
+            <section className="max-w-[1200px] mx-auto px-4 sm:px-8 py-4 sm:py-8">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
                 <div className="flex items-center gap-3 flex-wrap">
                   <h2 className="text-white m-0 text-xl md:text-2xl">
-                    {viewMode === 'calendar' ? 'Order Calendar' : 'Order Management'}
+                    {viewMode === "calendar"
+                      ? "Order Calendar"
+                      : "Order Management"}
                   </h2>
                   <div className="flex bg-white/10 rounded-xl p-1 gap-0.5">
                     <button
-                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border-none cursor-pointer ${viewMode === 'list' ? 'bg-white text-primary shadow-sm' : 'bg-transparent text-white/70 hover:text-white'}`}
-                      onClick={() => setViewMode('list')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border-none cursor-pointer ${viewMode === "list" ? "bg-white text-primary shadow-sm" : "bg-transparent text-white/70 hover:text-white"}`}
+                      onClick={() => setViewMode("list")}
                     >
                       List View
                     </button>
                     <button
-                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border-none cursor-pointer ${viewMode === 'calendar' ? 'bg-white text-primary shadow-sm' : 'bg-transparent text-white/70 hover:text-white'}`}
-                      onClick={() => setViewMode('calendar')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border-none cursor-pointer ${viewMode === "calendar" ? "bg-white text-primary shadow-sm" : "bg-transparent text-white/70 hover:text-white"}`}
+                      onClick={() => setViewMode("calendar")}
                     >
                       Calendar
                     </button>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold text-white whitespace-nowrap">Sort:</span>
+                  <span className="text-sm font-semibold text-white whitespace-nowrap">
+                    Sort:
+                  </span>
                   <div className="relative">
                     <select
                       className="appearance-none bg-white border-2 border-slate-200 rounded-xl px-3.5 py-2.5 pr-10 text-sm font-medium text-slate-700 cursor-pointer min-w-[180px] transition-all hover:border-primary focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(2,128,144,0.15)]"
@@ -1268,39 +1672,54 @@ const Dashboard = () => {
                       <option value="completed">Completed</option>
                       <option value="cancelled">Cancelled</option>
                     </select>
-                    <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    <svg
+                      className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
                     </svg>
                   </div>
                 </div>
               </div>
 
-            {viewMode === 'calendar' ? (
-              <CalendarView
-                orders={getFilteredOrders()}
-                onOrderClick={handleOrderClick}
-                deliveryDays={stationData?.deliveryDays}
+              {viewMode === "calendar" ? (
+                <CalendarView
+                  orders={getFilteredOrders()}
+                  onOrderClick={handleOrderClick}
+                  deliveryDays={stationData?.deliveryDays}
+                />
+              ) : (
+                <OrdersTable
+                  orders={getFilteredOrders()}
+                  onOrderClick={handleOrderClick}
+                />
+              )}
+            </section>
+
+            {showModal && selectedOrder && (
+              <OrderDetailModal
+                order={selectedOrder}
+                onClose={handleCloseModal}
+                onStatusUpdate={handleStatusUpdate}
+                showAlert={showAlert}
               />
-            ) : (
-              <OrdersTable orders={getFilteredOrders()} onOrderClick={handleOrderClick} />
             )}
-          </section>
+          </>
+        )}
 
-          {showModal && selectedOrder && (
-            <OrderDetailModal 
-              order={selectedOrder} 
-              onClose={handleCloseModal}
-              onStatusUpdate={handleStatusUpdate}
-              showAlert={showAlert}
-            />
-          )}
-        </>
-      )}
+        {activeSection === "stock" && <Stock />}
+        {activeSection === "settings" && (
+          <Settings stationData={stationData} setStationData={setStationData} />
+        )}
 
-      {activeSection === 'stock' && <Stock />}
-      {activeSection === 'settings' && <Settings stationData={stationData} setStationData={setStationData} />}
-
-      {alertProps && <AlertCard {...alertProps} onClose={closeAlert} />}
+        {alertProps && <AlertCard {...alertProps} onClose={closeAlert} />}
       </div>
     </div>
   );

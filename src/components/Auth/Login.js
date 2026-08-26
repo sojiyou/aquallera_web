@@ -1,4 +1,3 @@
-// src/components/Auth/Login.js - WITH REJECTION RULES IN POPUP
 import React, { useState, useEffect } from 'react';
 import AlertCard, { useAlert } from '../admin/AlertCard';
 
@@ -18,7 +17,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showRejectionMessage, setShowRejectionMessage] = useState(false);
-  const [showRejectionRules, setShowRejectionRules] = useState(false); // NEW: Toggle rules display
+  const [showRejectionRules, setShowRejectionRules] = useState(false);
   const [rejectionData, setRejectionData] = useState({
     reason: '',
     stationName: '',
@@ -27,7 +26,6 @@ const Login = () => {
   const [alertProps, showAlert, closeAlert] = useAlert();
   const navigate = useNavigate();
 
-  // Auto-redirect if already authenticated
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -37,7 +35,6 @@ const Login = () => {
     return () => unsub();
   }, [navigate]);
 
-  // Check for remembered email on component mount
   useEffect(() => {
     const rememberedEmail = localStorage.getItem('rememberedEmail');
     if (rememberedEmail) {
@@ -319,7 +316,6 @@ const Login = () => {
       </svg>
       <div className="bg-white rounded-xl shadow-[0_20px_40px_rgba(0,0,0,0.1)] p-10 w-full max-w-md relative z-10">
 
-        {/* BACK TO HOME BUTTON */}
         <button
           type="button"
           className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors mb-3"
@@ -333,7 +329,6 @@ const Login = () => {
           <p className="text-slate-500 text-sm m-0">Welcome back to AQUA-LLERA</p>
         </div>
 
-        {/* Rejection Message Display */}
         {showRejectionMessage && (
           <div className="bg-red-100 border-2 border-red-600 rounded-xl p-6 mb-6 animate-[fadeIn_0.3s_ease-in]">
             <div className="flex items-start mb-4">
@@ -361,7 +356,6 @@ const Login = () => {
               </div>
             )}
 
-            {/* NEW: Toggle button for rejection rules */}
             <div className="mt-3 mb-2">
               <button
                 onClick={() => setShowRejectionRules(!showRejectionRules)}
@@ -371,7 +365,6 @@ const Login = () => {
               </button>
             </div>
 
-            {/* NEW: Collapsible rejection rules */}
             {showRejectionRules && (
               <div className="mt-4 p-4 bg-white rounded-lg border border-slate-200">
                 <h4 className="text-slate-800 text-base font-semibold mb-3">Common Rejection Reasons</h4>

@@ -1,4 +1,3 @@
-// utils/consumptionCalculator.js
 import { ref, onValue, get } from 'firebase/database';
 import { database } from '../components/config/Firebase';
 
@@ -78,7 +77,6 @@ export const getDailyConsumptionForMonth = async (stationId, year, month) => {
           return;
         }
 
-        // Initialize daily consumption tracking
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         const dailyConsumption = {};
         
@@ -123,7 +121,6 @@ export const getDailyConsumptionForMonth = async (stationId, year, month) => {
             totals.mineralWater += mineralQty;
           });
 
-        // Convert to array format
         const dailyData = [];
         for (let day = 1; day <= daysInMonth; day++) {
           dailyData.push({
@@ -162,7 +159,6 @@ export const getDailyConsumptionForArchive = async (stationId, year, month) => {
     const orders = snapshot.val();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     
-    // Initialize daily data
     const dailyConsumption = new Array(daysInMonth).fill(null).map(() => ({
       pureWater: 0,
       springWater: 0,
@@ -200,7 +196,6 @@ export const getDailyConsumptionForArchive = async (stationId, year, month) => {
       totals.mineralWater += mineralQty;
     });
     
-    // Create daily data array with dates
     const dailyData = dailyConsumption.map((data, index) => ({
       day: index + 1,
       date: new Date(year, month, index + 1).toISOString(),

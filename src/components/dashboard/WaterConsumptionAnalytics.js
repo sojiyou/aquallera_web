@@ -1,4 +1,3 @@
-// src/components/dashboard/WaterConsumptionAnalytics.js
 import React, { useState, useEffect } from 'react';
 import { 
   getCurrentMonthConsumptionProjection, 
@@ -10,7 +9,6 @@ import {
   Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
 
-// Sample data for demo/development
 const SAMPLE_DATA = {
   projection: {
     hasMinimumData: true,
@@ -161,7 +159,6 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock, waterTypes }) => {
   const [historicalData, setHistoricalData] = useState(SAMPLE_DATA.historicalData);
   const [annualData, setAnnualData] = useState(SAMPLE_DATA.annualData);
   
-  // View Mode State for Water Consumption
   const [consumptionViewMode, setConsumptionViewMode] = useState('monthly');
 
   useEffect(() => {
@@ -220,7 +217,6 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock, waterTypes }) => {
 
   const formatNumber = (num) => Math.round(num).toLocaleString();
 
-  // ===== Manual Sample Data Toggle =====
   const handleToggleSample = () => {
     if (forceSampleData) {
       setForceSampleData(false);
@@ -235,13 +231,11 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock, waterTypes }) => {
     }
   };
   
-  // Helper to get unit for water type
   const getUnit = (waterType) => {
     if (waterType === 'springWater') return 'gal';
     return 'gal';
   };
   
-  // Helper to get display name for water type
   const getDisplayName = (waterType) => {
     if (waterType === 'pureWater') return 'Pure Water';
     if (waterType === 'springWater') return 'Spring Water';
@@ -254,7 +248,6 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock, waterTypes }) => {
     return `${Math.abs(change).toFixed(1)}% ${direction} ${previousMonthName}`;
   };
 
-  // Circular Progress Bar Component with improved labels
   const CircularProgress = ({ percentage, size = 120, strokeWidth = 8, color, waterType, current, projected, unit, dailyAvg, depletionDays }) => {
     const radius = (size - strokeWidth) / 2;
     const circumference = radius * 2 * Math.PI;
@@ -354,7 +347,6 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock, waterTypes }) => {
         </div>
       )}
 
-      {/* No Orders Banner for Current Month */}
       {!useSampleData && projection.currentConsumption.pureWater === 0 && 
        projection.currentConsumption.springWater === 0 && 
        projection.currentConsumption.mineralWater === 0 && (
@@ -364,7 +356,6 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock, waterTypes }) => {
         </div>
       )}
 
-      {/* Current Month Section with Circular Progress Bars - 3 COLUMN LAYOUT */}
       <div className="bg-white rounded-xl p-4 sm:p-6 mb-6 shadow-sm border border-slate-200">
         <div className="flex justify-between items-center mb-6 pb-3 border-b-2 border-slate-200 flex-wrap gap-2">
           <h4 className="text-slate-800 m-0 text-base sm:text-lg">{projection.monthName} {projection.year} Consumption</h4>
@@ -373,7 +364,6 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock, waterTypes }) => {
           </span>
         </div>
 
-        {/* 3-Column Grid for Circular Progress Bars */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mt-4">
           {[
             {
@@ -443,7 +433,6 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock, waterTypes }) => {
         </div>
       </div>
 
-      {/* Water Consumption Reports Section with Toggle */}
       <div className="mt-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-3 border-b-2 border-slate-200 gap-3">
           <h4 className="text-slate-800 m-0 text-base sm:text-lg">Water Consumption Reports</h4>
@@ -481,7 +470,6 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock, waterTypes }) => {
           </div>
         </div>
 
-        {/* Monthly View - Historical Consumption */}
         {consumptionViewMode === 'monthly' && (
           <div className="mt-2 p-5 bg-slate-50 rounded-lg border border-slate-200">
             <div className="flex flex-col gap-3">
@@ -513,7 +501,6 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock, waterTypes }) => {
 
                     {isExpanded && (
                       <div className="px-5 pb-5 border-t border-slate-200 animate-[slideDown_0.2s_ease-out]">
-                        {/* Daily Consumption Trends - Stacked Bar Chart */}
                         <div className="mb-6">
                           <h4 className="text-slate-800 text-sm m-0 mb-4 font-semibold">Daily Consumption Trends</h4>
                           <div className="hidden md:block">
@@ -583,7 +570,6 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock, waterTypes }) => {
                           </div>
                         </div>
 
-                        {/* Water Type Stats */}
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-5">
                           {[
                             { key: 'pure', stockKey: 'pureWater', label: 'Pure Water', border: 'border-l-blue-500' },
@@ -653,7 +639,6 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock, waterTypes }) => {
           </div>
         )}
 
-        {/* Annual View */}
         {consumptionViewMode === 'annual' && (
           <div className="mt-2 p-4 sm:p-5 bg-slate-50 rounded-lg border border-slate-200">
             <div className="flex flex-col gap-5">

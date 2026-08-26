@@ -1,4 +1,3 @@
-// src/components/Auth/Signup.js - WITH DELIVERY HOURS
 import React, { useState, useRef, useEffect } from 'react';
 import AlertCard, { useAlert } from '../admin/AlertCard';
 
@@ -23,13 +22,11 @@ const Signup = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    // Station Information
     stationName: '',
     ownerName: '',
     email: '',
     phone: '',
 
-    // Location Details
     address: '',
     city: 'Baguio',
     state: 'Benguet',
@@ -37,21 +34,18 @@ const Signup = () => {
     latitude: null,
     longitude: null,
 
-    // Business Information
     businessHours: { open: '08:00', close: '18:00' },
     serviceTypes: [],
     deliveryRadius: 5,
-    deliveryHours: [], // NEW: Array of delivery time slots
-    deliveryDays: [], // NEW: Array of delivery days
+    deliveryHours: [],
+    deliveryDays: [],
 
-    // PRICING VARIABLES
     waterTypes: ['pure', 'spring', 'mineral'],
     pricing_gallon_pure: '',
     pricing_gallon_spring: '',
     pricing_gallon_mineral: '',
     pricing_delivery_fee: '',
 
-    // Business Documents
     permitDocuments: {
       businessPermit:     { file: null, url: null },
       dtiSecRegistration: { file: null, url: null },
@@ -60,7 +54,6 @@ const Signup = () => {
       otherDocument:      { file: null, url: null, label: '' }
     },
 
-    // Login Credentials
     password: '',
     confirmPassword: '',
     termsAccepted: false
@@ -77,7 +70,6 @@ const Signup = () => {
   const fileInputRef = useRef(null);
   const currentSlotKeyRef = useRef(null);
 
-  // ========== MAPBOX MAP STATES ==========
   const [mapboxSearch, setMapboxSearch] = useState('');
   const [mapboxResults, setMapboxResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -86,10 +78,8 @@ const Signup = () => {
   const mapContainerRef = useRef(null);
   const searchContainerRef = useRef(null);
 
-  // ========== NEW: DELIVERY HOURS STATE ==========
   const [newDeliveryTime, setNewDeliveryTime] = useState('09:00');
 
-  // ========== YOUR EXISTING HANDLERS (UNCHANGED) ==========
   const handleNumberInputChange = (e) => {
     const { name, value } = e.target;
     const filteredValue = value.replace(/\D/g, '').substring(0, 11);
@@ -148,7 +138,6 @@ const Signup = () => {
     });
   };
 
-  // ========== DELIVERY HOURS HANDLERS ==========
   const addDeliveryHour = () => {
     if (!newDeliveryTime) return;
 
@@ -327,7 +316,6 @@ const Signup = () => {
     return interval;
   };
 
-  // ========== DETECT CLICKS OUTSIDE SEARCH TO CLOSE RESULTS ==========
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
@@ -344,7 +332,6 @@ const Signup = () => {
     };
   }, [mapboxResults]);
 
-  // ========== INITIALIZE MAPBOX MAP WHEN STEP 2 IS SHOWN ==========
   useEffect(() => {
     if (currentStep === 2 && mapContainerRef.current && !map) {
       initializeMap();
@@ -364,7 +351,6 @@ const Signup = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep, map]);
 
-  // ========== INITIALIZE THE MAPBOX MAP ==========
   const initializeMap = () => {
     const script = document.createElement('script');
     script.src = 'https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js';
@@ -423,7 +409,6 @@ const Signup = () => {
     document.head.appendChild(script);
   };
 
-  // ========== UPDATE LOCATION FROM COORDINATES ==========
   const updateLocationFromCoordinates = async (lat, lng) => {
     setLocationStatus('Getting address...');
 
@@ -473,7 +458,6 @@ const Signup = () => {
     }
   };
 
-  // ========== MAPBOX SEARCH ==========
   const searchAddress = async (query) => {
     if (!query.trim()) {
       setMapboxResults([]);
@@ -545,7 +529,6 @@ const Signup = () => {
     setMapboxSearch('');
   };
 
-  // ========== INLINE FIELD VALIDATION ==========
   const validateField = (name, value) => {
     switch (name) {
       case 'stationName':
@@ -583,7 +566,6 @@ const Signup = () => {
     setErrors(prev => ({ ...prev, [name]: error }));
   };
 
-  // ========== STEP VALIDATION ==========
   const validateStep = (step) => {
     const newErrors = {};
 
@@ -621,7 +603,6 @@ const Signup = () => {
       if (formData.waterTypes.length === 0) {
         newErrors.waterTypes = 'Select at least one water type';
       }
-      // Pricing is optional
     }
 
     if (step === 5) {
@@ -788,7 +769,6 @@ const Signup = () => {
         <path fill="#9EB3C2" d="M0,550L48,565.3C96,580.7,192,611.3,288,608C384,604.7,480,568,576,554.7C672,541.3,768,552,864,578.7C960,605.3,1056,648,1152,632C1248,616,1344,541.3,1392,504L1440,466.7L1440,900L1392,900C1344,900,1248,900,1152,900C1056,900,960,900,864,900C768,900,672,900,576,900C480,900,384,900,288,900C192,900,96,900,48,900L0,900Z"/>
       </svg>
       <div className="bg-white rounded-xl shadow-[0_20px_40px_rgba(0,0,0,0.1)] p-10 w-full max-w-md relative z-10">
-        {/* BACK TO HOME BUTTON */}
         <button
           type="button"
           className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors mb-3"
@@ -802,7 +782,6 @@ const Signup = () => {
           <p className="text-slate-500 text-sm m-0">Join the AQUA-LLERA network</p>
         </div>
 
-        {/* Progress Steps */}
         <div className="flex justify-between gap-1 mb-8 relative">
           {[1, 2, 3, 4, 5, 6].map(step => (
             <div
@@ -823,7 +802,6 @@ const Signup = () => {
         </div>
 
         <form onSubmit={handleSubmit}>
-          {/* STEP 1: Basic Information */}
           {currentStep === 1 && (
             <div>
               <h3 className="text-slate-800 mb-6 text-xl border-b-2 border-slate-100 pb-2">Station Information</h3>
@@ -886,7 +864,6 @@ const Signup = () => {
             </div>
           )}
 
-          {/* STEP 2: Location */}
           {currentStep === 2 && (
             <div>
               <h3 className="text-slate-800 mb-6 text-xl border-b-2 border-slate-100 pb-2">Station Location</h3>
@@ -895,7 +872,6 @@ const Signup = () => {
                 You can search for an address or click/drag the marker on the map.
               </p>
 
-              {/* SEARCH BOX */}
               <div className="mb-6">
                 <label className="block mb-2 text-gray-700 font-medium text-sm">Search for Your Address</label>
                 <div className="relative mb-2" ref={searchContainerRef}>
@@ -947,7 +923,6 @@ const Signup = () => {
                 </div>
               </div>
 
-              {/* INTERACTIVE MAP */}
               <div className="my-6">
                 <div
                   ref={mapContainerRef}
@@ -979,7 +954,6 @@ const Signup = () => {
                 {errors.location && <span className="text-red-500 text-sm mt-1 block">{errors.location}</span>}
               </div>
 
-              {/* ADDRESS FIELDS */}
               <div className="mb-6">
                 <label className="block mb-2 text-gray-700 font-medium text-sm">Address *</label>
                 <input
@@ -1031,12 +1005,10 @@ const Signup = () => {
             </div>
           )}
 
-          {/* STEP 3: Services */}
           {currentStep === 3 && (
             <div>
               <h3 className="text-slate-800 mb-6 text-xl border-b-2 border-slate-100 pb-2">Services Offered</h3>
 
-              {/* SERVICE TYPES */}
               <div className="mb-6">
                 <label className="block mb-2 text-gray-700 font-medium text-sm">Services Offered *</label>
                 <div className="flex gap-3 mt-2">
@@ -1070,7 +1042,6 @@ const Signup = () => {
                 {errors.serviceTypes && <span className="text-red-500 text-sm mt-1 block">{errors.serviceTypes}</span>}
               </div>
 
-              {/* BUSINESS HOURS */}
               <div className="mb-6">
                 <label className="block mb-2 text-gray-700 font-medium text-sm">Business Hours</label>
                 <div className="grid grid-cols-2 gap-4 mt-2">
@@ -1091,7 +1062,6 @@ const Signup = () => {
                 </div>
               </div>
 
-              {/* DELIVERY SECTION */}
               {formData.serviceTypes.includes('delivery') && (
                 <>
                   <div className="mb-6">
@@ -1166,7 +1136,6 @@ const Signup = () => {
                     )}
                   </div>
 
-                  {/* DELIVERY DAYS */}
                   <div className="mb-6">
                     <label className="block mb-2 text-gray-700 font-medium text-sm">
                       <svg className="w-4 h-4 inline mr-1.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1205,12 +1174,10 @@ const Signup = () => {
             </div>
           )}
 
-          {/* STEP 4: Pricing */}
           {currentStep === 4 && (
             <div>
               <h3 className="text-slate-800 mb-6 text-xl border-b-2 border-slate-100 pb-2">Water Types & Pricing</h3>
 
-              {/* WATER TYPES */}
               <div className="mb-8">
                 <label className="block mb-2 text-gray-700 font-medium text-sm">Water Types Offered *</label>
                 <div className="flex flex-col sm:flex-row gap-3 mt-2">
@@ -1249,7 +1216,6 @@ const Signup = () => {
                 <small className="block text-slate-400 text-xs mt-1 italic">Select the water types your station offers. You can update these anytime in your settings.</small>
               </div>
 
-              {/* PRICING */}
               <div>
                 <label className="block mb-2 text-gray-700 font-medium text-sm">Product Pricing (Optional)</label>
                 <p className="text-slate-500 text-sm mb-4 p-3 bg-slate-50 rounded-md border-l-4 border-primary">
@@ -1311,7 +1277,6 @@ const Signup = () => {
             </div>
           )}
 
-          {/* STEP 5: Permit */}
           {currentStep === 5 && (
             <div>
               <h3 className="text-slate-800 mb-6 text-xl border-b-2 border-slate-100 pb-2">Business Documents</h3>
@@ -1415,15 +1380,12 @@ const Signup = () => {
             </div>
           )}
 
-          {/* STEP 6: Account Setup */}
           {currentStep === 6 && (
             <div>
               <h3 className="text-slate-800 mb-6 text-xl border-b-2 border-slate-100 pb-2">Account Setup</h3>
 
-              {/* Two-column layout for password fields and rules */}
               <div className="flex flex-col gap-0">
 
-                {/* LEFT SIDE: Password Fields */}
                 <div className="flex flex-col">
                   <div className="mb-6">
                     <label className="block mb-2 text-gray-700 font-medium text-sm">Password *</label>
@@ -1558,7 +1520,6 @@ const Signup = () => {
                   </div>
                 </div>
 
-                {/* RIGHT SIDE: Rejection Rules */}
                 <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 text-xs mt-2">
                   <h4 className="text-slate-800 text-sm font-bold m-0 mb-1.5">Application Requirements</h4>
                   <p className="text-slate-500 m-0 mb-4 text-[0.82rem] leading-relaxed">
@@ -1569,10 +1530,6 @@ const Signup = () => {
                     <h5 className="text-[0.82rem] font-bold m-0 mb-1.5">Valid Documents Required:</h5>
                     <ul className="list-none p-0 m-0">
                       <li className="text-[0.8rem] py-0.5 pl-5 relative leading-relaxed">Current Business Permit (Mayor's Permit)</li>
-                      {/*<li>FDA License to Operate (LTO)</li>*/}
-                      {/*<li>Sanitation Permit from Health Office</li>*/}
-                      {/*<li>Latest water quality test results</li>*/}
-                      {/*<li>Clear, readable document scans</li>*/}
                     </ul>
                   </div>
 
@@ -1613,7 +1570,6 @@ const Signup = () => {
             </div>
           )}
 
-          {/* Navigation Buttons */}
           <div className="flex justify-between mt-8 gap-4">
             {currentStep > 1 && (
               <button type="button" onClick={prevStep} className="bg-slate-500 text-white px-8 py-3 rounded-lg font-semibold cursor-pointer transition-all text-base min-w-[120px] hover:bg-slate-600 hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed">

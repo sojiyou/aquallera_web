@@ -1,12 +1,9 @@
-// src/services/EmailService.js - UPDATED VERSION WITH STATION DETAILS
-
 import emailjs from '@emailjs/browser';
 
-// EmailJS Configuration
-const EMAILJS_SERVICE_ID = 'service_6q0e89w'; // Replace with your EmailJS service ID
-const EMAILJS_TEMPLATE_ID_REJECTION = 'template_2rk5qyq'; // Replace with your rejection template ID
+const EMAILJS_SERVICE_ID = 'service_6q0e89w';
+const EMAILJS_TEMPLATE_ID_REJECTION = 'template_2rk5qyq';
 const EMAILJS_TEMPLATE_ID_ADMIN_INVITE = 'template_qf3c91h';
-const EMAILJS_PUBLIC_KEY = 'fpu4u65UlHZOE96yR'; // Replace with your EmailJS public key
+const EMAILJS_PUBLIC_KEY = 'fpu4u65UlHZOE96yR';
 
 /**
  * Initialize EmailJS
@@ -31,9 +28,6 @@ export const testEmailJSConnection = async () => {
     console.log('Service ID:', EMAILJS_SERVICE_ID);
     console.log('Public Key:', EMAILJS_PUBLIC_KEY);
 
-    // Note: You'll need to create a simple test template in EmailJS first
-    // await emailjs.send(EMAILJS_SERVICE_ID, 'test_template_id', testParams);
-
     console.log('EmailJS connection test passed');
     return true;
   } catch (error) {
@@ -51,7 +45,6 @@ export const sendRejectionEmail = async (stationData, rejectionReason) => {
   try {
     console.log('Preparing rejection email for:', stationData.email);
 
-    // Validate required data
     if (!stationData || !stationData.email) {
       throw new Error('Station data or email is missing');
     }
@@ -60,34 +53,27 @@ export const sendRejectionEmail = async (stationData, rejectionReason) => {
       throw new Error('Rejection reason is required');
     }
 
-    // Format the email parameters - THIS IS WHAT GETS SENT TO EMAILJS TEMPLATE
     const emailParams = {
-      // Recipient
       to_email: stationData.email,
       to_name: stationData.ownerName || 'Water Station Owner',
 
-      // Station Details
       station_name: stationData.stationName || 'N/A',
       owner_name: stationData.ownerName || 'N/A',
       business_permit: stationData.businessPermitNumber || 'N/A',
 
-      // Contact Information
       station_email: stationData.email || 'N/A',
       station_phone: stationData.phone || 'N/A',
 
-      // Location Details
       station_address: stationData.address || 'N/A',
       station_city: stationData.city || 'N/A',
       station_state: stationData.state || 'N/A',
       station_zipcode: stationData.zipCode || 'N/A',
       full_address: `${stationData.address || ''}, ${stationData.city || ''}, ${stationData.state || ''} ${stationData.zipCode || ''}`.trim(),
 
-      // Business Information
       business_hours: `${stationData.businessHours?.open || 'N/A'} - ${stationData.businessHours?.close || 'N/A'}`,
       services_offered: stationData.serviceTypes?.join(', ') || 'N/A',
       delivery_radius: stationData.deliveryRadius ? `${stationData.deliveryRadius} km` : 'N/A',
 
-      // Rejection Details
       rejection_reason: rejectionReason,
       rejection_date: new Date().toLocaleDateString('en-PH', {
         year: 'numeric',
@@ -98,21 +84,17 @@ export const sendRejectionEmail = async (stationData, rejectionReason) => {
         hour12: true
       }),
 
-      // Application Details
       registration_date: stationData.createdAt ? new Date(stationData.createdAt).toLocaleDateString('en-PH', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
       }) : 'N/A',
 
-      // Support Information
       support_email: 'aquallera.main@gmail.com',
       platform_name: 'AQUA-LLERA',
 
-      // Current Year for footer
       current_year: new Date().getFullYear(),
 
-      // Reapplication Link (you can make this dynamic)
       reapply_link: 'https://your-app-url.com/signup'
     };
 
@@ -122,7 +104,6 @@ export const sendRejectionEmail = async (stationData, rejectionReason) => {
       reason: emailParams.rejection_reason.substring(0, 50) + '...'
     });
 
-    // Send email using EmailJS
     const response = await emailjs.send(
       EMAILJS_SERVICE_ID,
       EMAILJS_TEMPLATE_ID_REJECTION,
@@ -226,7 +207,6 @@ export const sendApprovalEmail = async (stationData) => {
   }
 };
 
-// Initialize EmailJS when this module loads
 initializeEmailJS();
 
 

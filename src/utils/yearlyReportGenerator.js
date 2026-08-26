@@ -1,4 +1,3 @@
-// utils/yearlyReportGenerator.js
 import { ref, set, get } from 'firebase/database';
 import { database } from '../components/config/Firebase';
 import { calculateMonthlyRevenue } from './revenueCalculator';
@@ -16,14 +15,12 @@ export const generateAnnualReport = async (stationId, year) => {
       'July', 'August', 'September', 'October', 'November', 'December'
     ];
     
-    // Calculate revenue for each month
     const monthlyBreakdown = [];
     let totalRevenue = 0;
     let totalOrders = 0;
     let bestMonth = { name: '', revenue: 0, orders: 0 };
     let worstMonth = { name: '', revenue: Infinity, orders: 0 };
     
-    // Get orders for counting
     const ordersRef = ref(database, 'orders');
     const ordersSnapshot = await get(ordersRef);
     const allOrders = ordersSnapshot.exists() ? ordersSnapshot.val() : {};
@@ -31,7 +28,6 @@ export const generateAnnualReport = async (stationId, year) => {
     for (let month = 0; month < 12; month++) {
       const revenue = await calculateMonthlyRevenue(stationId, year, month);
       
-      // Count orders for this month
       const monthOrders = Object.values(allOrders).filter(order => {
         if (order.stationId !== stationId) return false;
         const orderDate = new Date(order.createdAt);
@@ -53,7 +49,6 @@ export const generateAnnualReport = async (stationId, year) => {
       totalRevenue += revenue;
       totalOrders += monthOrders;
       
-      // Track best and worst months
       if (revenue > bestMonth.revenue) {
         bestMonth = {
           name: monthNames[month],
@@ -73,7 +68,6 @@ export const generateAnnualReport = async (stationId, year) => {
     
     const avgMonthly = totalRevenue / 12;
     
-    // Create report data
     const reportData = {
       year,
       total: totalRevenue,
@@ -85,7 +79,6 @@ export const generateAnnualReport = async (stationId, year) => {
       generatedAt: new Date().toISOString()
     };
     
-    // Save to Firebase
     const reportRef = ref(
       database,
       `waterStations/${stationId}/yearlyRevenue/${year}`

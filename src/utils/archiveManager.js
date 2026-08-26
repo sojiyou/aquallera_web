@@ -1,4 +1,3 @@
-// utils/archiveManager.js
 import { archiveLastMonth } from './monthlyArchiver';
 import { generateAnnualReport } from './yearlyReportGenerator';
 
@@ -20,13 +19,11 @@ class ArchiveManager {
   start() {
     console.log(`Archive Manager started for station ${this.stationId}`);
     
-    // Check immediately
     this.checkAndArchive();
     
-    // Then check every hour
     this.checkInterval = setInterval(() => {
       this.checkAndArchive();
-    }, 60 * 60 * 1000); // Every 1 hour
+    }, 60 * 60 * 1000);
   }
 
   /**
@@ -46,7 +43,6 @@ class ArchiveManager {
     const now = new Date();
     const today = now.toDateString();
     
-    // Only run once per day
     if (this.lastCheck === today) {
       return;
     }
@@ -65,7 +61,6 @@ class ArchiveManager {
       await this.runAnnualReport();
     }
     
-    // Update last check
     this.lastCheck = today;
     localStorage.setItem(`lastArchiveCheck_${this.stationId}`, today);
   }
@@ -80,7 +75,6 @@ class ArchiveManager {
       if (result.success) {
         console.log(`Monthly archive completed for ${result.month} ${result.year}`);
         
-        // Show notification to user (optional)
         this.notifyUser(
           'Monthly Archive Complete', 
           `${result.month} ${result.year} data has been archived successfully.`
@@ -107,7 +101,6 @@ class ArchiveManager {
       if (result.success) {
         console.log(`Annual report generated for ${year}`);
         
-        // Show notification to user (optional)
         this.notifyUser(
           'Annual Report Ready', 
           `Your ${year} annual report is now available!`
@@ -127,12 +120,7 @@ class ArchiveManager {
    * Optional: Show notification to user
    */
   notifyUser(title, message) {
-    // You can implement custom notifications here
-    // For now, just log to console
     console.log(`${title}: ${message}`);
-    
-    // Example: Could show a toast notification
-    // toast.success(`${title}: ${message}`);
   }
 
   /**
@@ -153,7 +141,6 @@ class ArchiveManager {
   }
 }
 
-// Singleton instance per station
 const managerInstances = new Map();
 
 /**

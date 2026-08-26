@@ -1,4 +1,3 @@
-// src/components/dashboard/Stock.js
 import React, { useState, useEffect, useRef } from 'react';
 import { ref, onValue, update, set as dbSet } from 'firebase/database';
 import { database, auth } from '../config/Firebase';
@@ -8,7 +7,6 @@ import HistoricalPerformance from './HistoricalPerformance';
 import AnnualReports from './AnnualReports';
 import WaterConsumptionAnalytics from './WaterConsumptionAnalytics';
 import InfoTooltip from './InfoTooltip';
-// predictive analytics imports
 import {
   LineChart,
   Line,
@@ -29,7 +27,6 @@ import {
 } from '../../utils/chartDataFormatter';
 import { getRevenueCache } from '../../utils/revenueCache';
 
-// Sample revenue data generator for the demo toggle
 const buildSampleRevenueData = () => {
   const now = new Date();
   const year = now.getFullYear();
@@ -95,7 +92,6 @@ const buildSampleRevenueData = () => {
   };
 };
 
-// Mapbox Geocoding Function (same as Dashboard.js)
 const convertCoordinatesToAddress = async (lat, lng) => {
   try {
     if (!lat || !lng) return 'No location provided';
@@ -172,15 +168,12 @@ const Stock = () => {
     springWater: 0,
     mineralWater: 0,
   });
-  // ===== View Mode State =====
-  const [dataViewMode, setDataViewMode] = useState('monthly'); // 'monthly' or 'annual'
+  const [dataViewMode, setDataViewMode] = useState('monthly');
   const [useSampleRevenue, setUseSampleRevenue] = useState(false);
 
-  // ===== Toggle States =====
   const [showConsumptionAnalytics, setShowConsumptionAnalytics] = useState(false);
   const [showRevenueAnalytics, setShowRevenueAnalytics] = useState(true);
 
-  // ===== Predictive Revenue State =====
   const [revenueProjection, setRevenueProjection] = useState(null);
   const [yearForecast, setYearForecast] = useState(null);
   const [chartData, setChartData] = useState([]);
@@ -223,9 +216,7 @@ const Stock = () => {
       }
     });
   };
-  // =====================================
 
-  // ===== Toggle Functions =====
   const toggleConsumptionAnalytics = () => {
     setShowConsumptionAnalytics(!showConsumptionAnalytics);
   };
@@ -234,7 +225,6 @@ const Stock = () => {
     setShowRevenueAnalytics(!showRevenueAnalytics);
   };
 
-  // Extract coordinates from location string
   const extractLatLng = (locationString) => {
     if (!locationString) return null;
 
@@ -255,7 +245,6 @@ const Stock = () => {
     return null;
   };
 
-  // Calculate stats from orders
   const calculateStats = async (orderList) => {
     const total = orderList.length;
     const pending = orderList.filter(
@@ -343,7 +332,6 @@ const Stock = () => {
     });
   };
 
-  // Generate predictive insights
   const generateInsights = (orderList, stockData) => {
     const insights = [];
 
@@ -412,7 +400,6 @@ const Stock = () => {
     return insights;
   };
 
-  // ===== Core projection loader =====
   const loadProjectionData = async (forceRefresh = false) => {
     try {
       const user = auth.currentUser;
@@ -477,14 +464,12 @@ const Stock = () => {
     }
   };
 
-  // ===== Manual Refresh Handler =====
   const handleRefreshProjections = async () => {
     setIsRefreshing(true);
     await loadProjectionData(true);
     setIsRefreshing(false);
   };
 
-  // ===== Update Projections When Orders Change =====
   useEffect(() => {
     const updateProjections = async () => {
       try {
@@ -540,7 +525,6 @@ const Stock = () => {
     }
   }, [orders]);
 
-  // ===== Initialize Revenue Cache and Load Projections =====
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -551,7 +535,6 @@ const Stock = () => {
     return () => unsubscribeAuth();
   }, []);
 
-  // Fetch data
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
       if (!user) {
@@ -623,7 +606,6 @@ const Stock = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Update insights when stock changes
   useEffect(() => {
     if (orders.length >= 0) {
       const newInsights = generateInsights(orders, stock);
@@ -690,7 +672,6 @@ const Stock = () => {
     return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
   };
 
-  // ===== Sample Data Toggle: effective values for revenue analytics =====
   const sampleRevenue = useSampleRevenue ? buildSampleRevenueData() : null;
   const effRevenueProjection = sampleRevenue ? sampleRevenue.currentMonth : revenueProjection;
   const effChartData = sampleRevenue ? sampleRevenue.chartData : chartData;
@@ -713,7 +694,6 @@ const Stock = () => {
   return (
     <div className="p-4 sm:p-8 min-h-screen">
 
-      {/* Analytics Section */}
       <section className="bg-white rounded-xl p-4 sm:p-8 mb-8 shadow-sm">
         <div className="flex justify-between items-center mb-8 pb-4 border-b-2 border-slate-200 flex-wrap gap-3">
           <h2 className="text-slate-800 text-xl sm:text-2xl m-0">Business Analytics
@@ -775,7 +755,6 @@ const Stock = () => {
         </div>
       </section>
 
-      {/* Stock Inventory Section */}
       <section className="bg-white rounded-xl p-4 sm:p-8 mb-8 shadow-sm">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 pb-4 border-b-2 border-slate-200 gap-3">
           <h2 className="text-slate-800 text-xl sm:text-2xl m-0">Water Stock Inventory
@@ -818,7 +797,6 @@ const Stock = () => {
         </div>
       </section>
 
-      {/* Annual Performance Reports Section */}
       <section className="bg-white rounded-xl p-4 sm:p-8 mb-8 shadow-sm">
         <h2 className="text-slate-800 text-xl sm:text-2xl m-0 mb-6">Performance Reports
           <InfoTooltip
@@ -827,7 +805,6 @@ const Stock = () => {
           />
         </h2>
 
-        {/* Revenue Analytics Collapsible */}
         <div className="bg-white rounded-xl mb-6 shadow-sm transition-all border border-slate-200">
           <div className={`flex justify-between items-center px-6 py-5 cursor-pointer transition-all bg-gradient-to-r from-slate-50 to-slate-100 border-l-4 border-l-blue-500 hover:bg-gradient-to-r hover:from-slate-100 hover:to-slate-200 hover:translate-x-1`} onClick={toggleRevenueAnalytics}>
             <div className="flex items-center gap-4 flex-wrap">
@@ -843,7 +820,6 @@ const Stock = () => {
           </div>
           {showRevenueAnalytics && (
             <div className="p-6 border-t border-slate-200 animate-[toggleSlideDown_0.3s_ease-out] overflow-hidden">
-              {/* Monthly/Annual Toggle + Sample Data Toggle */}
               <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
                 <div className="flex gap-2 bg-slate-100 p-1 rounded-full w-fit">
                   <div className="relative group">
@@ -877,7 +853,6 @@ const Stock = () => {
                 </button>
               </div>
 
-              {/* Revenue Projection Card */}
               {!effProjectionLoading && effRevenueProjection && effYearForecast?.hasMinimumData ? (
                 <div className="bg-gradient-to-br from-primary-dark to-primary-dark rounded-2xl p-4 sm:p-8 mb-8 text-white shadow-lg border border-white/10">
                   <div className="flex flex-col lg:flex-row justify-between items-start mb-8 gap-4">
@@ -909,7 +884,7 @@ const Stock = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 mb-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8">
                     <div className="bg-white/10 rounded-xl p-3 sm:p-5 backdrop-blur border border-white/10">
                       <span className="block text-xs sm:text-base uppercase tracking-wider mb-2">Revenue to Date</span>
                       <span className="block text-xl sm:text-3xl font-bold mb-1 text-white">₱{effRevenueProjection.currentRevenue?.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
@@ -1022,7 +997,6 @@ const Stock = () => {
                 </div>
               )}
 
-              {/* Conditional: Monthly View vs Annual View */}
               {dataViewMode === 'monthly' ? (
                 <HistoricalPerformance stationId={auth.currentUser?.uid} />
               ) : (
@@ -1032,7 +1006,6 @@ const Stock = () => {
           )}
         </div>
 
-        {/* Water Consumption Analytics Section */}
         <div className="bg-white rounded-xl mb-6 shadow-sm transition-all border border-slate-200">
           <div className={`flex justify-between items-center px-6 py-5 cursor-pointer transition-all bg-gradient-to-r from-slate-50 to-slate-100 border-l-4 border-l-blue-500 hover:bg-gradient-to-r hover:from-slate-100 hover:to-slate-200 hover:translate-x-1`} onClick={toggleConsumptionAnalytics}>
             <div className="flex items-center gap-4 flex-wrap">

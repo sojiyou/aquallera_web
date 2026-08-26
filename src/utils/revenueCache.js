@@ -1,9 +1,7 @@
-//revenueCache.js
 import { ref, get, set } from 'firebase/database';
 import { database } from '../components/config/Firebase';
 import { calculateMonthlyRevenue } from './revenueCalculator';
 
-// Cache keys for localStorage
 const CACHE_KEYS = {
   YEAR_PROJECTION: 'revenue_projection_cache',
   YEARLY_TOTALS: 'yearly_totals_cache',
@@ -23,7 +21,6 @@ class RevenueCache {
     this.loadFromStorage();
   }
 
-  // Load cached data from localStorage
   loadFromStorage() {
     try {
       const projectionCache = localStorage.getItem(`${CACHE_KEYS.YEAR_PROJECTION}_${this.stationId}`);
@@ -32,7 +29,6 @@ class RevenueCache {
         const cacheDate = new Date(parsed.cachedAt);
         const today = new Date();
         
-        // Use cache if it's from today
         if (cacheDate.toDateString() === today.toDateString()) {
           this.memoryCache.set('yearProjection', parsed.data);
         }
@@ -47,7 +43,6 @@ class RevenueCache {
     }
   }
 
-  // Save projection to cache
   async cacheYearProjection(projectionData) {
     try {
       const cacheEntry = {
@@ -71,7 +66,6 @@ class RevenueCache {
     }
   }
 
-  // Get cached projection if it exists and is from today
   getCachedYearProjection() {
     const cached = this.memoryCache.get('yearProjection');
     if (cached) return cached;
@@ -95,14 +89,12 @@ class RevenueCache {
     return null;
   }
 
-  // Check if we need to recalculate (once per day)
   shouldRecalculate() {
     const lastCalc = localStorage.getItem(`${CACHE_KEYS.LAST_CALCULATION}_${this.stationId}`);
     const today = new Date().toDateString();
     return lastCalc !== today;
   }
 
-  // Update yearly totals in cache
   async updateYearlyTotal(year, total) {
     const yearlyData = this.memoryCache.get('yearlyTotals') || {};
     yearlyData[year] = {
@@ -126,7 +118,6 @@ class RevenueCache {
     }
   }
 
-  // Save final yearly total to Firebase on Dec 31
   async saveYearlyTotalToFirebase(year, total) {
     try {
       const yearlyRef = ref(database, `waterStations/${this.stationId}/yearlyRevenue/${year}`);
@@ -141,24 +132,20 @@ class RevenueCache {
     }
   }
 
-  // Get comparison data (current year vs previous year)
   async getYearComparison() {
     const currentYear = new Date().getFullYear();
     const previousYear = currentYear - 1;
     
-    // Get current year total from cache or calculate
     const yearlyTotals = this.memoryCache.get('yearlyTotals') || {};
     let currentYearTotal = yearlyTotals[currentYear]?.total;
     let previousYearTotal = yearlyTotals[previousYear]?.total;
     
-    // If not in cache, try to get from Firebase
     if (!previousYearTotal) {
       try {
         const prevYearRef = ref(database, `waterStations/${this.stationId}/yearlyRevenue/${previousYear}`);
         const snapshot = await get(prevYearRef);
         if (snapshot.exists()) {
           previousYearTotal = snapshot.val().total;
-          // Update cache
           yearlyTotals[previousYear] = {
             total: previousYearTotal,
             lastUpdated: snapshot.val().finalizedAt
@@ -169,7 +156,6 @@ class RevenueCache {
       }
     }
     
-    // Calculate current year total if not cached
     if (!currentYearTotal) {
       let total = 0;
       for (let month = 0; month <= 11; month++) {
@@ -179,7 +165,6 @@ class RevenueCache {
       await this.updateYearlyTotal(currentYear, total);
     }
     
-    // Calculate growth percentage
     let growthPercentage = null;
     if (previousYearTotal && previousYearTotal > 0) {
       growthPercentage = ((currentYearTotal - previousYearTotal) / previousYearTotal) * 100;
@@ -203,7 +188,7 @@ class RevenueCache {
     try {
       // Keep last year's total in Firebase, remove from localStorage cache
       const yearlyTotals = this.memoryCache.get('yearlyTotals') || {};
-      delete yearlyTotals[lastYear - 1]; // Remove year before last
+      delete yearlyTotals[lastYear - 1];
       
       localStorage.setItem(
         `${CACHE_KEYS.YEARLY_TOTALS}_${this.stationId}`,
@@ -212,7 +197,6 @@ class RevenueCache {
       
       this.memoryCache.set('yearlyTotals', yearlyTotals);
       
-      // Clear projection cache for new year
       localStorage.removeItem(`${CACHE_KEYS.YEAR_PROJECTION}_${this.stationId}`);
       localStorage.removeItem(`${CACHE_KEYS.LAST_CALCULATION}_${this.stationId}`);
       this.memoryCache.delete('yearProjection');
@@ -224,7 +208,6 @@ class RevenueCache {
   }
 }
 
-// Singleton instances per station
 const cacheInstances = new Map();
 
 export const getRevenueCache = (stationId) => {

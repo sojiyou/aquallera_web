@@ -1,4 +1,3 @@
-// utils/consumptionProjection.js
 import { getDailyConsumptionForMonth, getCurrentDateInfo } from './consumptionCalculator';
 
 /**
@@ -8,21 +7,17 @@ import { getDailyConsumptionForMonth, getCurrentDateInfo } from './consumptionCa
 export const getCurrentMonthConsumptionProjection = async (stationId) => {
   const { year, month, day, daysInMonth, daysRemaining } = getCurrentDateInfo();
   
-  // Get actual consumption so far this month
   const { totals } = await getDailyConsumptionForMonth(stationId, year, month);
   const currentConsumption = totals;
   
-  // Check if we're past Day 3 of the month
   const hasMinimumData = day > 3;
   
-  // Calculate daily averages so far
   const dailyAverages = {
     pureWater: day > 0 ? currentConsumption.pureWater / day : 0,
     springWater: day > 0 ? currentConsumption.springWater / day : 0,
     mineralWater: day > 0 ? currentConsumption.mineralWater / day : 0
   };
   
-  // Project remaining days
   const projectedRemaining = {
     pureWater: dailyAverages.pureWater * daysRemaining,
     springWater: dailyAverages.springWater * daysRemaining,
@@ -156,10 +151,8 @@ export const calculateStockDepletion = (currentStock, dailyAverages) => {
 export const getMonthOverMonthComparison = async (stationId) => {
   const { year, month } = getCurrentDateInfo();
   
-  // Current month consumption
   const currentMonthData = await getDailyConsumptionForMonth(stationId, year, month);
   
-  // Previous month
   let prevYear = year;
   let prevMonth = month - 1;
   if (prevMonth < 0) {

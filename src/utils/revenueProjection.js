@@ -2,22 +2,17 @@ import { getDailyRevenueForMonth, getCurrentDateInfo } from './revenueCalculator
 
 /**
  * Calculate projected revenue for current month based on velocity
- * FIX: Shows predictions after Day 3 of month (regardless of order count)
  */
 export const getCurrentMonthProjection = async (stationId) => {
   const { year, month, day, daysInMonth, daysRemaining } = getCurrentDateInfo();
   
-  // Get actual revenue so far this month
   const monthlyData = await getDailyRevenueForMonth(stationId, year, month);
   const currentRevenue = monthlyData.total;
   
-  // NEW FIX: Check if we're past Day 3 of the month (not order count)
   const hasMinimumData = day > 3;
   
-  // Calculate daily average so far (even if zero)
   const dailyAverage = day > 0 ? currentRevenue / day : 0;
   
-  // Project remaining days
   const projectedRemaining = dailyAverage * daysRemaining;
   const projectedTotal = currentRevenue + projectedRemaining;
   
@@ -43,7 +38,6 @@ export const getCurrentMonthProjection = async (stationId) => {
 export const getFutureMonthProjection = async (stationId, targetYear, targetMonth) => {
   const { year: currentYear, month: currentMonth, day } = getCurrentDateInfo();
   
-  // NEW FIX: Check if we're past Day 3 of the month
   const hasMinimumData = day > 3;
   
   const currentMonthData = await getDailyRevenueForMonth(stationId, currentYear, currentMonth);
@@ -71,7 +65,6 @@ export const getFutureMonthProjection = async (stationId, targetYear, targetMont
 export const getYearProjections = async (stationId) => {
   const { year, month, day } = getCurrentDateInfo();
   
-  // NEW FIX: Check if we're past Day 3 of the month
   const hasMinimumData = day > 3;
   
   const currentMonth = await getCurrentMonthProjection(stationId);

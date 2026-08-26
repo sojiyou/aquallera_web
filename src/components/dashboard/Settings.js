@@ -22,10 +22,8 @@ const Settings = ({ stationData, setStationData }) => {
   const [locationStatus, setLocationStatus] = useState('');
   const [actualLocation, setActualLocation] = useState('');
 
-  // NEW: Delivery hours state
   const [newDeliveryTime, setNewDeliveryTime] = useState('09:00');
 
-  // Initialize form data
   useEffect(() => {
     if (stationData) {
       setFormData(stationData);
@@ -65,7 +63,6 @@ const Settings = ({ stationData, setStationData }) => {
     }
   }, [stationData]);
 
-  // Convert coordinates to actual address
   const convertCoordinatesToAddress = async (lat, lng) => {
     try {
       const response = await fetch(
@@ -87,7 +84,6 @@ const Settings = ({ stationData, setStationData }) => {
     }
   };
 
-  // Get Current Location Function
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
       setLocationStatus('Geolocation is not supported by this browser.');
@@ -176,7 +172,6 @@ const Settings = ({ stationData, setStationData }) => {
     }
   };
 
-  // NEW: Delivery Hours Handlers
   const addDeliveryHour = () => {
     if (!newDeliveryTime) return;
     
@@ -404,7 +399,6 @@ const Settings = ({ stationData, setStationData }) => {
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Basic Information */}
         <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
           <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">Basic Information</h3>
           <div className="mb-5">
@@ -457,7 +451,6 @@ const Settings = ({ stationData, setStationData }) => {
           </div>
         </div>
 
-        {/* Location Information */}
         <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
           <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">Location</h3>
           <div className="mb-5">
@@ -511,7 +504,6 @@ const Settings = ({ stationData, setStationData }) => {
             />
           </div>
           
-          {/* Coordinates Display */}
           <div className="mt-6 pt-6 border-t border-slate-200">
             <label className="block mb-4 text-gray-700 font-medium text-sm">Station Coordinates</label>
             <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
@@ -570,7 +562,6 @@ const Settings = ({ stationData, setStationData }) => {
           </div>
         </div>
 
-        {/* Business Hours */}
         <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
           <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">Business Hours</h3>
           <div className="mt-4">
@@ -609,7 +600,6 @@ const Settings = ({ stationData, setStationData }) => {
           </div>
         </div>
 
-        {/* Services */}
         <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
           <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">Services</h3>
           <div className="mb-6">
@@ -660,7 +650,6 @@ const Settings = ({ stationData, setStationData }) => {
                 </select>
               </div>
 
-              {/* Delivery Hours Section */}
               <div className="mb-5">
                 <label className="block mb-2 text-gray-700 font-medium text-sm">
                   <svg className="w-4 h-4 inline mr-1.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -726,7 +715,6 @@ const Settings = ({ stationData, setStationData }) => {
                 )}
               </div>
 
-              {/* Delivery Days Section */}
               <div className="mb-5">
                 <label className="block mb-2 text-gray-700 font-medium text-sm">
                   <svg className="w-4 h-4 inline mr-1.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -765,11 +753,9 @@ const Settings = ({ stationData, setStationData }) => {
           )}
         </div>
 
-        {/* Pricing */}
         <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
           <h3 className="text-slate-800 text-xl font-semibold m-0 mb-6 pb-3 border-b-2 border-slate-100">Water Types & Pricing</h3>
           <div className="mt-4">
-            {/* Water Types */}
             <div className="mb-6">
               <label className="block mb-2 text-gray-700 font-medium text-sm">Water Types Offered</label>
               <p className="text-xs text-slate-400 italic mb-3">

@@ -1,4 +1,3 @@
-// src/components/Home.js
 import React, { useState, useEffect } from 'react';
 
 const Home = () => {
@@ -26,7 +25,6 @@ const Home = () => {
 
   return (
     <div className="min-h-screen font-sans">
-      {/* Navigation */}
       <nav className="bg-white shadow-[0_2px_10px_rgba(0,0,0,0.1)] fixed w-full top-0 z-[1000]">
         <div className="flex flex-col gap-4 md:flex-row md:gap-4 justify-between items-center px-8 py-4 max-w-[1200px] mx-auto">
           <div className="">
@@ -44,7 +42,6 @@ const Home = () => {
         </div>
       </nav>
 
-      {/* Hero Section */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center px-8 pt-52 md:pt-32 pb-16 max-w-[1200px] mx-auto min-h-[80vh] text-center md:text-left">
         <div className="">
           <h1 className="text-4xl md:text-5xl text-slate-800 mb-6 leading-tight">Manage Your Water Station Efficiently</h1>
@@ -87,12 +84,10 @@ const Home = () => {
               aria-label="AQUA-LLERA animated logo"
             >
               <defs>
-                {/* Drop clip path */}
                 <clipPath id="heroDropClip">
                   <path d="M150,22 C150,22 58,105 58,212 A92,92 0 0,0 242,212 C242,105 150,22 150,22Z"/>
                 </clipPath>
 
-                {/* Gradients */}
                 <linearGradient id="hDropFill" x1="20%" y1="0%" x2="80%" y2="100%">
                   <stop offset="0%" stopColor="#065A82"/>
                   <stop offset="100%" stopColor="#1B3B6F"/>
@@ -127,47 +122,37 @@ const Home = () => {
                 </filter>
               </defs>
 
-              {/* Ground shadow */}
               <ellipse cx="150" cy="316" rx="70" ry="9" fill="rgba(0,10,50,0.14)">
                 <animate attributeName="rx" values="70;60;70" dur="4s" repeatCount="indefinite"/>
                 <animate attributeName="opacity" values="0.14;0.08;0.14" dur="4s" repeatCount="indefinite"/>
               </ellipse>
 
-              {/* Drop base fill */}
               <path
                 d="M150,22 C150,22 58,105 58,212 A92,92 0 0,0 242,212 C242,105 150,22 150,22Z"
                 fill="url(#hDropFill)"
               />
 
-              {/* === CLIPPED CONTENT === */}
               <g clipPath="url(#heroDropClip)">
 
-                {/* Sky */}
                 <rect x="58" y="22" width="184" height="192" fill="url(#hSkyGrad)"/>
 
-                {/* Background mountain range */}
                 <path
                   d="M58,214 L82,178 L102,192 L128,148 L150,172 L164,144 L188,168 L208,150 L232,182 L242,214Z"
                   fill="url(#hMountBg)"
                 />
-                {/* Snow caps — background */}
                 <path d="M128,148 L142,172 L114,172Z" fill="white" opacity="0.92"/>
                 <path d="M164,144 L177,166 L151,166Z" fill="white" opacity="0.92">
                   <animate attributeName="opacity" values="0.92;1;0.92" dur="2.8s" repeatCount="indefinite"/>
                 </path>
                 <path d="M208,150 L220,170 L196,170Z" fill="white" opacity="0.85"/>
 
-                {/* Foreground green mountains */}
                 <path d="M58,214 L97,174 L136,214Z" fill="url(#hMountGreen)"/>
                 <path d="M110,214 L150,148 L190,214Z" fill="#1C7293"/>
                 <path d="M164,214 L205,176 L242,214Z" fill="url(#hMountGreen)"/>
-                {/* Center peak lighter tip */}
                 <path d="M150,148 L163,170 L137,170Z" fill="#9EB3C2" opacity="0.75">
                   <animate attributeName="opacity" values="0.75;1;0.75" dur="3.2s" repeatCount="indefinite"/>
                 </path>
 
-                {/* === ANIMATED WAVES === */}
-                {/* Wave 1 — back teal */}
                 <path fill="url(#hWave1)" opacity="0.78">
                   <animate
                     attributeName="d"
@@ -179,7 +164,6 @@ const Home = () => {
                     repeatCount="indefinite"
                   />
                 </path>
-                {/* Wave 2 — front white-teal */}
                 <path fill="url(#hWave2)" opacity="0.92">
                   <animate
                     attributeName="d"
@@ -193,24 +177,20 @@ const Home = () => {
                 </path>
               </g>
 
-              {/* Drop inner shine overlay */}
               <path
                 d="M150,22 C150,22 58,105 58,212 A92,92 0 0,0 242,212 C242,105 150,22 150,22Z"
                 fill="url(#hDropShine)"
               />
-              {/* Drop rim */}
               <path
                 d="M150,22 C150,22 58,105 58,212 A92,92 0 0,0 242,212 C242,105 150,22 150,22Z"
                 fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="2.5"
               />
 
-              {/* Tip sparkle */}
               <circle cx="150" cy="22" r="3" fill="white" filter="url(#hGlow)">
                 <animate attributeName="opacity" values="1;0.2;1" dur="2s" repeatCount="indefinite"/>
                 <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
               </circle>
 
-              {/* AQUA-LLERA wordmark */}
               <text
                 x="150" y="352"
                 textAnchor="middle"
@@ -227,7 +207,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Features Section */}
       <section className="py-24 px-8 bg-slate-100">
         <div className="max-w-[1200px] mx-auto">
           <h2 className="text-center text-4xl md:text-5xl text-slate-800 mb-12">Why Choose AQUA-LLERA?</h2>
@@ -265,7 +244,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="py-24 px-8 text-center bg-gradient-to-br from-primary to-primary-dark text-white">
         <div className="max-w-[1200px] mx-auto">
           <h2 className="text-4xl md:text-5xl mb-4">Ready to Streamline Your Water Business?</h2>
@@ -276,7 +254,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="bg-primary-dark text-white px-8 pt-12 pb-4">
         <div className="max-w-[1200px] mx-auto">
           <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8 mb-8">
