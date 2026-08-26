@@ -247,6 +247,9 @@ const AdminPage = () => {
     }
   };
 
+  const ADMIN_EMAIL = 'admin@aquallera.com';
+  const ADMIN_PASSWORD = 'admin123';
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
