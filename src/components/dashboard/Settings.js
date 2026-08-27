@@ -529,7 +529,7 @@ const Settings = ({ stationData, setStationData }) => {
               </div>
               
               {(formData.latitude && formData.longitude) && (
-                <div className="flex flex-col gap-2 p-4 bg-surface rounded-md border border-secondary/20 mt-3">
+                <div className="flex flex-col gap-2 p-4 bg-slate-50 rounded-md border border-secondary/20 mt-3">
                   <span className="text-primary-dark text-sm font-semibold flex items-center gap-2">Actual Location:</span>
                   <span className="text-slate-800 text-xs leading-relaxed italic">{actualLocation || 'Loading location details...'}</span>
                 </div>
@@ -682,7 +682,7 @@ const Settings = ({ stationData, setStationData }) => {
                 {(formData.deliveryHours || []).length > 0 ? (
                   <div className="flex flex-col gap-2 mt-3">
                     {formData.deliveryHours.map((time, index) => (
-                      <div key={index} className="flex items-center bg-surface border border-secondary/20 rounded-lg px-4 py-3 transition-all hover:bg-secondary/10">
+                      <div key={index} className="flex items-center bg-slate-50 border border-secondary/20 rounded-lg px-4 py-3 transition-all hover:bg-secondary/10">
                         <svg className="w-4 h-4 mr-3 text-secondary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
