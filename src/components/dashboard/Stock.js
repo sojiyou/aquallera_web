@@ -685,7 +685,7 @@ const Stock = () => {
       <div className="p-8 min-h-screen">
         <div className="flex flex-col items-center justify-center min-h-[50vh]">
           <div className="border-4 border-slate-200 border-t-primary rounded-full w-[50px] h-[50px] animate-spin mb-4"></div>
-          <p>Loading stock data...</p>
+          <p className="text-slate-500">Loading stock data...</p>
         </div>
       </div>
     );
