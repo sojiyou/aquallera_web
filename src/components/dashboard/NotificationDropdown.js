@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { database } from '../config/Firebase';
-import { ref, onValue, off, remove } from 'firebase/database';
+import { ref, onValue, off, remove, update } from 'firebase/database';
 import { auth } from '../config/Firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 
@@ -69,7 +69,7 @@ const NotificationDropdown = () => {
       knownIdsRef.current = new Set(items.map(n => n.id));
       isInitialLoadRef.current = false;
       setNotifications(items);
-      if (items.length > 0) setHasUnread(true);
+      setHasUnread(items.some(n => !n.read));
     };
 
     onValue(notifRef, handler);
@@ -104,7 +104,14 @@ const NotificationDropdown = () => {
         <button
           onClick={() => {
             setIsOpen(prev => !prev);
-            if (!isOpen) setHasUnread(false);
+            if (!isOpen) {
+              setHasUnread(false);
+              if (userId && notifications.length > 0) {
+                const updates = {};
+                notifications.forEach(n => { updates[`/${n.id}/read`] = true; });
+                update(ref(database, `waterStations/${userId}/notifications`), updates).catch(console.error);
+              }
+            }
           }}
           className="relative border-none p-1.5 rounded cursor-pointer select-none hover:bg-slate-100 transition-colors"
         >
@@ -157,7 +164,7 @@ const NotificationDropdown = () => {
         <div className="fixed bottom-4 right-4 bg-white rounded-lg shadow-lg border border-slate-200 p-4 z-50 max-w-sm">
           <div className="flex items-start gap-3">
             <div className="flex-1">
-              <p className="text-sm font-semibold text-slate-800">New Order!</p>
+              <p className="text-sm font-semibold text-slate-800">{toast.type === 'stock' ? 'Low Stock Alert' : 'New Order!'}</p>
               <p className="text-xs text-slate-600">{toast.customerName} - {toast.orderType}</p>
             </div>
             <button onClick={() => setToast(null)} className="text-slate-400 hover:text-slate-600">

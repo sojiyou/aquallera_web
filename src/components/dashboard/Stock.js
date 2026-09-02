@@ -146,6 +146,7 @@ const Stock = () => {
   const [, setStationData] = useState(null);
   const [waterTypes, setWaterTypes] = useState(['pure', 'spring', 'mineral']);
   const waterTypesRef = useRef(['pure', 'spring', 'mineral']);
+  const lowStockNotifiedRef = useRef(new Set());
   const [orders, setOrders] = useState([]);
   const [stock, setStock] = useState({
     pureWater: 0,
@@ -200,6 +201,8 @@ const Stock = () => {
       const level = stockData[key];
       if (level === undefined || level === null) return;
       if (level > 0 && level <= 10) {
+        if (lowStockNotifiedRef.current.has(key)) return;
+        lowStockNotifiedRef.current.add(key);
         const notifRef = ref(database, `waterStations/${user.uid}/notifications/lowStock-${key}`);
         dbSet(notifRef, {
           customerName: 'Stock Alert',
@@ -211,6 +214,7 @@ const Stock = () => {
           type: 'stock'
         });
       } else {
+        lowStockNotifiedRef.current.delete(key);
         const notifRef = ref(database, `waterStations/${user.uid}/notifications/lowStock-${key}`);
         dbSet(notifRef, null);
       }
