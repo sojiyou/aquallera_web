@@ -779,7 +779,7 @@ const Signup = () => {
         </button>
         <div className="text-center mb-8">
           <h2 className="text-slate-800 text-3xl mb-2">Register Your Water Station</h2>
-          <p className="text-slate-500 text-sm m-0">Join the AQUA-LLERA network</p>
+          <p className="text-slate-500 text-sm m-0">Join the AQUALLERA network</p>
         </div>
 
         <div className="flex justify-between gap-1 mb-8 relative">

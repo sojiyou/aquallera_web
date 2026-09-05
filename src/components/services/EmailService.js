@@ -91,7 +91,7 @@ export const sendRejectionEmail = async (stationData, rejectionReason) => {
       }) : 'N/A',
 
       support_email: 'aquallera.main@gmail.com',
-      platform_name: 'AQUA-LLERA',
+      platform_name: 'AQUALLERA',
 
       current_year: new Date().getFullYear(),
 
@@ -141,7 +141,7 @@ export const sendAdminInvitation = async (toEmail, generatedPassword, invitedBy)
       admin_password: generatedPassword,
       login_url: `${window.location.origin}/admin`,
       invited_by: invitedBy || 'Super Admin',
-      platform_name: 'AQUA-LLERA',
+      platform_name: 'AQUALLERA',
       support_email: 'aquallera.main@gmail.com',
       current_year: new Date().getFullYear()
     };

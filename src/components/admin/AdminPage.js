@@ -526,7 +526,7 @@ const AdminPage = () => {
           <div className="bg-white rounded-2xl p-12 w-full max-w-[450px] shadow-2xl text-center">
             <div>
               <h1 className="text-slate-800 m-0 mb-2 text-3xl">
-                AQUA-LLERA Admin Portal
+                AQUALLERA Admin Portal
               </h1>
               <p className="text-slate-500 m-0 mb-8 text-sm">
                 Developer Access Only
@@ -619,7 +619,7 @@ const AdminPage = () => {
           <div className="max-w-[1400px] mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <div className="min-w-0">
               <h1 className="m-0 mb-1 text-xl sm:text-3xl">
-                AQUA-LLERA Admin Dashboard
+                AQUALLERA Admin Dashboard
               </h1>
               <p className="m-0 text-slate-300 text-xs sm:text-sm">
                 System Administrator Control Panel

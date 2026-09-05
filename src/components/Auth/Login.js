@@ -327,7 +327,7 @@ const Login = () => {
         </button>
         <div className="text-center mb-8">
           <h2 className="text-slate-800 text-3xl mb-2">Station Login</h2>
-          <p className="text-slate-500 text-sm m-0">Welcome back to AQUA-LLERA</p>
+          <p className="text-slate-500 text-sm m-0">Welcome back to AQUALLERA</p>
         </div>
 
         {showRejectionMessage && (

@@ -9,7 +9,7 @@ const HelpCenter = () => {
       <nav className="bg-white shadow-[0_2px_10px_rgba(0,0,0,0.1)] fixed w-full top-0 z-[1000]">
         <div className="flex justify-between items-center px-8 py-4 max-w-[1200px] mx-auto">
           <div>
-            <h2 className="text-primary m-0 text-3xl">AQUA-LLERA</h2>
+            <h2 className="text-primary m-0 text-3xl">AQUALLERA</h2>
             <span className="text-slate-500 text-sm">Help Center</span>
           </div>
           <button className="px-6 py-2 border-2 border-primary rounded-lg font-semibold cursor-pointer transition-all bg-transparent text-primary hover:bg-primary hover:text-white" onClick={() => navigate('/')}>
@@ -42,7 +42,7 @@ const HelpCenter = () => {
       </section>
 
       <footer className="bg-primary-dark text-slate-400 px-8 py-6 text-center text-sm">
-        <p className="m-0">&copy; {new Date().getFullYear()} AQUA-LLERA. All rights reserved.</p>
+        <p className="m-0">&copy; {new Date().getFullYear()} AQUALLERA. All rights reserved.</p>
       </footer>
     </div>
   );

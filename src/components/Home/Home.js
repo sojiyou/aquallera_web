@@ -28,7 +28,7 @@ const Home = () => {
       <nav className="bg-white shadow-[0_2px_10px_rgba(0,0,0,0.1)] fixed w-full top-0 z-[1000]">
         <div className="flex flex-col gap-4 md:flex-row md:gap-4 justify-between items-center px-8 py-4 max-w-[1200px] mx-auto">
           <div className="">
-            <h2 className="text-primary m-0 text-3xl">AQUA-LLERA</h2>
+            <h2 className="text-primary m-0 text-3xl">AQUALLERA</h2>
             <span className="text-slate-500 text-sm">Water Station Management</span>
           </div>
           <div className="flex gap-4 max-[480px]:flex-col max-[480px]:w-full">
@@ -81,7 +81,7 @@ const Home = () => {
               viewBox="0 0 300 380"
               xmlns="http://www.w3.org/2000/svg"
               className="max-w-[380px] w-full h-auto drop-shadow-[0_18px_36px_rgba(2,100,180,0.28)] drop-shadow-[0_6px_14px_rgba(14,165,233,0.18)] transition-all duration-400 hover:scale-105"
-              aria-label="AQUA-LLERA animated logo"
+              aria-label="AQUALLERA animated logo"
             >
               <defs>
                 <clipPath id="heroDropClip">
@@ -200,7 +200,7 @@ const Home = () => {
                 fontFamily="'Segoe UI', Arial, sans-serif"
                 letterSpacing="2.5"
               >
-                AQUA-LLERA
+                AQUALLERA
               </text>
             </svg>
           </div>
@@ -209,7 +209,7 @@ const Home = () => {
 
       <section className="py-24 px-8 bg-slate-100">
         <div className="max-w-[1200px] mx-auto">
-          <h2 className="text-center text-4xl md:text-5xl text-slate-800 mb-12">Why Choose AQUA-LLERA?</h2>
+          <h2 className="text-center text-4xl md:text-5xl text-slate-800 mb-12">Why Choose AQUALLERA?</h2>
           <div className="grid grid-cols-[repeat(auto-fit,minmax(290px,1fr))] gap-8">
             <div className="bg-primary-dark border border-gray-300 p-4 md:p-8 rounded-xl text-center shadow-xl transition-transform duration-300 hover:-translate-y-1.5">
               <h3 className="text-white mb-4 text-xl">Real-time Dashboard</h3>
@@ -247,7 +247,7 @@ const Home = () => {
       <section className="py-24 px-8 text-center bg-gradient-to-br from-primary to-primary-dark text-white">
         <div className="max-w-[1200px] mx-auto">
           <h2 className="text-4xl md:text-5xl mb-4">Ready to Streamline Your Water Business?</h2>
-          <p className="text-xl mb-8 opacity-90">Join hundreds of water stations already using AQUA-LLERA</p>
+          <p className="text-xl mb-8 opacity-90">Join hundreds of water stations already using AQUALLERA</p>
           <button className="px-12 py-5 bg-white text-primary rounded-lg font-semibold text-xl cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-[0_10px_20px_rgba(0,0,0,0.2)]" onClick={() => window.location.href = '/signup'}>
             Register Your Station Now
           </button>
@@ -258,7 +258,7 @@ const Home = () => {
         <div className="max-w-[1200px] mx-auto">
           <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-8 mb-8">
             <div className="">
-              <h3 className="mb-4 text-slate-200">AQUA-LLERA</h3>
+              <h3 className="mb-4 text-slate-200">AQUALLERA</h3>
               <p>Empowering water stations with modern management tools</p>
             </div>
             <div className="">
@@ -277,7 +277,7 @@ const Home = () => {
             </div>
           </div>
           <div className="text-center pt-8 border-t border-slate-700 text-slate-400">
-            <p>&copy; 2024 AQUA-LLERA. All rights reserved.</p>
+            <p>&copy; 2024 AQUALLERA. All rights reserved.</p>
           </div>
         </div>
       </footer>
