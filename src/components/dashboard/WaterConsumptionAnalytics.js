@@ -257,7 +257,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock, waterTypes }) => {
     
     const colors = {
       pure: { bg: '#b3e0e3', fill: '#065A82' },
-      spring: { bg: '#d4f5f5', fill: '#1C7293' },
+      spring: { bg: '#d4f5f5', fill: '#5DB9DC' },
       mineral: { bg: '#fed7aa', fill: '#f59e0b' }
     };
     
@@ -551,7 +551,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock, waterTypes }) => {
                                 <Bar
                                   dataKey="springWater"
                                   stackId="consumption"
-                                  fill="#1C7293"
+                                  fill="#5DB9DC"
                                   radius={[0, 0, 0, 0]}
                                   name="Spring Water"
                                   hide={!activeWaterTypes.includes('spring')}
