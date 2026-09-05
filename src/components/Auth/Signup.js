@@ -722,7 +722,6 @@ const Signup = () => {
         pricing_delivery_fee: formData.pricing_delivery_fee ? parseFloat(formData.pricing_delivery_fee) : null,
         businessPermitDocuments: businessPermitDocuments,
         businessPermitUploadedAt: new Date().toISOString(),
-        password: formData.password,
         status: 'pending',
         createdAt: new Date().toISOString(),
         userId: user.uid

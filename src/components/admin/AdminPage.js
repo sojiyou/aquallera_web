@@ -16,6 +16,11 @@ import {
   sendApprovalEmail,
 } from "../services/EmailService";
 import AlertCard, { useAlert } from "./AlertCard";
+import {
+  isBcryptHash,
+  hashPassword,
+  verifyPassword,
+} from "../../utils/passwordHash";
 
 const AdminPage = () => {
   const [email, setEmail] = useState("");
@@ -194,7 +199,19 @@ const AdminPage = () => {
     setPwSubmitting(true);
     try {
       const adminRef = ref(database, `admins/${passwordModalAdmin.id}`);
-      await update(adminRef, { password: pwNew });
+      const snapshot = await get(adminRef);
+      const admin = snapshot.val();
+      if (!admin) {
+        showAlert({ type: "error", message: "Admin account not found." });
+        handleClosePasswordModal();
+        return;
+      }
+      if (!verifyPassword(pwCurrent, admin.password || "")) {
+        setPwErrors({ current: "Current password is incorrect" });
+        setPwSubmitting(false);
+        return;
+      }
+      await update(adminRef, { password: hashPassword(pwNew) });
       showAlert({ type: "success", message: "Password updated successfully!" });
       handleClosePasswordModal();
     } catch (error) {
@@ -222,7 +239,7 @@ const AdminPage = () => {
       const newAdminRef = push(adminsRef);
       await set(newAdminRef, {
         email: inviteEmail,
-        password: generatedPassword,
+        password: hashPassword(generatedPassword),
         invitedBy: email,
         createdAt: new Date().toISOString(),
       });
@@ -247,28 +264,24 @@ const AdminPage = () => {
     }
   };
 
-  const ADMIN_EMAIL = 'admin@aquallera.com';
-  const ADMIN_PASSWORD = 'admin123';
-
   const handleLogin = async (e) => {
     e.preventDefault();
-
-    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-      setIsAuthenticated(true);
-      localStorage.setItem("adminAuthenticated", "true");
-      fetchAllData();
-      return;
-    }
 
     try {
       const adminsRef = ref(database, "admins");
       const snapshot = await get(adminsRef);
       if (snapshot.exists()) {
         const admins = snapshot.val();
-        const match = Object.values(admins).find(
-          (a) => a.email === email && a.password === password,
+        const matchKey = Object.keys(admins).find(
+          (key) => admins[key].email === email,
         );
-        if (match) {
+        const match = matchKey ? admins[matchKey] : null;
+        if (match && verifyPassword(password, match.password || "")) {
+          if (!isBcryptHash(match.password)) {
+            await update(ref(database, `admins/${matchKey}`), {
+              password: hashPassword(password),
+            });
+          }
           setIsAuthenticated(true);
           localStorage.setItem("adminAuthenticated", "true");
           fetchAllData();
@@ -1159,16 +1172,6 @@ const AdminPage = () => {
                       {selectedStation.phone || "N/A"}
                     </span>
                   </div>
-                  {selectedStation.password && (
-                    <div className="flex flex-col gap-1">
-                      <span className="font-semibold text-gray-600 text-sm">
-                        Password:
-                      </span>
-                      <span className="text-gray-800 text-base break-words p-2 bg-gray-50 rounded-md border border-gray-200 font-mono">
-                        {selectedStation.password}
-                      </span>
-                    </div>
-                  )}
                   <div className="flex flex-col gap-1 col-span-full">
                     <span className="font-semibold text-gray-600 text-sm">
                       Full Address:

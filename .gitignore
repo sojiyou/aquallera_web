@@ -19,6 +19,9 @@
 .env.test.local
 .env.production.local
 
+# Firebase service account key (never commit!)
+/scripts/serviceAccountKey.json
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
