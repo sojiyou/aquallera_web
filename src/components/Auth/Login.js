@@ -231,7 +231,8 @@ const Login = () => {
       const stationDataAfterLogin = stationSnapshot.val();
 
         if (stationDataAfterLogin.revokedAt) {
-          throw new Error('Your station approval has been revoked. Please contact support for more information.');
+          const reason = stationDataAfterLogin.revocationReason ? ` Reason: "${stationDataAfterLogin.revocationReason}"` : '';
+          throw new Error(`Your station approval has been revoked.${reason} Please contact support for more information.`);
         }
 
 

@@ -408,12 +408,29 @@ const AdminPage = () => {
   };
 
   const handleRevokeApproval = async (stationId) => {
+    const stationToRevoke = approvedStations.find(
+      (s) => s.id === stationId,
+    );
+    if (!stationToRevoke) {
+      showAlert({ type: "error", message: "Station not found!" });
+      return;
+    }
+
     showAlert({
-      type: "confirm",
-      message: "Are you sure you want to revoke this station's approval?",
-      onConfirm: (confirmed) => {
+      type: "prompt",
+      title: "Revoke Approval",
+      message: `Please provide a reason for revoking "${stationToRevoke.stationName || "this station"}"'s approval:`,
+      placeholder: "Enter reason for revocation (e.g., expired business permit, health violation, etc.)...",
+      onConfirm: (reason) => {
         closeAlert();
-        if (!confirmed) return;
+
+        if (!reason || reason.trim() === "") {
+          showAlert({
+            type: "error",
+            message: "Revocation reason is required.",
+          });
+          return;
+        }
 
         (async () => {
           try {
@@ -422,6 +439,7 @@ const AdminPage = () => {
               status: "pending",
               approvedAt: null,
               revokedAt: new Date().toISOString(),
+              revocationReason: reason.trim(),
             });
 
             showAlert({
@@ -1366,6 +1384,34 @@ const AdminPage = () => {
                   )}
                 </div>
               </div>
+
+              {selectedStation.revokedAt && (
+                <div className="mb-8 pb-6 border-b border-gray-200 last:border-b-0">
+                  <h3 className="text-slate-800 m-0 mb-4 text-xl flex items-center gap-2">
+                    Revocation Information
+                  </h3>
+                  <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4">
+                    <div className="flex flex-col gap-1 col-span-full">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-red-100 text-red-600">
+                          Revoked
+                        </span>
+                        <span className="text-sm text-gray-500">
+                          {formatDate(selectedStation.revokedAt)}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-1 col-span-full">
+                      <span className="font-semibold text-gray-600 text-sm">
+                        Reason for Revocation:
+                      </span>
+                      <span className="text-gray-800 text-base break-words p-2 bg-red-50 rounded-md border border-red-200">
+                        {selectedStation.revocationReason || "No reason provided"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="px-4 sm:px-8 py-4 sm:py-6 border-t border-gray-200 flex justify-end gap-3 sm:gap-4">
