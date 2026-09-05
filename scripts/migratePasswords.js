@@ -18,12 +18,15 @@ if (!fs.existsSync(keyPath)) {
 }
 
 const serviceAccount = JSON.parse(fs.readFileSync(keyPath, "utf8"));
-initializeApp({ credential: cert(serviceAccount) });
-
 const databaseUrl =
   process.env.FIREBASE_DATABASE_URL ||
-  `https://${serviceAccount.project_id}-default-rtdb.firebaseio.com`;
-const db = getDatabase(databaseUrl);
+  `https://${serviceAccount.project_id}-default-rtdb.asia-southeast1.firebasedatabase.app`;
+
+initializeApp({
+  credential: cert(serviceAccount),
+  databaseURL: databaseUrl,
+});
+const db = getDatabase();
 
 const isBcryptHash = (v) =>
   typeof v === "string" && /^\$2[aby]\$/.test(v);
