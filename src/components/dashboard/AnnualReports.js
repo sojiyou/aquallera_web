@@ -329,18 +329,20 @@ const AnnualReports = ({ stationId }) => {
                   <ResponsiveContainer width="100%" height={200}>
                     <BarChart
                       data={chartData}
-                      margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                      margin={{ top: 10, right: 10, left: 40, bottom: 30 }}
                     >
                       <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                       <XAxis
                         dataKey="month"
                         tick={{ fontSize: 11 }}
                         stroke="#64748b"
+                        label={{ value: "Month", position: "insideBottom", offset: -5, fill: "#64748b", fontSize: 12 }}
                       />
                       <YAxis
                         tick={{ fontSize: 11 }}
                         tickFormatter={(value) => `₱${(value / 1000).toFixed(0)}k`}
                         stroke="#64748b"
+                        label={{ value: "Revenue (₱)", angle: -90, position: "insideLeft", fill: "#64748b", fontSize: 12 }}
                       />
                       <Tooltip
                         formatter={(value, name) => {

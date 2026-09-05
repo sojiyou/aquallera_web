@@ -916,10 +916,10 @@ const Stock = () => {
                       <h4 className="text-slate-800 text-sm m-0 mb-4 font-semibold hidden md:block">Daily Revenue vs Projection</h4>
                       <div className="hidden md:block">
                         <ResponsiveContainer width="100%" height={250}>
-                          <LineChart data={effChartData} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
+                          <LineChart data={effChartData} margin={{ top: 20, right: 30, left: 40, bottom: 30 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                            <XAxis dataKey="day" tickFormatter={(day) => `Day ${day}`} stroke="#64748b" />
-                            <YAxis tickFormatter={(value) => { if (value >= 1000000) return `₱${(value/1000000).toFixed(1)}M`; if (value >= 1000) return `₱${(value/1000).toFixed(0)}k`; return `₱${value}`; }} stroke="#64748b" />
+                            <XAxis dataKey="day" tickFormatter={(day) => `Day ${day}`} stroke="#64748b" label={{ value: "Day", position: "insideBottom", offset: -5, fill: "#64748b", fontSize: 12 }} />
+                            <YAxis tickFormatter={(value) => { if (value >= 1000000) return `₱${(value/1000000).toFixed(1)}M`; if (value >= 1000) return `₱${(value/1000).toFixed(0)}k`; return `₱${value}`; }} stroke="#64748b" label={{ value: "Revenue (₱)", angle: -90, position: "insideLeft", fill: "#64748b", fontSize: 12 }} />
                             <Tooltip formatter={(value) => [`₱${value?.toLocaleString() || 0}`, 'Revenue']} labelFormatter={(label) => `Day ${label}`} />
                             <Legend />
                             <Line type="monotone" dataKey="actual" stroke="#065A82" strokeWidth={3} dot={{ r: 4, fill: "#065A82" }} name="Actual Revenue" />

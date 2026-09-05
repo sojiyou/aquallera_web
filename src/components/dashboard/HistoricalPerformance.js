@@ -360,17 +360,19 @@ const HistoricalPerformance = ({ stationId }) => {
                         <ResponsiveContainer width="100%" height={200}>
                           <BarChart
                             data={month.dailyData}
-                            margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+                            margin={{ top: 10, right: 10, left: 40, bottom: 30 }}
                           >
                             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                             <XAxis
                               dataKey="day"
                               tick={{ fontSize: 12 }}
                               tickFormatter={(day) => day % 5 === 0 ? day : ''}
+                              label={{ value: "Day", position: "insideBottom", offset: -5, fill: "#64748b", fontSize: 12 }}
                             />
                             <YAxis
                               tick={{ fontSize: 12 }}
                               tickFormatter={(value) => `₱${(value / 1000).toFixed(0)}k`}
+                              label={{ value: "Revenue (₱)", angle: -90, position: "insideLeft", fill: "#64748b", fontSize: 12 }}
                             />
                             <Tooltip
                               formatter={(value) => [`₱${value?.toLocaleString()}`, 'Revenue']}

@@ -507,7 +507,7 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock, waterTypes }) => {
                             <ResponsiveContainer width="100%" height={220}>
                               <BarChart
                                 data={month.dailyData}
-                                margin={{ top: 5, right: 4, left: -10, bottom: 0 }}
+                                margin={{ top: 5, right: 4, left: 20, bottom: 30 }}
                                 barSize={8}
                               >
                                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
@@ -518,12 +518,14 @@ const WaterConsumptionAnalytics = ({ stationId, currentStock, waterTypes }) => {
                                   stroke="#94a3b8"
                                   axisLine={false}
                                   tickLine={false}
+                                  label={{ value: "Day", position: "insideBottom", offset: -5, fill: "#64748b", fontSize: 12 }}
                                 />
                                 <YAxis
                                   tick={{ fontSize: 10 }}
                                   stroke="#94a3b8"
                                   axisLine={false}
                                   tickLine={false}
+                                  label={{ value: "Consumption (gal)", angle: -90, position: "insideLeft", fill: "#64748b", fontSize: 12 }}
                                 />
                                 <Tooltip
                                   formatter={(value, name) => {
