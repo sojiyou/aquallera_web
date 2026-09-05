@@ -743,10 +743,10 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
                   <th className="text-left p-2 border-b-2 border-slate-200 text-slate-500 font-semibold text-xs">
                     Item
                   </th>
-                  <th className="text-left p-2 border-b-2 border-slate-200 text-slate-500 font-semibold text-xs">
+                  <th className="text-center p-2 border-b-2 border-slate-200 text-slate-500 font-semibold text-xs">
                     Qty
                   </th>
-                  <th className="text-left p-2 border-b-2 border-slate-200 text-slate-500 font-semibold text-xs">
+                  <th className="text-right p-2 border-b-2 border-slate-200 text-slate-500 font-semibold text-xs">
                     Price
                   </th>
                 </tr>
@@ -757,10 +757,10 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
                     <td className="p-2.5 border-b border-slate-100">
                       Pure Water (Gallon)
                     </td>
-                    <td className="p-2.5 border-b border-slate-100">
+                    <td className="p-2.5 border-b border-slate-100 text-center">
                       ×{order.pureWaterQty}
                     </td>
-                    <td className="p-2.5 border-b border-slate-100">
+                    <td className="p-2.5 border-b border-slate-100 text-right">
                       ₱{parseFloat(pureTotal).toFixed(2)}
                     </td>
                   </tr>
@@ -770,10 +770,10 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
                     <td className="p-2.5 border-b border-slate-100">
                       Spring Water (Gallon)
                     </td>
-                    <td className="p-2.5 border-b border-slate-100">
+                    <td className="p-2.5 border-b border-slate-100 text-center">
                       ×{order.springWaterQty}
                     </td>
-                    <td className="p-2.5 border-b border-slate-100">
+                    <td className="p-2.5 border-b border-slate-100 text-right">
                       ₱{parseFloat(springTotal).toFixed(2)}
                     </td>
                   </tr>
@@ -783,10 +783,10 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
                     <td className="p-2.5 border-b border-slate-100">
                       Mineral Water (Gallon)
                     </td>
-                    <td className="p-2.5 border-b border-slate-100">
+                    <td className="p-2.5 border-b border-slate-100 text-center">
                       ×{order.mineralWaterQty}
                     </td>
-                    <td className="p-2.5 border-b border-slate-100">
+                    <td className="p-2.5 border-b border-slate-100 text-right">
                       ₱{parseFloat(mineralTotal).toFixed(2)}
                     </td>
                   </tr>
@@ -796,8 +796,8 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
                     <td className="p-2.5 border-b border-slate-100">
                       Delivery Fee
                     </td>
-                    <td className="p-2.5 border-b border-slate-100"></td>
-                    <td className="p-2.5 border-b border-slate-100">
+                    <td className="p-2.5 border-b border-slate-100 text-center"></td>
+                    <td className="p-2.5 border-b border-slate-100 text-right">
                       ₱{parseFloat(deliveryFee).toFixed(2)}
                     </td>
                   </tr>
@@ -806,8 +806,8 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
                   <td className="p-2.5 border-b border-slate-100">
                     Transaction Fee
                   </td>
-                  <td className="p-2.5 border-b border-slate-100"></td>
-                  <td className="p-2.5 border-b border-slate-100">
+                  <td className="p-2.5 border-b border-slate-100 text-center"></td>
+                  <td className="p-2.5 border-b border-slate-100 text-right">
                     ₱{parseFloat(transactionFee).toFixed(2)}
                   </td>
                 </tr>
@@ -816,11 +816,11 @@ const OrderDetailModal = ({ order, onClose, onStatusUpdate, showAlert }) => {
                 <tr>
                   <td
                     colSpan="2"
-                    className="border-b-0 border-t-2 border-slate-200 pt-3"
+                    className="border-b-0 border-t-2 border-slate-200 p-2.5 pt-3"
                   >
                     <strong>Total</strong>
                   </td>
-                  <td className="border-b-0 border-t-2 border-slate-200 pt-3">
+                  <td className="border-b-0 border-t-2 border-slate-200 p-2.5 pt-3 text-right">
                     <strong>₱{parseFloat(grandTotal).toFixed(2)}</strong>
                   </td>
                 </tr>
