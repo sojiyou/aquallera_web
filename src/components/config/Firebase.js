@@ -1,15 +1,19 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth, setPersistence, browserSessionPersistence } from 'firebase/auth';
-import { getDatabase } from 'firebase/database';
+import { initializeApp } from "firebase/app";
+import {
+  getAuth,
+  setPersistence,
+  browserSessionPersistence,
+} from "firebase/auth";
+import { getDatabase } from "firebase/database";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBFGWRLolpvnlrK-fpqtiCAvdual07mzDM",
-  authDomain: "aquallera.firebaseapp.com",
-  databaseURL: "https://aquallera-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "aquallera",
-  // storageBucket: "aquallera.firebasestorage.app", used when firebase plan is upgraded
-  messagingSenderId: "432017337394",
-  appId: "1:432017337394:web:f62e953b995675cbaa602b"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET, // used when firebase plan is upgraded
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);
@@ -18,7 +22,7 @@ const auth = getAuth(app);
 setPersistence(auth, browserSessionPersistence);
 const database = getDatabase(
   app,
-  "https://aquallera-default-rtdb.asia-southeast1.firebasedatabase.app"
+  process.env.REACT_APP_FIREBASE_DATABASE_URL,
 );
 
 // const storage = getStorage(app); used when firebase plan is upgraded

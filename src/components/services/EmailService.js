@@ -1,9 +1,11 @@
 import emailjs from '@emailjs/browser';
 
-const EMAILJS_SERVICE_ID = 'service_6q0e89w';
-const EMAILJS_TEMPLATE_ID_REJECTION = 'template_2rk5qyq';
-const EMAILJS_TEMPLATE_ID_ADMIN_INVITE = 'template_qf3c91h';
-const EMAILJS_PUBLIC_KEY = 'fpu4u65UlHZOE96yR';
+const EMAILJS_SERVICE_ID = process.env.REACT_APP_EMAILJS_SERVICE_ID;
+const EMAILJS_TEMPLATE_ID_REJECTION =
+  process.env.REACT_APP_EMAILJS_TEMPLATE_ID_REJECTION;
+const EMAILJS_TEMPLATE_ID_ADMIN_INVITE =
+  process.env.REACT_APP_EMAILJS_TEMPLATE_ID_ADMIN_INVITE;
+const EMAILJS_PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
 
 /**
  * Initialize EmailJS
@@ -25,9 +27,6 @@ export const initializeEmailJS = () => {
 export const testEmailJSConnection = async () => {
   try {
     console.log('Testing EmailJS connection...');
-    console.log('Service ID:', EMAILJS_SERVICE_ID);
-    console.log('Public Key:', EMAILJS_PUBLIC_KEY);
-
     console.log('EmailJS connection test passed');
     return true;
   } catch (error) {
@@ -167,9 +166,12 @@ export const sendAdminInvitation = async (toEmail, generatedPassword, invitedBy)
  * Send approval email to water station
  */
 export const sendApprovalEmail = async (stationData) => {
-  const APPROVAL_SERVICE_ID = 'service_hgrfj7d';
-  const APPROVAL_TEMPLATE_ID = 'template_87et26x';
-  const APPROVAL_PUBLIC_KEY = 'iq8pJ8vc0CW3xnPJ-';
+  const APPROVAL_SERVICE_ID =
+    process.env.REACT_APP_EMAILJS_APPROVAL_SERVICE_ID;
+  const APPROVAL_TEMPLATE_ID =
+    process.env.REACT_APP_EMAILJS_APPROVAL_TEMPLATE_ID;
+  const APPROVAL_PUBLIC_KEY =
+    process.env.REACT_APP_EMAILJS_APPROVAL_PUBLIC_KEY;
 
   try {
     console.log('Preparing approval email for:', stationData.email);
