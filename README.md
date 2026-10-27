@@ -44,7 +44,34 @@ Ejects from Create React App configuration (one-way operation).
 
 The project is configured for Vercel. The `CI=true` build will pass with zero ESLint warnings.
 
-To deploy:
+### Environment variables
+
+Create React App inlines `REACT_APP_*` values **at build time**, so they must exist in Vercel before the build runs. After adding or changing any of them, trigger a **new deployment** — existing builds will not pick up the change.
+
+Set these in **Vercel → Project → Settings → Environment Variables** for **Production** and **Preview**:
+
+| Group | Variables |
+|---|---|
+| Firebase (required) | `REACT_APP_FIREBASE_API_KEY`, `REACT_APP_FIREBASE_AUTH_DOMAIN`, `REACT_APP_FIREBASE_DATABASE_URL`, `REACT_APP_FIREBASE_PROJECT_ID`, `REACT_APP_FIREBASE_MESSAGING_SENDER_ID`, `REACT_APP_FIREBASE_APP_ID` |
+| Firebase (optional) | `REACT_APP_FIREBASE_STORAGE_BUCKET` (unused until the Firebase plan supports Storage) |
+| EmailJS (main) | `REACT_APP_EMAILJS_SERVICE_ID`, `REACT_APP_EMAILJS_TEMPLATE_ID_REJECTION`, `REACT_APP_EMAILJS_TEMPLATE_ID_ADMIN_INVITE`, `REACT_APP_EMAILJS_PUBLIC_KEY` |
+| EmailJS (approval) | `REACT_APP_EMAILJS_APPROVAL_SERVICE_ID`, `REACT_APP_EMAILJS_APPROVAL_TEMPLATE_ID`, `REACT_APP_EMAILJS_APPROVAL_PUBLIC_KEY` |
+| Mapbox | `REACT_APP_MAPBOX_ACCESS_TOKEN` |
+
+Copy `.env.example` to `.env` for local development. `.env` is gitignored — never commit it.
+
+If a required Firebase variable is missing, `src/components/config/Firebase.js` logs the exact names; in development it stops the app so the problem is caught immediately.
+
+### Admin accounts
+
+Admin login reads the `admins` node in Realtime Database (there is no hardcoded fallback). Seed or upgrade accounts with:
+
+```bash
+npm run migrate-passwords
+```
+
+### Deploy
+
 ```bash
 npm run build
 ```
