@@ -13,7 +13,6 @@ const EMAILJS_PUBLIC_KEY = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
 export const initializeEmailJS = () => {
   try {
     emailjs.init(EMAILJS_PUBLIC_KEY);
-    console.log('EmailJS initialized successfully');
     return true;
   } catch (error) {
     console.error('EmailJS initialization failed:', error);
@@ -24,16 +23,7 @@ export const initializeEmailJS = () => {
 /**
  * Test EmailJS connection
  */
-export const testEmailJSConnection = async () => {
-  try {
-    console.log('Testing EmailJS connection...');
-    console.log('EmailJS connection test passed');
-    return true;
-  } catch (error) {
-    console.error('EmailJS connection test failed:', error);
-    return false;
-  }
-};
+export const testEmailJSConnection = async () => true;
 
 /**
  * Send rejection email to water station
@@ -42,8 +32,6 @@ export const testEmailJSConnection = async () => {
  */
 export const sendRejectionEmail = async (stationData, rejectionReason) => {
   try {
-    console.log('Preparing rejection email for:', stationData.email);
-
     if (!stationData || !stationData.email) {
       throw new Error('Station data or email is missing');
     }
@@ -97,19 +85,12 @@ export const sendRejectionEmail = async (stationData, rejectionReason) => {
       reapply_link: 'https://your-app-url.com/signup'
     };
 
-    console.log('Email parameters prepared:', {
-      to: emailParams.to_email,
-      station: emailParams.station_name,
-      reason: emailParams.rejection_reason.substring(0, 50) + '...'
-    });
-
     const response = await emailjs.send(
       EMAILJS_SERVICE_ID,
       EMAILJS_TEMPLATE_ID_REJECTION,
       emailParams
     );
 
-    console.log('Rejection email sent successfully:', response);
     return {
       success: true,
       response: response,
@@ -131,8 +112,6 @@ export const sendRejectionEmail = async (stationData, rejectionReason) => {
  */
 export const sendAdminInvitation = async (toEmail, generatedPassword, invitedBy) => {
   try {
-    console.log('Sending admin invitation to:', toEmail);
-
     const emailParams = {
       to_email: toEmail,
       to_name: toEmail.split('@')[0],
@@ -151,7 +130,6 @@ export const sendAdminInvitation = async (toEmail, generatedPassword, invitedBy)
       emailParams
     );
 
-    console.log('Admin invitation sent successfully:', response);
     return { success: true, response, sentTo: toEmail };
 
   } catch (error) {
@@ -174,8 +152,6 @@ export const sendApprovalEmail = async (stationData) => {
     process.env.REACT_APP_EMAILJS_APPROVAL_PUBLIC_KEY;
 
   try {
-    console.log('Preparing approval email for:', stationData.email);
-
     const emailParams = {
       to_email: stationData.email,
       to_name: stationData.ownerName,
@@ -200,7 +176,6 @@ export const sendApprovalEmail = async (stationData) => {
       APPROVAL_PUBLIC_KEY
     );
 
-    console.log('Approval email sent successfully');
     return { success: true, response, sentTo: stationData.email };
 
   } catch (error) {

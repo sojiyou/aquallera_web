@@ -299,8 +299,6 @@ const Settings = ({ stationData, setStationData }) => {
       
       updates.updatedAt = new Date().toISOString();
       
-      console.log('Fields to update:', updates);
-      
       if (hasChanges) {
         await update(stationRef, updates);
         

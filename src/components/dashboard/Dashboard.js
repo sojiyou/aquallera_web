@@ -1102,9 +1102,6 @@ const Dashboard = () => {
 
       const stationRef = ref(database, `waterStations/${user.uid}`);
       const unsubscribeStation = onValue(stationRef, (snapshot) => {
-        console.log("STATION SNAPSHOT EXISTS:", snapshot.exists());
-        console.log("STATION RAW VALUE:", snapshot.val());
-
         if (snapshot.exists()) {
           setStationData(snapshot.val());
         } else {
@@ -1125,22 +1122,8 @@ const Dashboard = () => {
             }),
           );
 
-          const stationOrders = ordersArray.filter((order) => {
-            const matches = order.stationId === user.uid;
-            if (matches) {
-              console.log(
-                "DASHBOARD - Matched order:",
-                order.id || order.orderId,
-                "StationId:",
-                order.stationId,
-              );
-            }
-            return matches;
-          });
-
-          console.log(
-            "DASHBOARD - Station orders filtered:",
-            stationOrders.length,
+          const stationOrders = ordersArray.filter(
+            (order) => order.stationId === user.uid,
           );
 
           const currentIds = new Set(stationOrders.map((o) => o.id));

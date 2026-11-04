@@ -113,7 +113,6 @@ const Login = () => {
       const user = userCredential.user;
 
       await deleteUser(user);
-      console.log('Firebase Auth account deleted for:', email);
 
       await auth.signOut();
 
@@ -129,7 +128,6 @@ const Login = () => {
     try {
       const stationRef = ref(database, `waterStations/${stationId}`);
       await remove(stationRef);
-      console.log('Station deleted from database:', stationId);
       return true;
     } catch (error) {
       console.error('Error deleting station from database:', error);
@@ -147,12 +145,9 @@ const Login = () => {
     setShowRejectionMessage(false);
 
     try {
-      console.log('Checking station status for:', formData.email);
       const stationData = await findStationByEmail(formData.email);
 
       if (stationData && (stationData.status === 'rejected' || stationData.status === 'deletion_pending')) {
-        console.log('Station is marked for deletion:', stationData.id);
-
         setRejectionData({
           reason: stationData.rejectionReason || 'No specific reason provided.',
           stationName: stationData.stationName || 'Your station',
@@ -178,7 +173,7 @@ const Login = () => {
           return;
         }
 
-        const dbDeleted = await deleteStationFromDB(stationData.id);
+        await deleteStationFromDB(stationData.id);
 
         try {
           await remove(ref(database, `rejectionRecords/${stationData.id}`));
@@ -190,10 +185,6 @@ const Login = () => {
           ...prev,
           cleanupComplete: true
         }));
-
-        if (dbDeleted) {
-          console.log('Rejected station cleanup complete');
-        }
 
         setIsLoading(false);
         return;
@@ -264,7 +255,6 @@ const Login = () => {
 
     } catch (error) {
       console.error('Login error:', error);
-      console.log('Error code:', error.code, 'Error name:', error.constructor?.name);
 
       let errorMessage = 'Login failed. Please try again.';
       const errorCode = error.code || '';
