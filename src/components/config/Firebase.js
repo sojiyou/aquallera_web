@@ -49,7 +49,9 @@ if (missingFirebaseConfig.length > 0) {
 const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);
-setPersistence(auth, browserSessionPersistence);
+setPersistence(auth, browserSessionPersistence).catch((error) => {
+  console.error("[Firebase] Failed to set auth persistence:", error);
+});
 const database = getDatabase(
   app,
   process.env.REACT_APP_FIREBASE_DATABASE_URL,
