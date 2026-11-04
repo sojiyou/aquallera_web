@@ -22,6 +22,18 @@ import {
   verifyPassword,
 } from "../../utils/passwordHash";
 
+// Permit documents are stored as data URLs written by station owners. Only
+// accept image/PDF data URLs so a crafted value cannot inject markup or a
+// javascript: URL into the admin origin when the document is opened.
+const SAFE_DOCUMENT_DATA_URL =
+  /^data:(?:image\/(?:png|jpe?g|gif|webp|bmp)|application\/pdf);base64,[A-Za-z0-9+/=\s]+$/i;
+
+const getSafeDocumentUrl = (value) => {
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  return SAFE_DOCUMENT_DATA_URL.test(trimmed) ? trimmed : null;
+};
+
 const AdminPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -1269,6 +1281,7 @@ const AdminPage = () => {
                           key === "otherDocument" && doc.label
                             ? doc.label
                             : null;
+                        const safeBase64 = getSafeDocumentUrl(doc.base64);
 
                         return (
                           <div
@@ -1290,10 +1303,10 @@ const AdminPage = () => {
                                 {isImage ? "Image" : "PDF"}
                               </span>
                             </div>
-                            {isImage && doc.base64 && (
+                            {isImage && safeBase64 && (
                               <div className="mb-3">
                                 <img
-                                  src={doc.base64}
+                                  src={safeBase64}
                                   alt={label}
                                   className="w-full h-32 object-cover rounded border border-slate-200"
                                   onError={(e) => {
@@ -1306,16 +1319,22 @@ const AdminPage = () => {
                             <div className="flex gap-2">
                               <button
                                 onClick={() => {
-                                  if (isImage && doc.base64) {
-                                    const win = window.open();
-                                    win.document.write(
-                                      `<img src="${doc.base64}" style="max-width:100%;" />`,
-                                    );
-                                  } else if (doc.base64) {
-                                    const win = window.open();
-                                    win.document.write(
-                                      `<iframe src="${doc.base64}" style="width:100%;height:100vh;" />`,
-                                    );
+                                  if (!safeBase64) return;
+                                  const win = window.open();
+                                  if (!win) return;
+                                  if (isImage) {
+                                    const img = win.document.createElement("img");
+                                    img.src = safeBase64;
+                                    img.style.maxWidth = "100%";
+                                    win.document.body.appendChild(img);
+                                  } else {
+                                    const iframe =
+                                      win.document.createElement("iframe");
+                                    iframe.src = safeBase64;
+                                    iframe.style.width = "100%";
+                                    iframe.style.height = "100vh";
+                                    iframe.style.border = "0";
+                                    win.document.body.appendChild(iframe);
                                   }
                                 }}
                                 className="flex-1 bg-primary text-white px-3 py-1.5 rounded text-xs font-medium cursor-pointer transition-all hover:bg-primary-dark"
@@ -1324,8 +1343,9 @@ const AdminPage = () => {
                               </button>
                               <button
                                 onClick={() => {
+                                  if (!safeBase64) return;
                                   const link = document.createElement("a");
-                                  link.href = doc.base64;
+                                  link.href = safeBase64;
                                   link.download = doc.filename || `${key}.png`;
                                   document.body.appendChild(link);
                                   link.click();
