@@ -1,0 +1,12 @@
+# Never upload local secrets to a Vercel build.
+.env
+.env.*
+!.env.example
+scripts/serviceAccountKey.json
+
+# Local build output and tooling.
+build
+coverage
+node_modules
+*.log
+.DS_Store
