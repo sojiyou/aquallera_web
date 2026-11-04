@@ -1,8 +1,15 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+// react-calendar ships ESM-only, which Jest 27 (CRA) does not transform.
+jest.mock('react-calendar', () => ({
+  __esModule: true,
+  default: () => null,
+}));
+
+test('renders the landing page', () => {
+  window.history.pushState({}, '', '/');
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+
+  expect(screen.getAllByText(/aquallera/i).length).toBeGreaterThan(0);
 });
