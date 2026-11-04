@@ -145,9 +145,13 @@ const AdminPage = () => {
 
   const generatePassword = (length = 10) => {
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+    // Use a cryptographically secure source so invited admins get
+    // unpredictable credentials.
+    const randomValues = new Uint32Array(length);
+    window.crypto.getRandomValues(randomValues);
     let result = "";
     for (let i = 0; i < length; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
+      result += chars.charAt(randomValues[i] % chars.length);
     }
     return result;
   };
