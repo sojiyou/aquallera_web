@@ -82,7 +82,7 @@ export const sendRejectionEmail = async (stationData, rejectionReason) => {
 
       current_year: new Date().getFullYear(),
 
-      reapply_link: 'https://your-app-url.com/signup'
+      reapply_link: `${window.location.origin}/signup`
     };
 
     const response = await emailjs.send(
