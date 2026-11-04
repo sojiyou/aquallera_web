@@ -168,6 +168,16 @@ const Login = () => {
           console.warn('Auth deletion failed:', authError);
         }
 
+        // Only clean up the station record once ownership has been proven by a
+        // successful sign-in. Deleting on a failed sign-in would let anyone who
+        // knows a rejected station's email destroy its record without the
+        // password.
+        if (!authDeleted) {
+          setRejectionData(prev => ({ ...prev, cleanupComplete: false }));
+          setIsLoading(false);
+          return;
+        }
+
         const dbDeleted = await deleteStationFromDB(stationData.id);
 
         try {
@@ -181,10 +191,8 @@ const Login = () => {
           cleanupComplete: true
         }));
 
-        if (authDeleted && dbDeleted) {
-          console.log('Complete cleanup successful');
-        } else if (dbDeleted) {
-          console.log('Database cleaned but auth may need manual cleanup');
+        if (dbDeleted) {
+          console.log('Rejected station cleanup complete');
         }
 
         setIsLoading(false);
